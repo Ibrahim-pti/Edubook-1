@@ -24,7 +24,7 @@ jobs:
 
             REPO_CACHE="/www/wwwroot/khwenden.com/.rebary_repo_cache"
             DEPLOY_DIR="/www/wwwroot/khwenden.com/rebary_xwendn"
-            REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/ibrahim-dev11/Edubook.git"
+            REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
             # Clone repo if not already cached, otherwise pull latest
             if [ ! -d "$REPO_CACHE/.git" ]; then
