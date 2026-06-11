@@ -3,225 +3,172 @@
 
 @section('styles')
 <style>
-/* ════════════ ANIMATIONS ════════════ */
-@keyframes fadeUp { from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none} }
-@keyframes glow   { 0%,100%{opacity:.3}50%{opacity:.6} }
-@keyframes ping   { 75%,100%{transform:scale(2.2);opacity:0} }
+/* ════════════ MODERN FLAT UI & ANIMATIONS ════════════ */
+:root {
+    --gold-solid: #fbbf24;
+    --gold-hover: #f59e0b;
+    --border-light: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    --bg-dark: #080c14;
+    --bg-card: #0f172a;
+}
 
-.fade-up  { animation:fadeUp .7s cubic-bezier(.16,1,.3,1) both; }
-.delay-1  { animation-delay:.1s; } .delay-2 { animation-delay:.2s; }
-.delay-3  { animation-delay:.3s; } .delay-4 { animation-delay:.4s; }
+body {
+    background-color: var(--bg-dark);
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
 
-.sr { opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1); }
-.sr.in { opacity:1;transform:none; }
-.sr.d1{transition-delay:.08s}.sr.d2{transition-delay:.16s}.sr.d3{transition-delay:.24s}
-.sr.d4{transition-delay:.32s}.sr.d5{transition-delay:.4s}.sr.d6{transition-delay:.48s}
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-/* ════════════ HERO ════════════ */
+.reveal { opacity: 0; animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+
+/* ════════════ HERO SECTION ════════════ */
 .hero {
-    position:relative; padding:10rem 1.5rem 7rem;
-    text-align:center; overflow:hidden;
-    background:var(--bg);
-}
-/* gold radial glow */
-.hero::before {
-    content:''; position:absolute; inset:0; pointer-events:none;
-    background:
-        radial-gradient(ellipse 70% 50% at 50% -10%, rgba(226,176,66,.14) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 40% at 10% 95%, rgba(226,176,66,.04) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 40% at 90% 90%, rgba(226,176,66,.04) 0%, transparent 60%);
-}
-/* grid pattern */
-.hero::after {
-    content:''; position:absolute; inset:0; pointer-events:none;
-    background-image:
-        linear-gradient(rgba(226,176,66,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(226,176,66,.03) 1px, transparent 1px);
-    background-size:54px 54px;
-    mask-image:radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 100%);
+    position: relative;
+    padding: 10rem 1.5rem 6rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-light);
 }
 
-.hero-inner { position:relative;z-index:1;max-width:760px;margin:0 auto; }
-
-.hero-badge {
-    display:inline-flex;align-items:center;gap:9px;
-    background:rgba(226,176,66,.06); color:var(--gold-lt);
-    border:1px solid var(--border2); border-radius:50px;
-    padding:6px 18px; font-size:.8rem; font-weight:800;
-    margin-bottom:2rem; letter-spacing:.3px;
-    box-shadow: var(--shadow-sm);
-}
-.badge-dot { position:relative;width:8px;height:8px; }
-.badge-dot span { display:block;width:8px;height:8px;border-radius:50%;background:var(--gold-lt); }
-.badge-dot::after {
-    content:'';position:absolute;inset:0;border-radius:50%;
-    background:rgba(226,176,66,.6); animation:ping 2s cubic-bezier(0,0,.2,1) infinite;
+.badge {
+    display: inline-block;
+    padding: 6px 16px; border-radius: 4px;
+    background: transparent;
+    border: 1px solid var(--gold-solid);
+    color: var(--gold-solid); font-size: 0.9rem; font-weight: 800;
+    margin-bottom: 2rem;
 }
 
 .hero-title {
-    font-size:clamp(2.2rem,6vw,4rem);
-    font-weight:900;line-height:1.2;color:var(--txt);
-    margin-bottom:1.5rem;letter-spacing:-1px;
-}
-.hero-title .hl {
-    background:linear-gradient(135deg, var(--gold-lt) 20%, var(--gold) 60%, var(--gold-dk) 100%);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-    text-shadow: 0 0 40px rgba(226, 176, 66, 0.1);
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 900; line-height: 1.3;
+    margin-bottom: 1.5rem; color: #fff;
 }
 
-.hero-sub {
-    font-size:1.1rem;color:var(--txt2);
-    max-width:520px;margin:0 auto 2.75rem;line-height:1.9;
+.hero-desc {
+    font-size: 1.25rem;
+    color: var(--txt2); max-width: 600px;
+    margin: 0 auto 3rem; line-height: 1.8;
 }
 
-.hero-btns { display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:4.5rem; }
+.btn-flat {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px; border-radius: 4px;
+    font-weight: 800; font-size: 1.1rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.btn-primary-flat { background: var(--gold-solid); color: #000; border: 1px solid var(--gold-solid); }
+.btn-primary-flat:hover { background: var(--gold-hover); border-color: var(--gold-hover); transform: translateY(-2px); }
+.btn-outline-flat { background: transparent; color: #fff; border: 1px solid var(--border-strong); }
+.btn-outline-flat:hover { background: var(--border-light); transform: translateY(-2px); }
 
-.hbtn-primary {
-    display:inline-flex;align-items:center;gap:8px;
-    padding:14px 34px;border-radius:14px;
-    background:var(--grad);color:#080c14;
-    font-family:inherit;font-size:1rem;font-weight:800;
-    text-decoration:none;border:1px solid var(--border2);
-    box-shadow: 0 4px 18px rgba(226, 176, 66, 0.25);
-    transition:all .25s cubic-bezier(0.4,0,0.2,1);
-}
-.hbtn-primary:hover { transform:translateY(-2px); box-shadow: 0 8px 24px rgba(226, 176, 66, 0.4); }
+/* ════════════ TYPOGRAPHY & READABILITY ════════════ */
+.section { padding: 6rem 1.5rem; border-bottom: 1px solid var(--border-light); }
+.container { max-width: 1000px; margin: 0 auto; }
 
-.hbtn-ghost {
-    display:inline-flex;align-items:center;gap:8px;
-    padding:14px 34px;border-radius:14px;
-    background:rgba(255, 255, 255, 0.02);color:var(--txt2);
-    font-family:inherit;font-size:1rem;font-weight:700;
-    text-decoration:none;border:1px solid var(--border);
-    transition:all .25s cubic-bezier(0.4,0,0.2,1);
-}
-.hbtn-ghost:hover { border-color:var(--gold-lt);color:var(--gold-lt);background:rgba(226, 176, 66, 0.05); transform:translateY(-2px); }
+.sec-head { margin-bottom: 4rem; text-align: center; }
+.sec-title { font-size: 2.2rem; font-weight: 900; color: #fff; margin-bottom: 1rem; }
+.sec-subtitle { color: var(--gold-solid); font-weight: 800; font-size: 1.1rem; text-transform: uppercase; }
 
-.stats-bar {
-    display:flex;max-width:480px;margin:0 auto;
-    border:1px solid var(--border);border-radius:20px;overflow:hidden;
-    background:rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-md);
+/* ════════════ ABOUT / GOALS ════════════ */
+.goals-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
 }
-.stat-cell { flex:1;padding:1.5rem .75rem;text-align:center; }
-.stat-cell + .stat-cell { border-right:1px solid var(--border); }
-.stat-n {
-    font-size:1.75rem;font-weight:800;line-height:1;
-    color:var(--gold-lt);
-    text-shadow: 0 0 15px rgba(226, 176, 66, 0.1);
-}
-.stat-l { font-size:.78rem;color:var(--txt3);margin-top:7px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px; }
+@media (max-width: 768px) { .goals-grid { grid-template-columns: 1fr; } }
 
-/* ════════════ SECTIONS ════════════ */
-.sec     { padding:6rem 1.5rem;max-width:1120px;margin:0 auto; }
-.sec-alt { border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(15, 23, 42, 0.25); }
-.sec-alt-inner { padding:6rem 1.5rem;max-width:1120px;margin:0 auto; }
+.goal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-strong);
+    padding: 2.5rem; border-radius: 8px;
+}
+.goal-icon {
+    width: 60px; height: 60px; border-radius: 4px;
+    background: transparent; border: 1px solid var(--gold-solid);
+    color: var(--gold-solid); font-size: 2rem;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.5rem;
+}
+.goal-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 1rem; }
+.goal-desc { font-size: 1.15rem; color: var(--txt2); line-height: 1.8; }
 
-.sec-head { margin-bottom:3.5rem; }
-.sec-tag {
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:.75rem;font-weight:800;letter-spacing:2px;
-    text-transform:uppercase;color:var(--gold-lt);margin-bottom:.75rem;
+/* ════════════ HOW TO REGISTER ════════════ */
+.step-row {
+    display: flex; gap: 2rem; align-items: flex-start;
+    padding: 2rem; background: var(--bg-card);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px; margin-bottom: 1.5rem;
 }
-.sec-tag::before { content:'';width:18px;height:2px;border-radius:2px;background:var(--gold-lt); }
-.sec-title { font-size:clamp(1.6rem,3.5vw,2.35rem);font-weight:900;color:var(--txt);line-height:1.35; }
-.sec-sub   { color:var(--txt2);margin-top:.6rem;font-size:.98rem;line-height:1.9; }
-
-/* ════════════ FEATURE CARDS ════════════ */
-.feat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem; }
-.feat-card {
-    background:rgba(15, 23, 42, 0.45);
-    border:1px solid var(--border);border-radius:20px;
-    padding:2.25rem 1.75rem;
-    box-shadow: var(--shadow-sm);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    transition:border-color .3s,transform .4s cubic-bezier(.16,1,.3,1),box-shadow .3s;
-}
-.feat-card:hover { border-color:var(--border2);transform:translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.3), var(--shadow-glow); }
-.feat-icon {
-    width:52px;height:52px;border-radius:14px;
-    background:rgba(226,176,66,.07);border:1px solid var(--border);
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.5rem;margin-bottom:1.25rem;
-    box-shadow: var(--shadow-sm);
-}
-.feat-name { font-size:1.05rem;font-weight:800;color:var(--txt);margin-bottom:.5rem; }
-.feat-desc { font-size:.87rem;color:var(--txt2);line-height:1.85; }
-
-/* ════════════ STEPS ════════════ */
-.steps-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;position:relative; }
-.steps-grid::before {
-    content:'';position:absolute;top:35px;right:calc(16.6% + 14px);left:calc(16.6% + 14px);
-    height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);
-}
-.step-card {
-    background:rgba(15, 23, 42, 0.3);border:1px solid var(--border);border-radius:20px;
-    padding:2.25rem 1.75rem;text-align:center;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    transition:border-color .3s,transform .4s cubic-bezier(.16,1,.3,1),box-shadow .3s;
-}
-.step-card:hover { border-color:var(--border2);transform:translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+@media (max-width: 640px) { .step-row { flex-direction: column; } }
 .step-num {
-    width:48px;height:48px;border-radius:50%;
-    background:var(--grad);color:#080c14;
-    font-size:1.15rem;font-weight:900;
-    display:flex;align-items:center;justify-content:center;
-    margin:0 auto 1.25rem;position:relative;z-index:1;
-    border:2.5px solid rgba(226,176,66,.25);
-    box-shadow: var(--shadow-sm);
+    flex-shrink: 0; width: 50px; height: 50px; border-radius: 4px;
+    background: var(--gold-solid); color: #000;
+    font-size: 1.5rem; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
 }
-.step-name { font-size:1.05rem;font-weight:800;color:var(--txt);margin-bottom:.5rem; }
-.step-desc { font-size:.87rem;color:var(--txt2);line-height:1.85; }
+.step-content h3 { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+.step-content p { font-size: 1.15rem; color: var(--txt2); line-height: 1.8; margin: 0; }
+.step-highlight { color: #fff; font-weight: 700; }
 
-/* ════════════ CTA ════════════ */
-.cta-section { padding:6rem 1.5rem; }
-.cta-box {
-    max-width:760px;margin:0 auto;
-    background:rgba(15, 23, 42, 0.6);
-    border:1px solid var(--border2);border-radius:28px;
-    padding:5rem 3rem;text-align:center;
-    position:relative;overflow:hidden;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: var(--shadow-lg);
+/* ════════════ APP DOWNLOAD BUTTONS ════════════ */
+.app-download-btn {
+    display: inline-flex; align-items: center; gap: 14px;
+    background: #0f172a;
+    border: 1px solid var(--border-strong); border-radius: 14px;
+    padding: 10px 24px; color: #fff; text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.cta-box::before {
-    content:'';position:absolute;inset:0;pointer-events:none;
-    background:
-        radial-gradient(ellipse 70% 60% at 50% 0%, rgba(226,176,66,.12), transparent),
-        radial-gradient(ellipse 40% 40% at 90% 100%, rgba(226,176,66,.05), transparent);
+.app-download-btn:hover {
+    background: #1e293b; border-color: var(--gold-solid);
+    transform: translateY(-3px);
 }
-.cta-inner { position:relative;z-index:1; }
-.cta-icon  { font-size:2.8rem;display:block;margin-bottom:1rem; }
-.cta-title { font-size:clamp(1.5rem,3.5vw,2.15rem);font-weight:900;color:var(--txt);margin-bottom:.8rem; }
-.cta-sub   { color:var(--txt2);font-size:1rem;line-height:1.85;margin-bottom:2.25rem; }
-.btn-cta {
-    display:inline-flex;align-items:center;gap:8px;
-    background:var(--grad);color:#080c14;
-    padding:14px 36px;border-radius:14px;
-    font-family:inherit;font-size:1rem;font-weight:800;
-    text-decoration:none;border:1px solid var(--border2);
-    box-shadow: 0 4px 18px rgba(226, 176, 66, 0.25);
-    transition:all .25s cubic-bezier(0.4,0,0.2,1);
-}
-.btn-cta:hover { transform:translateY(-2px); box-shadow: 0 8px 24px rgba(226, 176, 66, 0.4); }
+.app-download-btn svg { width: 32px; height: 32px; fill: currentColor; }
+.app-download-text { display: flex; flex-direction: column; align-items: flex-start; }
+.app-download-text .sub { font-size: 0.75rem; color: var(--txt2); text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
+.app-download-text .title { font-size: 1.3rem; font-weight: 900; line-height: 1.2; }
 
-/* ════════════ FOOTER ════════════ */
-.site-footer {
-    border-top:1px solid var(--border);
-    padding:2.5rem 1.5rem;text-align:center;
-    background:rgba(8, 12, 20, 0.95);color:var(--txt3);font-size:.85rem;
+/* ════════════ APP PREVIEW ════════════ */
+.app-preview-section {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
 }
-.site-footer a { color:var(--gold-lt);text-decoration:none;font-weight:700; }
-.site-footer a:hover { color:var(--gold); }
+@media (max-width: 768px) { .app-preview-section { grid-template-columns: 1fr; } }
+.app-text h2 { font-size: 2rem; font-weight: 900; color: #fff; margin-bottom: 1.5rem; }
+.app-text p { font-size: 1.15rem; color: var(--txt2); line-height: 1.8; margin-bottom: 1.5rem; }
+.app-features { list-style: none; padding: 0; }
+.app-features li {
+    font-size: 1.15rem; color: #fff; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 10px; font-weight: 600;
+}
+.app-features li::before {
+    content: '✓'; color: var(--gold-solid); font-weight: 900;
+}
+.app-mockup {
+    width: 100%; max-width: 300px; margin: 0 auto;
+    border: 4px solid var(--border-strong); border-radius: 30px;
+    background: #000; overflow: hidden;
+    height: 550px; display: flex; flex-direction: column;
+}
+.app-mockup-header { height: 60px; background: #1e293b; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; }
+.app-mockup-body { flex: 1; padding: 1.5rem; }
+.app-mockup-card { background: #1e293b; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; border: 1px solid var(--border-light); }
+.app-mockup-img { width: 100%; height: 100px; background: rgba(251,191,36,0.2); border-radius: 4px; margin-bottom: 1rem; }
+.app-mockup-line { height: 12px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 0.5rem; }
+.app-mockup-line.short { width: 60%; }
 
-/* ════════════ RESPONSIVE ════════════ */
-@media (max-width:900px) { .feat-grid{grid-template-columns:repeat(2,1fr);} .steps-grid{grid-template-columns:1fr;} .steps-grid::before{display:none;} }
-@media (max-width:580px) { .feat-grid{grid-template-columns:1fr;} .hbtn-primary,.hbtn-ghost{width:100%;justify-content:center;} .hero-btns{flex-direction:column;} .cta-box{padding:3.5rem 1.5rem;border-radius:20px;} .hero{padding:8rem 1.25rem 5rem;} }
+/* CTA */
+.cta-banner { text-align: center; padding: 4rem 2rem; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 8px; margin-top: 4rem; }
+.cta-banner h2 { font-size: 2rem; font-weight: 900; color: #fff; margin-bottom: 1.5rem; }
 </style>
 @endsection
 
@@ -229,140 +176,233 @@
 
 {{-- ═══════ HERO ═══════ --}}
 <section class="hero">
-    <div class="hero-inner">
-        <div class="hero-badge fade-up">
-            <div class="badge-dot"><span></span></div>
-            پلاتفۆرمی ژمارە یەکی پەروەردەیی کوردستان
-        </div>
-
-        <h1 class="hero-title fade-up delay-1">
-            دامەزراوەکەت<br>
-            <span class="hl">بناسێنە</span> لەگەڵ EduBook
+    <div class="container">
+        <div class="badge reveal">تایبەت بە ناوەندەکانی خوێندن</div>
+        <h1 class="hero-title reveal delay-1">
+            پێشەنگ بە لە<br>
+            ناساندنی دامەزراوەکەت
         </h1>
-
-        <p class="hero-sub fade-up delay-2">
-            پلاتفۆرمی پەروەردەیی بۆ خوێندنگا، کۆلێژ و ناوەندەکان —
-            تۆمار بکە، بڵاوبکەرەوە
+        <p class="hero-desc reveal delay-2">
+            پلاتفۆرمی EduBook باشترین و مۆدێرنترین ژینگەی دیجیتاڵییە؛ زانکۆ، پەیمانگا و قوتابخانەکان ڕاستەوخۆ دەبەستێتەوە بە هەزاران خوێندکارەوە.
         </p>
-
-        <div class="hero-btns fade-up delay-3">
-            <a href="{{ route('portal.register') }}" class="hbtn-primary">🎓 تۆمارکردنی بەخۆڕایی</a>
-            <a href="{{ route('portal.login') }}"    class="hbtn-ghost">چوونەژوورەوە ←</a>
+        <div class="reveal delay-3" style="display:flex; gap:1rem; justify-content:center;">
+            <a href="{{ route('portal.register') }}" class="btn-flat btn-primary-flat">ئێستا خۆت تۆمار بکە</a>
+            <a href="#about" class="btn-flat btn-outline-flat">زیاتر بزانە</a>
         </div>
+    </div>
+</section>
 
-        <div class="stats-bar fade-up delay-4">
-            <div class="stat-cell">
-                <div class="stat-n">٥٠٠+</div>
-                <div class="stat-l">دامەزراوە</div>
+{{-- ═══════ 1. WHAT IS IT & GOALS ═══════ --}}
+<section class="section" id="about">
+    <div class="container">
+        <div class="sec-head reveal">
+            <div class="sec-subtitle">ڕێبەری سەرەتایی</div>
+            <h2 class="sec-title">ئەم وێبسایتە چییە و ئامانجی چییە؟</h2>
+        </div>
+        
+        <div class="goals-grid">
+            <div class="goal-card reveal delay-1">
+                <div class="goal-icon">🌐</div>
+                <h3 class="goal-title">وێبسایتەکە چییە؟</h3>
+                <p class="goal-desc">
+                    ئەم وێبسایتە (کە بە پۆرتاڵ ناودەبرێت) تایبەتە بە خاوەن دامەزراوە پەروەردەییەکان. لێرەدا دەتوانیت هەژمارێک بۆ قوتابخانە، پەیمانگا یان زانکۆکەت بکەیتەوە، و هەموو زانیارییەکانی وەک ناونیشان، جۆر و وێنەکانت دابنێیت بۆ ئەوەی بە فەرمی بناسێندرێیت.
+                </p>
             </div>
-            <div class="stat-cell">
-                <div class="stat-n">١٢٠+</div>
-                <div class="stat-l">شار</div>
-            </div>
-            <div class="stat-cell">
-                <div class="stat-n">بەخۆڕایی</div>
-                <div class="stat-l">تەواو</div>
+            
+            <div class="goal-card reveal delay-2">
+                <div class="goal-icon">🎯</div>
+                <h3 class="goal-title">ئامانجی سەرەکی</h3>
+                <p class="goal-desc">
+                    ئامانجمان ئەوەیە هەموو دامەزراوە پەروەردەییەکانی کوردستان لە یەک ئەپلیکەیشنی مۆبایلدا کۆبکەینەوە. کاتێک تۆ لێرە خۆت تۆمار دەکەیت، ڕاستەوخۆ دەگەیەتە سەدان هەزار خوێندکار کە ڕۆژانە ئەپلیکەیشنی EduBook بەکاردەهێنن، و هەواڵەکانت دەبینن.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
-{{-- ═══════ FEATURES ═══════ --}}
-<div class="sec">
-    <div class="sec-head">
-        <div class="sec-tag sr">تایبەتمەندییەکان</div>
-        <h2 class="sec-title sr d1">هەموو ئەوەی دامەزراوەکەت پێویستیەتی</h2>
-        <p  class="sec-sub  sr d2">ئامرازی کامل بۆ بەڕێوەبردنی ئۆنلاینی دامەزراوەکەت</p>
-    </div>
-    <div class="feat-grid">
-        <div class="feat-card sr d1">
-            <div class="feat-icon">🏫</div>
-            <div class="feat-name">پرۆفایلی دامەزراوە</div>
-            <div class="feat-desc">ناو، جۆر، ناونیشان، پەیوەندی و لینکی کۆمەڵایەتی تۆمار بکە بە شێوەیەکی پیشەیی</div>
+{{-- ═══════ 2. HOW TO REGISTER ═══════ --}}
+<section class="section">
+    <div class="container">
+        <div class="sec-head reveal">
+            <div class="sec-subtitle">هەنگاوەکانی کارکردن</div>
+            <h2 class="sec-title">چۆنیەتی خۆ تۆمارکردن و بەشداریکردن</h2>
         </div>
-        <div class="feat-card sr d2">
-            <div class="feat-icon">📝</div>
-            <div class="feat-name">بەڕێوەبردنی پۆست</div>
-            <div class="feat-desc">هەواڵ، ئیلان و بابەتەکانت بڵاوبکەرەوە بۆ خوێندکارانت لە هەر کاتێک</div>
-        </div>
-        <div class="feat-card sr d3">
-            <div class="feat-icon">📱</div>
-            <div class="feat-name">ئەپی موبایل</div>
-            <div class="feat-desc">دامەزراوەکەت لە ئەپی EduBook دیار دەبێت بۆ ملیۆنان خوێندکاری کوردستان</div>
-        </div>
-        <div class="feat-card sr d4">
-            <div class="feat-icon">✅</div>
-            <div class="feat-name">سیستەمی پەسەندکردن</div>
-            <div class="feat-desc">تیمی ئەدمین زانیارییەکانت پشتڕاست دەکاتەوە پێش دیارکردن لە ئەپەکەدا</div>
-        </div>
-        <div class="feat-card sr d5">
-            <div class="feat-icon">🔍</div>
-            <div class="feat-name">گەڕان و دیتن</div>
-            <div class="feat-desc">خوێندکاران بە ئاسانی دامەزراوەکەت دۆزنەوە لە نێو گەڕانی زیرەک</div>
-        </div>
-        <div class="feat-card sr d6">
-            <div class="feat-icon">🆓</div>
-            <div class="feat-name">بەخۆڕایی تەواو</div>
-            <div class="feat-desc">هیچ کرێیەک نییە — تۆمارکردن و بەکارهێنان بەتەواوی بەخۆڕایی و بەردەوامە</div>
-        </div>
-    </div>
-</div>
 
-{{-- ═══════ HOW IT WORKS ═══════ --}}
-<div class="sec-alt">
-    <div class="sec-alt-inner">
-        <div class="sec-head">
-            <div class="sec-tag sr">چۆن کار دەکات</div>
-            <h2 class="sec-title sr d1">سێ هەنگاوی سادە</h2>
-            <p  class="sec-sub  sr d2">لە کەمتر لە ٥ خولەک دامەزراوەکەت ئۆنلاین بکە</p>
-        </div>
-        <div class="steps-grid">
-            <div class="step-card sr d1">
-                <div class="step-num">١</div>
-                <div class="step-name">هەژمار دروستبکە</div>
-                <div class="step-desc">ناو، ئیمەیڵ و وشەی نهێنیت داخڵ بکە — تەنها ٣٠ چرکە دەکات</div>
-            </div>
-            <div class="step-card sr d2">
-                <div class="step-num">٢</div>
-                <div class="step-name">دامەزراوەکەت تۆمار بکە</div>
-                <div class="step-desc">زانیارییەکانی دامەزراوەکەت پڕ بکەرەوە و پرۆفایلت ئامادە بکە</div>
-            </div>
-            <div class="step-card sr d3">
-                <div class="step-num">٣</div>
-                <div class="step-name">بڵاوکردنەوە دەستبکە</div>
-                <div class="step-desc">هەواڵ، ئیلان و پۆستەکانت بڵاوبکەرەوە — خوێندکارانت لە ئەپەکەدا دەتبیننەوە</div>
+        <div class="step-row reveal delay-1">
+            <div class="step-num">١</div>
+            <div class="step-content">
+                <h3>دروستکردنی هەژمار و پڕکردنەوەی فۆڕم</h3>
+                <p>سەرەتا بە ئیمەیڵێک هەژمارێک دروست دەکەیت، پاشان فۆڕمێکی تایبەت پڕدەکەیتەوە کە تێیدا <span class="step-highlight">ناوی دامەزراوەکەت، جۆرەکەی، ناونیشان و ژمارەی پەیوەندی</span> دەنووسیت. دڵنیابە لەوەی زانیارییەکانت بە دروستی داخڵ دەکەیت.</p>
             </div>
         </div>
-    </div>
-</div>
 
-{{-- ═══════ CTA ═══════ --}}
-<div class="cta-section">
-    <div class="cta-box sr">
-        <div class="cta-inner">
-            <span class="cta-icon">🎓</span>
-            <h2 class="cta-title">ئامادەیت؟ ئێستا دەستپێبکە!</h2>
-            <p class="cta-sub">بە بەخۆڕایی تۆمار بکە و دامەزراوەکەت لە ئەپی EduBook<br>دیار بکە بۆ ملیۆنان خوێندکاری کوردستان</p>
-            <a href="{{ route('portal.register') }}" class="btn-cta">🎓 تۆمارکردنی بەخۆڕایی</a>
+        <div class="step-row reveal delay-2">
+            <div class="step-num">٢</div>
+            <div class="step-content">
+                <h3>پەسەندکردن لەلایەن ئەدمینەوە</h3>
+                <p>دوای ناردنی فۆڕمەکە، هەژمارەکەت دەچێتە حاڵەتی چاوەڕوانی (Waiting). تیمی ئێمە زانیارییەکانت دەپشکنێت بۆ دڵنیابوون لە ڕاستی دامەزراوەکە، و دواتر هەژمارەکەت کارا (Approve) دەکرێت.</p>
+            </div>
+        </div>
+
+        <div class="step-row reveal delay-3">
+            <div class="step-num">٣</div>
+            <div class="step-content">
+                <h3>بڵاوکردنەوەی هەواڵ و بابەتەکان</h3>
+                <p>پاش پەسەندکردن، ڕاستەوخۆ دەتوانیت بچیتە ناو داشبۆردەکەت. لەوێوە دەتوانیت دەست بکەیت بە بڵاوکردنەوەی پۆست، هەواڵی نوێ، یان کاتی وەرگرتنی خوێندکاران.</p>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+{{-- ═══════ APP FEATURES ═══════ --}}
+<section class="section" id="app-features">
+    <div class="container">
+        <div class="sec-head reveal">
+            <div class="sec-subtitle">تایبەتمەندییەکان</div>
+            <h2 class="sec-title">مواسەفاتەکانی ئەپلیکەیشنی مۆبایل</h2>
+        </div>
+        
+        <div class="goals-grid">
+            <div class="goal-card reveal delay-1">
+                <div class="goal-icon">🔍</div>
+                <h3 class="goal-title">گەڕانی زیرەک و فلتەرکردن</h3>
+                <p class="goal-desc">
+                    سیستەمێکی پێشکەوتووی فلتەرکردن و گەڕان لەناو ئەپلیکەیشنەکەدا هەیە. خوێندکاران دەتوانن بە زووترین کات، بەپێی شار، قەزا، جۆری خوێندن (حکومی یان تایبەت) و ئاستی قۆناغەکان بەدوای باشترین ناوەندەکانی خوێندندا بگەڕێن و ڕاستەوخۆ داتاکان بپاڵێون.
+                </p>
+            </div>
+            
+            <div class="goal-card reveal delay-2">
+                <div class="goal-icon">📍</div>
+                <h3 class="goal-title">نەخشە و ئاڕاستەکان</h3>
+                <p class="goal-desc">
+                    ئەپلیکەیشنەکە بە تەواوی بەستراوەتەوە بە نەخشەوە. خوێندکاران دەتوانن بە وردی شوێنی جوگرافی دامەزراوەکەت ببینن، دووری نێوان خۆیان و زانکۆ یان پەیمانگاکە بزانن، و ڕاستەوخۆ ئاڕاستەی چوون (Directions) بەدەست بهێنن بۆ ئاسانکاری لە کاتی سەردانیکردندا.
+                </p>
+            </div>
+
+            <div class="goal-card reveal delay-3">
+                <div class="goal-icon">🔔</div>
+                <h3 class="goal-title">هەواڵ و ئاگانامە (Notifications)</h3>
+                <p class="goal-desc">
+                    لێرە هەر کاتێک هەواڵێک، ڕاگەیاندنێکی گرنگ، یان کاتی دەستپێکردنی وەرگرتنی خوێندکاران بڵاودەکەیتەوە، پۆستەکەت ڕاستەوخۆ وەک نۆتیفیکەیشن دەگاتە سەر شاشەی مۆبایلی هەموو ئەو خوێندکارانەی کە ئەپەکە بەکاردەهێنن.
+                </p>
+            </div>
+
+            <div class="goal-card reveal delay-4">
+                <div class="goal-icon">📱</div>
+                <h3 class="goal-title">پڕۆفایلی تەواو و گشتگیر</h3>
+                <p class="goal-desc">
+                    لاپەڕەیەکی تایبەت و پرۆفیشناڵ کە وەک وێبسایتێکی مینی (Mini) کاردەکات بۆ دامەزراوەکەت. تێیدا لۆگۆکەت، وێنەکان، لینکی سۆشیاڵ میدیاکانت، و ژمارەی ڕاستەوخۆی پەیوەندیکردن (کە تەنها بە یەک کلیک پەیوەندیت پێوە دەکرێت) دەخرێنە ڕوو.
+                </p>
+            </div>
+
+            <div class="goal-card reveal delay-5">
+                <div class="goal-icon">📄</div>
+                <h3 class="goal-title">دروستکردنی سیڤی (CV)</h3>
+                <p class="goal-desc">
+                    خوێندکاران دەتوانن بە ئاسانی لەناو ئەپلیکەیشنەکەدا سیڤی (CV) پرۆفیشناڵی تایبەت بە خۆیان دروست بکەن و بڵاوی بکەنەوە بۆ بەدەستهێنانی هەلی کار یان پێشکەشکردن بۆ زانکۆکان.
+                </p>
+            </div>
+
+            <div class="goal-card reveal delay-6">
+                <div class="goal-icon">👨‍🏫</div>
+                <h3 class="goal-title">وانەی تایبەت بۆ مامۆستایان</h3>
+                <p class="goal-desc">
+                    مامۆستایان دەتوانن هەژماری تایبەت بە خۆیان بکەنەوە و ڕیکلام بۆ وانە تایبەتەکان (Private Lessons) یان خولەکانیان بکەن. خوێندکارانیش بە ئاسانی دەیاندۆزنەوە و پەیوەندییان پێوە دەکەن.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ═══════ 3. HOW IT LOOKS IN APP ═══════ --}}
+<section class="section">
+    <div class="container">
+        <div class="app-preview-section">
+            <div class="app-text reveal delay-1">
+                <div class="sec-subtitle" style="margin-bottom: 1rem;">ئەنجامەکان</div>
+                <h2>نیشاندان لە ناو ئەپلیکەیشنی خوێندکاران</h2>
+                <p>کاتێک تۆ زانیارییەکانت لێرە (لە پۆرتاڵ) داخڵ دەکەیت و پەسەند دەکرێیت، دامەزراوەکەت ڕاستەوخۆ دەگوازرێتەوە ناو ئەپلیکەیشنی مۆبایلی EduBook.</p>
+                <p>خوێندکاران لە ناو ئەپلیکەیشنەکە بەم شێوەیە دەتبینن:</p>
+                <ul class="app-features">
+                    <li>پڕۆفایلێکی تایبەت بە خۆت بە لۆگۆکەتەوە دەردەکەوێت.</li>
+                    <li>دەتوانن ڕاستەوخۆ ژمارەی پەیوەندیت ببینن و پەیوەندیت پێوە بکەن.</li>
+                    <li>دەتوانن ناونیشانەکەت لەسەر نەخشە ببینن بۆ ئاسانکاری سەردانیکردن.</li>
+                    <li>هەر پۆستێک بڵاوی بکەیتەوە، وەکو (هەواڵ) دەردەکەوێت لە شاشەی سەرەکی خوێندکاران.</li>
+                </ul>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap;">
+                    <a href="#" class="app-download-btn">
+                        <svg viewBox="0 0 512 512"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>
+                        <div class="app-download-text">
+                            <span class="sub">داونلۆد لە</span>
+                            <span class="title">Google Play</span>
+                        </div>
+                    </a>
+                    <a href="#" class="app-download-btn">
+                        <svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.1-44.6-35.9-2.8-74.3 22.7-93.1 22.7-18.9 0-46.3-21-76.4-21C64.6 141 22.1 183.3 5 259.9c-29.2 130.6 62.4 252.3 118 252.3 27.6 0 39.5-16.7 72-16.7 32.2 0 42.6 16.5 72.3 16.5 56.5 0 119.5-103.5 142.4-192.1-49.9-22.1-91.1-71.1-91-151.2zm-97.6-184C236.9 44.5 250.7 14 240.2 0c-35.5 1.5-68.4 20-88.7 48.9-18.8 26.6-32.9 61.6-21.7 94 37.1 2.8 69.8-19.1 86.9-49.8h4.4z"/></svg>
+                        <div class="app-download-text">
+                            <span class="sub">داونلۆد لە</span>
+                            <span class="title">App Store</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="app-mockup reveal delay-2">
+                <div class="app-mockup-header"></div>
+                <div class="app-mockup-body">
+                    <div class="app-mockup-card">
+                        <div class="app-mockup-img"></div>
+                        <div class="app-mockup-line"></div>
+                        <div class="app-mockup-line short"></div>
+                    </div>
+                    <div class="app-mockup-card">
+                        <div style="display:flex; gap:10px; align-items:center; margin-bottom:1rem;">
+                            <div style="width:40px; height:40px; background:var(--gold-solid); border-radius:50%;"></div>
+                            <div>
+                                <div class="app-mockup-line" style="width:100px; margin-bottom:5px;"></div>
+                                <div class="app-mockup-line" style="width:60px; opacity:0.5;"></div>
+                            </div>
+                        </div>
+                        <div class="app-mockup-line"></div>
+                        <div class="app-mockup-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-banner reveal delay-3">
+            <h2>ئامادەیت بۆ دەستپێکردن؟</h2>
+            <p style="color:var(--txt2); font-size:1.15rem; margin-bottom:2rem;">یەکەم هەنگاو بنێ و دامەزراوەکەت بهێنە ناو دنیای دیجیتاڵی.</p>
+            <a href="{{ route('portal.register') }}" class="btn-flat btn-primary-flat">دروستکردنی هەژمار</a>
+        </div>
+    </div>
+</section>
 
 {{-- ═══════ FOOTER ═══════ --}}
-<footer class="site-footer">
-    <p>© {{ date('Y') }} <strong style="color:var(--gold)">EduBook</strong> — هەموو مافەکان پارێزراون &nbsp;·&nbsp;
-       <a href="{{ route('portal.login') }}">چوونەژوورەوە</a></p>
+<footer style="text-align:center; padding:3rem 1.5rem; background:var(--bg-card); border-top:1px solid var(--border-strong);">
+    <p style="color:var(--txt2); font-size:1.1rem;">© {{ date('Y') }} <strong style="color:var(--gold-solid)">EduBook</strong>. هەموو مافەکان پارێزراون.</p>
 </footer>
 
 @endsection
 
 @section('scripts')
 <script>
-(function(){
-    const io = new IntersectionObserver(entries=>{
-        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, { threshold:0.1 });
-    document.querySelectorAll('.sr').forEach(el=>io.observe(el));
-})();
+document.addEventListener("DOMContentLoaded", () => {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+                entry.target.style.opacity = '1';
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+        el.style.animationPlayState = 'paused';
+        observer.observe(el);
+    });
+});
 </script>
 @endsection

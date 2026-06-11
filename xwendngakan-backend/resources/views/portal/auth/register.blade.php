@@ -63,8 +63,8 @@
   <div class="auth-card">
     <div class="auth-header">
       <div class="auth-logo">🎓</div>
-      <h1 class="auth-title">هەژمار دروست بکە</h1>
-      <p class="auth-sub">بەخۆڕایی — لە کەمتر لە یەک خولەک</p>
+      <h1 class="auth-title">پۆرتاڵی پەروەردەیی</h1>
+      <p class="auth-sub" style="line-height: 1.6; margin-top: 10px;">زانیارییەکانت بە دروستی پڕبکەرەوە بۆ پێشکەشکردنی داواکاری و تۆمارکردنی فەرمی دامەزراوەکەت.</p>
     </div>
     @if($errors->any())
       <div class="alert alert-error">⚠ {{ $errors->first() }}</div>
@@ -72,27 +72,27 @@
     <form method="POST" action="{{ route('portal.register.submit') }}">
       @csrf
       <div class="form-group">
-        <label class="form-label" for="name">ناوی تەواو</label>
-        <input id="name" type="text" name="name" class="form-input {{ $errors->has('name') ? 'err' : '' }}" placeholder="ناوی تەواوت داخڵ بکە" value="{{ old('name') }}" required>
+        <label class="form-label" for="name">ناوی تەواوی بەڕێوەبەر یان نوێنەر</label>
+        <input id="name" type="text" name="name" class="form-input {{ $errors->has('name') ? 'err' : '' }}" placeholder="ناوی تەواو داخڵ بکە" value="{{ old('name') }}" required>
         @error('name')<div class="form-err">{{ $message }}</div>@enderror
       </div>
       <div class="form-group">
-        <label class="form-label" for="email">ئیمەیڵ</label>
-        <input id="email" type="email" name="email" class="form-input {{ $errors->has('email') ? 'err' : '' }}" placeholder="example@email.com" value="{{ old('email') }}" required>
+        <label class="form-label" for="email">ئیمەیڵی فەرمی</label>
+        <input id="email" type="email" name="email" class="form-input {{ $errors->has('email') ? 'err' : '' }}" placeholder="ناوی.دامەزراوە@gmail.com" value="{{ old('email') }}" required>
         @error('email')<div class="form-err">{{ $message }}</div>@enderror
       </div>
       <div class="form-group">
-        <label class="form-label" for="password">وشەی نهێنی</label>
-        <input id="password" type="password" name="password" class="form-input {{ $errors->has('password') ? 'err' : '' }}" placeholder="وشەی نهێنیت داخڵ بکە" required>
+        <label class="form-label" for="password">وشەی تێپەڕبوونی نهێنی</label>
+        <input id="password" type="password" name="password" class="form-input {{ $errors->has('password') ? 'err' : '' }}" placeholder="••••••••" required>
         @error('password')<div class="form-err">{{ $message }}</div>@enderror
       </div>
       <div class="form-group">
-        <label class="form-label" for="password_confirmation">دووبارەکردنەوەی وشەی نهێنی</label>
-        <input id="password_confirmation" type="password" name="password_confirmation" class="form-input" placeholder="وشەی نهێنی دووبارە بنووسە" required>
+        <label class="form-label" for="password_confirmation">دووپاتکردنەوەی وشەی تێپەڕبوون</label>
+        <input id="password_confirmation" type="password" name="password_confirmation" class="form-input" placeholder="••••••••" required>
       </div>
-      <button type="submit" class="btn-full">🎓 دروستکردنی هەژمار</button>
+      <button type="submit" class="btn-full">🎓 تۆمارکردنی هەژماری فەرمی</button>
     </form>
-    <div class="auth-link">پێشتر هەژمارت هەیە؟ <a href="{{ route('portal.login') }}">چوونەژوورەوە</a></div>
+    <div class="auth-link">پێشتر هەژماری فەرمیت هەیە؟ <a href="{{ route('portal.login') }}">چوونەژوورەوە</a></div>
   </div>
 </div>
 @endsection
