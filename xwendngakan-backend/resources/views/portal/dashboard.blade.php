@@ -1033,8 +1033,6 @@
                       }
                       $collegesData[] = [
                           'name'     => $col['name'],
-                          'fee'      => $col['fee'] ?? '',
-                          'discount' => $col['discount'] ?? '',
                           'depts'    => $depts,
                       ];
                   }
@@ -1075,12 +1073,6 @@
                     <input type="text" name="clg[{{ $ci }}][name]" class="f-input clg-name" value="{{ $col['name'] }}" placeholder="بۆ نموونە: کۆلێژی ئەندازیاری">
                     <button type="button" class="college-del-btn" onclick="removeCollege(this)" title="سڕینەوە">✕</button>
                   </div>
-                  <div class="college-fee-strip">
-                    <div class="college-fee-field">
-                      <span class="college-fee-label">پارەی کۆلێژ (دینار)</span>
-                      <input type="text" name="clg[{{ $ci }}][fee]" class="f-input currency-input" value="{{ $col['fee'] }}" placeholder="بۆ نموونە: 500,000">
-                    </div>
-                  </div>
                   <div class="college-body">
                     <div class="depts-header-row">
                       <span class="depts-header-label">بەشەکان</span>
@@ -1116,12 +1108,6 @@
                     <span class="college-badge">کۆلێژ</span>
                     <input type="text" name="clg[0][name]" class="f-input clg-name" placeholder="بۆ نموونە: کۆلێژی ئەندازیاری">
                     <button type="button" class="college-del-btn" onclick="removeCollege(this)">✕</button>
-                  </div>
-                  <div class="college-fee-strip">
-                    <div class="college-fee-field">
-                      <span class="college-fee-label">پارەی کۆلێژ (دینار)</span>
-                      <input type="text" name="clg[0][fee]" class="f-input currency-input" placeholder="بۆ نموونە: 500,000">
-                    </div>
                   </div>
                   <div class="college-body">
                     <div class="depts-header-row">
@@ -1687,7 +1673,7 @@ function handleTypeChange(type) {
     if (['gov', 'inst5', 'inst2'].includes(type)) {
         section.classList.add('hide-fees');
         // Clear fee/discount inputs so they do not submit stale values
-        section.querySelectorAll('.college-fee-strip input, .dept-row input:nth-child(2), .dept-row input:nth-child(3), .fee-row input:nth-child(2), .fee-row input:nth-child(3)').forEach(inp => {
+        section.querySelectorAll('.dept-row input:nth-child(2), .dept-row input:nth-child(3), .fee-row input:nth-child(2), .fee-row input:nth-child(3)').forEach(inp => {
             inp.value = '';
         });
     } else {
@@ -1706,12 +1692,6 @@ function addCollege() {
           `<span class="college-badge">کۆلێژ</span>` +
           `<input type="text" name="clg[${ci}][name]" class="f-input clg-name" placeholder="بۆ نموونە: کۆلێژی ئەندازیاری">` +
           `<button type="button" class="college-del-btn" onclick="removeCollege(this)">✕</button>` +
-        `</div>` +
-        `<div class="college-fee-strip">` +
-          `<div class="college-fee-field">` +
-            `<span class="college-fee-label">پارەی کۆلێژ (دینار)</span>` +
-            `<input type="text" name="clg[${ci}][fee]" class="f-input" placeholder="بۆ نموونە: 500,000">` +
-          `</div>` +
         `</div>` +
         `<div class="college-body">` +
           `<div class="depts-header-row">` +
