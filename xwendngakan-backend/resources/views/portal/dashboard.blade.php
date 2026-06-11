@@ -886,14 +886,17 @@
             <div class="f-group">
               <label class="f-label">کوردی <span class="f-req">*</span></label>
               <input type="text" id="nku" name="nku" class="f-input" placeholder="ناوی کوردی..." value="{{ old('nku', $institution?->nku) }}" required>
+              @error('nku') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">عەرەبی</label>
               <input type="text" id="nar" name="nar" class="f-input" placeholder="الاسم بالعربي..." value="{{ old('nar', $institution?->nar) }}">
+              @error('nar') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">ئینگلیزی</label>
               <input type="text" id="nen" name="nen" class="f-input" placeholder="English name..." value="{{ old('nen', $institution?->nen) }}">
+              @error('nen') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
           </div>
         </div>
@@ -914,6 +917,7 @@
                   </option>
                 @endforeach
               </select>
+              @error('type') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">وڵات / هەرێم <span class="f-req">*</span></label>
@@ -921,6 +925,7 @@
                 <option value="کوردستان" {{ old('country', $institution?->country ?? 'کوردستان') == 'کوردستان' ? 'selected' : '' }}>کوردستان</option>
                 <option value="عێراق" {{ old('country', $institution?->country) == 'عێراق' ? 'selected' : '' }}>عێراق</option>
               </select>
+              @error('country') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">شار <span class="f-req">*</span></label>
@@ -936,6 +941,7 @@
                     <option value="{{ $c }}">
                 @endforeach
               </datalist>
+              @error('city') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label" style="display: flex; align-items: center; justify-content: space-between;">
@@ -946,6 +952,7 @@
               </label>
               <input type="text" id="addr-input" name="addr" class="f-input" placeholder="ناونیشانی تەواو بنووسە یان بەستەری نەخشە دابنێ..." oninput="handleAddrInput(this.value)" value="{{ old('addr', $institution?->addr) }}">
               <p id="map-feedback" style="display: none; font-size: 0.73rem; margin-top: 4px; font-weight: bold;"></p>
+              @error('addr') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
               
               <!-- Hidden inputs to submit to server -->
               <input type="hidden" id="lat-input" name="lat" value="{{ old('lat', $institution?->lat) }}">
@@ -963,14 +970,17 @@
             <div class="f-group">
               <label class="f-label">تەلەفۆن</label>
               <input type="text" name="phone" class="f-input" placeholder="07XX XXX XXXX" value="{{ old('phone', $institution?->phone) }}">
+              @error('phone') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">ئیمەیڵ</label>
               <input type="email" name="email" class="f-input" placeholder="info@example.com" value="{{ old('email', $institution?->email) }}">
+              @error('email') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">وێبسایت</label>
               <input type="url" name="web" class="f-input" placeholder="https://..." value="{{ old('web', $institution?->web) }}">
+              @error('web') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
           </div>
         </div>
@@ -1155,14 +1165,17 @@
           <div class="f-group">
             <label class="f-label">کوردی</label>
             <textarea id="desc" name="desc" class="f-textarea" placeholder="کورتەیەک دەربارەی دامەزراوەکەت...">{{ old('desc', $institution?->desc) }}</textarea>
+            @error('desc') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
           </div>
           <div class="f-group">
             <label class="f-label">عەرەبی</label>
             <textarea id="desc_ar" name="desc_ar" class="f-textarea" placeholder="نبذة عن المؤسسة...">{{ old('desc_ar', $institution?->desc_ar) }}</textarea>
+            @error('desc_ar') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
           </div>
           <div class="f-group">
             <label class="f-label">ئینگلیزی</label>
             <textarea id="desc_en" name="desc_en" class="f-textarea" placeholder="About the institution...">{{ old('desc_en', $institution?->desc_en) }}</textarea>
+            @error('desc_en') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
           </div>
         </div>
 
@@ -1175,14 +1188,17 @@
             <div class="f-group">
               <label class="f-label">Facebook</label>
               <input type="url" name="fb" class="f-input" placeholder="https://facebook.com/..." value="{{ old('fb', $institution?->fb) }}">
+              @error('fb') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">Instagram</label>
               <input type="url" name="ig" class="f-input" placeholder="https://instagram.com/..." value="{{ old('ig', $institution?->ig) }}">
+              @error('ig') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">ساڵی دامەزراندن</label>
               <input type="number" name="founded_year" class="f-input" placeholder="بۆ نموونە: 2015" value="{{ old('founded_year', $institution?->founded_year) }}">
+              @error('founded_year') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
           </div>
         </div>
@@ -1195,6 +1211,7 @@
           <div class="f-group">
             <label class="f-label">بەستەر یان لینکی ناساندن</label>
             <input type="url" name="video" class="f-input" placeholder="https://..." value="{{ old('video', $institution?->video) }}">
+            @error('video') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
           </div>
         </div>
 
@@ -1207,13 +1224,18 @@
             <div class="f-group">
               <label class="f-label">لۆگۆ</label>
               <label class="f-file" for="logo-input">
-                <input type="file" id="logo-input" name="logo" accept="image/*" onchange="previewImg(this,'logo-prev')">
+                <input type="file" id="logo-input" name="logo" accept="image/*" onchange="previewImg(this,'logo-prev'); document.getElementById('remove_logo').value='0';">
                 <div class="f-file-icon">🏷</div>
                 <div class="f-file-text">لۆگۆ هەڵبژێرە</div>
                 <div class="f-file-hint">PNG, JPG · max 10MB</div>
               </label>
+              @error('logo') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
+              <input type="hidden" name="remove_logo" id="remove_logo" value="0">
               @if($institution?->logo)
-                <img src="{{ $institution->logo }}" class="f-preview" style="display:block" alt="">
+                <div id="logo-wrapper" style="position:relative; display:inline-block; margin-top:.75rem;">
+                  <img src="{{ $institution->logo }}" id="logo-prev" class="f-preview" style="display:block; margin-top:0;" alt="">
+                  <button type="button" onclick="document.getElementById('logo-wrapper').style.display='none'; document.getElementById('remove_logo').value='1';" style="position:absolute; top:4px; right:4px; background:#ef4444; color:#fff; border:none; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:10px;">✕</button>
+                </div>
               @else
                 <img id="logo-prev" class="f-preview" alt="">
               @endif
@@ -1221,13 +1243,18 @@
             <div class="f-group">
               <label class="f-label">وێنەی دامەزراوە</label>
               <label class="f-file" for="img-input">
-                <input type="file" id="img-input" name="img" accept="image/*" onchange="previewImg(this,'img-prev')">
+                <input type="file" id="img-input" name="img" accept="image/*" onchange="previewImg(this,'img-prev'); document.getElementById('remove_img').value='0';">
                 <div class="f-file-icon">📸</div>
                 <div class="f-file-text">وێنەی سەرەکی هەڵبژێرە</div>
                 <div class="f-file-hint">PNG, JPG · max 10MB</div>
               </label>
+              @error('img') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
+              <input type="hidden" name="remove_img" id="remove_img" value="0">
               @if($institution?->img)
-                <img src="{{ $institution->img }}" class="f-preview" style="display:block" alt="">
+                <div id="img-wrapper" style="position:relative; display:inline-block; margin-top:.75rem;">
+                  <img src="{{ $institution->img }}" id="img-prev" class="f-preview" style="display:block; margin-top:0;" alt="">
+                  <button type="button" onclick="document.getElementById('img-wrapper').style.display='none'; document.getElementById('remove_img').value='1';" style="position:absolute; top:4px; right:4px; background:#ef4444; color:#fff; border:none; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:10px;">✕</button>
+                </div>
               @else
                 <img id="img-prev" class="f-preview" alt="">
               @endif
