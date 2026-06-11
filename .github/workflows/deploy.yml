@@ -18,7 +18,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
-          envs: GITHUB_TOKEN
+          envs: GITHUB_TOKEN,GITHUB_REPOSITORY
           script: |
             set -e
 
