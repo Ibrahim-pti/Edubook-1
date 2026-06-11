@@ -235,15 +235,17 @@ Route::prefix('portal')->name('portal.')->group(function () {
 
             if ($linkedInstitution) {
                 $linkedInstitution->update($data);
+                $msg = 'زانیارییەکانی دامەزراوەکەت بە سەرکەوتوویی نوێکرانەوە.';
             } else {
                 $data['user_id']  = $user->id;
                 $data['approved'] = false;
                 Institution::create($data);
+                $msg = 'زانیارییەکانت تۆمارکرا، تکایە چاوەڕێبە تا لەلایەن ئەدمینەوە پەسەند دەکرێت.';
             }
             if ($request->wantsJson()) {
-                return response()->json(['success' => true, 'message' => 'زانیارییەکانی دامەزراوەکەت بە سەرکەوتوویی تۆمارکران.']);
+                return response()->json(['success' => true, 'message' => $msg]);
             }
-            return back()->with('success', 'زانیارییەکانی دامەزراوەکەت بە سەرکەوتوویی تۆمارکران.');
+            return back()->with('success', $msg);
         })->name('institution.save');
 
         Route::post('/posts/store', function (Request $request) {
