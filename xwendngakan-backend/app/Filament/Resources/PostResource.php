@@ -141,9 +141,11 @@ class PostResource extends Resource
                     ->button()
                     ->requiresConfirmation()
                     ->action(function (Post $record) {
-                        $record->update(['approved' => !$record->approved]);
+                        $newState = !$record->approved;
+                        $record->approved = $newState;
+                        $record->save();
                         \Filament\Notifications\Notification::make()
-                            ->title($record->approved ? 'پەسەندکرا' : 'ڕەتکرایەوە')
+                            ->title($newState ? 'پەسەندکرا' : 'ڕەتکرایەوە')
                             ->success()
                             ->send();
                     }),
