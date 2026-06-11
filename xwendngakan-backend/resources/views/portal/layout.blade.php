@@ -106,11 +106,38 @@
         .alert-error   { background: rgba(239,68,68,.06);   border-color: rgba(239,68,68,.25);  color: #f87171; }
         .alert-warning { background: rgba(226,176,66,.06);  border-color: var(--border2);       color: var(--gold-lt); }
 
+        /* ===== TOAST NOTIFICATIONS ===== */
+        #toast-container {
+            position: fixed; bottom: 20px; left: 20px; z-index: 9999; /* Left side for RTL */
+            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+        }
+        .toast {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px 22px;
+            color: var(--txt);
+            font-weight: 700; font-size: 0.95rem;
+            display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(226, 176, 66, 0.1);
+            transform: translateX(-120%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .toast.show { transform: translateX(0); opacity: 1; }
+        .toast-success { border-right: 4px solid #10b981; }
+        .toast-error { border-right: 4px solid #ef4444; }
+        .toast-icon { font-size: 1.3rem; }
+
         /* ===== PAGE WRAPPER ===== */
         .page-wrapper { padding-top: 68px; min-height: 100vh; }
 
         @media (max-width: 640px) {
             .navbar { padding: 0 1.25rem; }
+            #toast-container { left: 10px; right: 10px; bottom: 80px; align-items: center; }
+            .toast { width: 100%; justify-content: center; transform: translateY(100%); }
+            .toast.show { transform: translateY(0); }
         }
     </style>
     @yield('styles')
@@ -140,6 +167,35 @@
     <div class="page-wrapper">
         @yield('content')
     </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        const icon = type === 'success' ? '✅' : '⚠️';
+        toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
+        container.appendChild(toast);
+        
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => toast.classList.add('show'));
+        });
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 400);
+        }, 4000);
+    }
+    </script>
+
+    @if(session('success'))
+    <script>document.addEventListener('DOMContentLoaded', () => showToast("{{ session('success') }}", 'success'));</script>
+    @endif
+    @if(session('error'))
+    <script>document.addEventListener('DOMContentLoaded', () => showToast("{{ session('error') }}", 'error'));</script>
+    @endif
 
     @yield('scripts')
 </body>

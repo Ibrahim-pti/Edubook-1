@@ -839,12 +839,30 @@
   {{-- ══ MAIN ══ --}}
   <main class="db-main">
 
-    @if(session('success'))
-      <div class="nt nt-ok" style="margin-bottom:1.25rem"><span class="nt-icon">✅</span><span>{{ session('success') }}</span></div>
-    @endif
-    @if(session('error') || $errors->any())
-      <div class="nt nt-warn" style="margin-bottom:1.25rem"><span class="nt-icon">⚠</span><span>{{ session('error') ?? $errors->first() }}</span></div>
-    @endif
+    {{-- ══ STATS / ANALYTICS (Placeholder) ══ --}}
+    <div class="db-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+      <div class="db-card" style="margin-bottom: 0; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+        <div style="font-size: 2.5rem; line-height: 1;">👁️</div>
+        <div>
+          <div style="color: var(--txt2); font-size: 0.85rem; font-weight: 700;">سەردانی پڕۆفایل</div>
+          <div style="font-size: 1.5rem; font-weight: 900; color: var(--gold-lt);">0</div>
+        </div>
+      </div>
+      <div class="db-card" style="margin-bottom: 0; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+        <div style="font-size: 2.5rem; line-height: 1;">📈</div>
+        <div>
+          <div style="color: var(--txt2); font-size: 0.85rem; font-weight: 700;">بینەری پۆستەکان</div>
+          <div style="font-size: 1.5rem; font-weight: 900; color: var(--gold-lt);">0</div>
+        </div>
+      </div>
+      <div class="db-card" style="margin-bottom: 0; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+        <div style="font-size: 2.5rem; line-height: 1;">📰</div>
+        <div>
+          <div style="color: var(--txt2); font-size: 0.85rem; font-weight: 700;">کۆی پۆستەکان</div>
+          <div style="font-size: 1.5rem; font-weight: 900; color: var(--gold-lt);">{{ $posts->count() }}</div>
+        </div>
+      </div>
+    </div>
 
     {{-- ══ TAB: INSTITUTION ══ --}}
     <div class="db-tab is-active" id="tab-institution">
@@ -870,7 +888,7 @@
         @endif
       @endif
 
-      <form method="POST" action="{{ route('portal.institution.save') }}" enctype="multipart/form-data">
+      <form method="POST" action="{{ route('portal.institution.save') }}" enctype="multipart/form-data" onsubmit="return handleFormSubmit(this, 'btn-save-inst')">
         @csrf
 
         {{-- ناو --}}
@@ -1055,7 +1073,7 @@
                   <div class="college-fee-strip">
                     <div class="college-fee-field">
                       <span class="college-fee-label">پارەی کۆلێژ (دینار)</span>
-                      <input type="text" name="clg[{{ $ci }}][fee]" class="f-input" value="{{ $col['fee'] }}" placeholder="بۆ نموونە: 500,000">
+                      <input type="text" name="clg[{{ $ci }}][fee]" class="f-input currency-input" value="{{ $col['fee'] }}" placeholder="بۆ نموونە: 500,000">
                     </div>
                   </div>
                   <div class="college-body">
@@ -1071,14 +1089,14 @@
                         @php $di = $loop->index; @endphp
                         <div class="dept-row">
                           <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][name]" class="f-input" value="{{ $dept['name'] }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][fee]" class="f-input" value="{{ $dept['fee'] }}" placeholder="150,000">
+                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][fee]" class="f-input currency-input" value="{{ $dept['fee'] }}" placeholder="150,000">
                           <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][discount]" class="f-input" value="{{ $dept['discount'] }}" placeholder="10%">
                           <button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>
                         </div>
                       @empty
                         <div class="dept-row">
                           <input type="text" name="clg[{{ $ci }}][depts][0][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                          <input type="text" name="clg[{{ $ci }}][depts][0][fee]" class="f-input" placeholder="150,000">
+                          <input type="text" name="clg[{{ $ci }}][depts][0][fee]" class="f-input currency-input" placeholder="150,000">
                           <input type="text" name="clg[{{ $ci }}][depts][0][discount]" class="f-input" placeholder="10%">
                           <button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>
                         </div>
@@ -1097,7 +1115,7 @@
                   <div class="college-fee-strip">
                     <div class="college-fee-field">
                       <span class="college-fee-label">پارەی کۆلێژ (دینار)</span>
-                      <input type="text" name="clg[0][fee]" class="f-input" placeholder="بۆ نموونە: 500,000">
+                      <input type="text" name="clg[0][fee]" class="f-input currency-input" placeholder="بۆ نموونە: 500,000">
                     </div>
                   </div>
                   <div class="college-body">
@@ -1111,7 +1129,7 @@
                     <div class="depts-wrap">
                       <div class="dept-row">
                         <input type="text" name="clg[0][depts][0][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                        <input type="text" name="clg[0][depts][0][fee]" class="f-input" placeholder="150,000">
+                        <input type="text" name="clg[0][depts][0][fee]" class="f-input currency-input" placeholder="150,000">
                         <input type="text" name="clg[0][depts][0][discount]" class="f-input" placeholder="10%">
                         <button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>
                       </div>
@@ -1136,14 +1154,14 @@
               @forelse($simpleDeptRows as $row)
                 <div class="fee-row">
                   <input type="text" name="simple_dept[]" class="f-input" value="{{ $row['dept'] ?? $row['name'] ?? '' }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                  <input type="text" name="simple_fee[]" class="f-input" value="{{ $row['fee'] ?? '' }}" placeholder="150,000">
+                  <input type="text" name="simple_fee[]" class="f-input currency-input" value="{{ $row['fee'] ?? '' }}" placeholder="150,000">
                   <input type="text" name="simple_discount[]" class="f-input" value="{{ $row['discount'] ?? '' }}" placeholder="10%">
                   <button type="button" class="dept-del-btn" onclick="removeRow(this)">✕</button>
                 </div>
               @empty
                 <div class="fee-row">
                   <input type="text" name="simple_dept[]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                  <input type="text" name="simple_fee[]" class="f-input" placeholder="150,000">
+                  <input type="text" name="simple_fee[]" class="f-input currency-input" placeholder="150,000">
                   <input type="text" name="simple_discount[]" class="f-input" placeholder="10%">
                   <button type="button" class="dept-del-btn" onclick="removeRow(this)">✕</button>
                 </div>
@@ -1164,17 +1182,20 @@
           </div>
           <div class="f-group">
             <label class="f-label">کوردی</label>
-            <textarea id="desc" name="desc" class="f-textarea" placeholder="کورتەیەک دەربارەی دامەزراوەکەت...">{{ old('desc', $institution?->desc) }}</textarea>
+            <div id="editor-desc" class="quill-editor">{!! old('desc', $institution?->desc) !!}</div>
+            <textarea id="desc" name="desc" style="display:none;"></textarea>
             @error('desc') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
           </div>
           <div class="f-group">
             <label class="f-label">عەرەبی</label>
-            <textarea id="desc_ar" name="desc_ar" class="f-textarea" placeholder="نبذة عن المؤسسة...">{{ old('desc_ar', $institution?->desc_ar) }}</textarea>
+            <div id="editor-desc_ar" class="quill-editor">{!! old('desc_ar', $institution?->desc_ar) !!}</div>
+            <textarea id="desc_ar" name="desc_ar" style="display:none;"></textarea>
             @error('desc_ar') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
           </div>
           <div class="f-group">
             <label class="f-label">ئینگلیزی</label>
-            <textarea id="desc_en" name="desc_en" class="f-textarea" placeholder="About the institution...">{{ old('desc_en', $institution?->desc_en) }}</textarea>
+            <div id="editor-desc_en" class="quill-editor">{!! old('desc_en', $institution?->desc_en) !!}</div>
+            <textarea id="desc_en" name="desc_en" style="display:none;"></textarea>
             @error('desc_en') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
           </div>
         </div>
@@ -1263,9 +1284,9 @@
         </div>
 
         <div style="display:flex;align-items:center;gap:1rem;margin-top:.5rem;padding-top:1.5rem;border-top:1px solid var(--border)">
-          <button type="submit" class="btn-primary" style="padding:14px 42px;font-size:.95rem">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            پاشەکەوتکردن
+          <button type="submit" id="btn-save-inst" class="btn-primary" style="padding:14px 42px;font-size:.95rem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0" class="btn-icon"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span>پاشەکەوتکردن</span>
           </button>
           <span style="font-size:.78rem;color:var(--txt3);font-weight:600">گۆڕانکارییەکانت خۆکارانە دەنێردرێن</span>
         </div>
@@ -1299,7 +1320,7 @@
               @endif
               <div class="p-body">
                 <div class="p-title">{{ $post->title }}</div>
-                <div class="p-text">{{ $post->content }}</div>
+                <div class="p-text">{!! Str::limit(strip_tags($post->content), 120) !!}</div>
                 <div class="p-foot">
                   <span class="chip {{ $post->approved ? 'chip-ok' : 'chip-pending' }}">
                     <span class="chip-dot"></span>
@@ -1335,7 +1356,7 @@
         </div>
       @else
         <div class="db-card">
-          <form method="POST" action="{{ route('portal.posts.store') }}" enctype="multipart/form-data">
+          <form method="POST" action="{{ route('portal.posts.store') }}" enctype="multipart/form-data" onsubmit="return handleFormSubmit(this, 'btn-save-post')">
             @csrf
             <div class="f-group">
               <label class="f-label">ناونیشانی پۆست <span class="f-req">*</span></label>
@@ -1343,7 +1364,8 @@
             </div>
             <div class="f-group">
               <label class="f-label">ناوەڕۆک <span class="f-req">*</span></label>
-              <textarea name="content" class="f-textarea" placeholder="ناوەڕۆکی پۆستەکەت بنووسە..." style="min-height:130px" required>{{ old('content') }}</textarea>
+              <div id="editor-post" class="quill-editor" style="min-height: 200px;">{!! old('content') !!}</div>
+              <textarea id="post-content" name="content" style="display:none;"></textarea>
             </div>
             <div class="f-group">
               <label class="f-label">وێنە (ئەختیاری)</label>
@@ -1356,7 +1378,9 @@
               <img id="post-prev" class="f-preview" alt="">
             </div>
             <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.5rem">
-              <button type="submit" class="btn-primary">🚀 بڵاوکردنەوە</button>
+              <button type="submit" id="btn-save-post" class="btn-primary">
+                <span class="btn-icon">🚀</span> <span>بڵاوکردنەوە</span>
+              </button>
               <span style="font-size:.78rem;color:var(--txt3)">ئەدمین پەسەندی دەکات پاش بڵاوکردنەوە</span>
             </div>
           </form>
@@ -1391,7 +1415,99 @@
 @endsection
 
 @section('scripts')
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<style>
+  .ql-toolbar.ql-snow {
+    border: 1px solid var(--border) !important;
+    border-top-left-radius: var(--radius-sm);
+    border-top-right-radius: var(--radius-sm);
+    background: rgba(15, 22, 36, 0.6);
+    direction: ltr; /* Quill toolbar is LTR */
+  }
+  .ql-container.ql-snow {
+    border: 1px solid var(--border) !important;
+    border-top: none !important;
+    border-bottom-left-radius: var(--radius-sm);
+    border-bottom-right-radius: var(--radius-sm);
+    background: rgba(6, 10, 18, 0.4);
+    font-family: inherit; font-size: .95rem; color: var(--txt);
+    min-height: 120px;
+  }
+  .ql-editor { direction: rtl; text-align: right; }
+  .ql-stroke { stroke: var(--txt2) !important; }
+  .ql-fill { fill: var(--txt2) !important; }
+  .ql-picker-label { color: var(--txt2) !important; }
+  .ql-active .ql-stroke { stroke: var(--gold-lt) !important; }
+  .ql-active .ql-fill { fill: var(--gold-lt) !important; }
+</style>
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
 <script>
+// Format Currency Inputs
+function formatCurrency(val) {
+    if (!val) return '';
+    const num = val.toString().replace(/[^0-9]/g, '');
+    if (!num) return '';
+    return Number(num).toLocaleString('en-US');
+}
+function attachCurrencyFormatter() {
+    document.querySelectorAll('.currency-input').forEach(input => {
+        // Format on load
+        input.value = formatCurrency(input.value);
+        // Format on input
+        input.addEventListener('input', function(e) {
+            let start = this.selectionStart;
+            let val = this.value;
+            let formatted = formatCurrency(val);
+            let diff = formatted.length - val.length;
+            this.value = formatted;
+            this.setSelectionRange(start + diff, start + diff);
+        });
+    });
+}
+
+// Handle Form Submission (Loading State)
+function handleFormSubmit(form, btnId) {
+    // Sync Quill Editors
+    if (quillEditors['desc']) document.getElementById('desc').value = quillEditors['desc'].root.innerHTML;
+    if (quillEditors['desc_ar']) document.getElementById('desc_ar').value = quillEditors['desc_ar'].root.innerHTML;
+    if (quillEditors['desc_en']) document.getElementById('desc_en').value = quillEditors['desc_en'].root.innerHTML;
+    if (quillEditors['post']) document.getElementById('post-content').value = quillEditors['post'].root.innerHTML;
+
+    const btn = document.getElementById(btnId);
+    if (btn) {
+        btn.disabled = true;
+        btn.classList.add('loading');
+        const icon = btn.querySelector('.btn-icon');
+        if (icon) icon.style.display = 'none';
+        btn.querySelector('span').innerHTML = '⏳ چاوەڕوان بە...';
+    }
+    return true;
+}
+
+let quillEditors = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Quill
+    const toolbarOptions = [
+      ['bold', 'italic', 'underline'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['link'],
+      ['clean']
+    ];
+    
+    if (document.getElementById('editor-desc')) {
+        quillEditors['desc'] = new Quill('#editor-desc', { theme: 'snow', modules: { toolbar: toolbarOptions }});
+        quillEditors['desc_ar'] = new Quill('#editor-desc_ar', { theme: 'snow', modules: { toolbar: toolbarOptions }});
+        quillEditors['desc_en'] = new Quill('#editor-desc_en', { theme: 'snow', modules: { toolbar: toolbarOptions }});
+    }
+    if (document.getElementById('editor-post')) {
+        quillEditors['post'] = new Quill('#editor-post', { theme: 'snow', modules: { toolbar: toolbarOptions }});
+    }
+
+    attachCurrencyFormatter();
+});
+
 function showTab(name, sideBtn) {
     document.querySelectorAll('.db-tab').forEach(p => p.classList.remove('is-active'));
     document.querySelectorAll('.db-nav-btn').forEach(b => b.classList.remove('is-active'));
@@ -1478,7 +1594,6 @@ function handleTypeChange(type) {
     grpCol.style.display  = flags.has_colleges ? '' : 'none';
     grpDept.style.display = (!flags.has_colleges && flags.has_departments) ? '' : 'none';
 
-    // Hide fees and discounts for public morning institutions (gov, inst5, inst2)
     if (['gov', 'inst5', 'inst2'].includes(type)) {
         section.classList.add('hide-fees');
         // Clear fee/discount inputs so they do not submit stale values
