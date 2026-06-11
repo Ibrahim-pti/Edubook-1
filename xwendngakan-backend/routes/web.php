@@ -104,7 +104,7 @@ Route::prefix('portal')->name('portal.')->group(function () {
                 ->orderByDesc('approved')
                 ->first();
             $posts = $institution
-                ? Post::where('institution_id', $institution->id)->latest()->get()
+                ? Post::where('institution_id', $institution->id)->latest()->paginate(10)
                 : collect();
             $types = InstitutionType::active()->ordered()->get();
             // Map of type key → academic flags for JavaScript
@@ -240,6 +240,9 @@ Route::prefix('portal')->name('portal.')->group(function () {
                 $data['approved'] = false;
                 Institution::create($data);
             }
+            if ($request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => 'زانیارییەکانی دامەزراوەکەت بە سەرکەوتوویی تۆمارکران.']);
+            }
             return back()->with('success', 'زانیارییەکانی دامەزراوەکەت بە سەرکەوتوویی تۆمارکران.');
         })->name('institution.save');
 
@@ -270,8 +273,28 @@ Route::prefix('portal')->name('portal.')->group(function () {
                 $post->image = '/storage/' . $path;
             }
             $post->save();
+            if ($request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => 'پۆستەکەت بە سەرکەوتوویی نێردرا — چاوەڕوانی پەسەندکردنی ئەدمینە.']);
+            }
             return back()->with('success', 'پۆستەکەت بە سەرکەوتوویی نێردرا — چاوەڕوانی پەسەندکردنی ئەدمینە.');
         })->name('posts.store');
+
+        Route::post('/settings/save', function (Request $request) {
+            $user = auth()->user();
+            $data = $request->validate([
+                'name'     => 'required|string|max:255',
+                'email'    => 'required|email|unique:users,email,' . $user->id,
+                'password' => 'nullable|string|min:8',
+            ]);
+            $update = ['name' => $data['name'], 'email' => $data['email']];
+            if (!empty($data['password'])) $update['password'] = Hash::make($data['password']);
+            $user->update($update);
+            
+            if ($request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => 'زانیارییەکان بە سەرکەوتوویی نوێکرانەوە.']);
+            }
+            return back()->with('success', 'زانیارییەکان بە سەرکەوتوویی نوێکرانەوە.');
+        })->name('settings.save');
 
         Route::delete('/posts/{id}', function ($id) {
             $user = auth()->user();

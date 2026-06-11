@@ -816,11 +816,16 @@
       <button class="db-nav-btn is-active" onclick="showTab('institution',this)">
         <span class="db-nav-icon">🏫</span> دامەزراوەکەم
       </button>
-      <button class="db-nav-btn" onclick="showTab('posts',this)">
-        <span class="db-nav-icon">📰</span> پۆستەکانم
+      <button class="db-nav-btn" onclick="showTab('posts', this)">
+        <span class="db-nav-icon">📰</span>
+        پۆستەکانم
         @if($posts->count())
           <span class="db-nav-badge">{{ $posts->count() }}</span>
         @endif
+      </button>
+      <button class="db-nav-btn" onclick="showTab('settings', this)">
+        <span class="db-nav-icon">⚙️</span>
+        ڕێکخستنەکان
       </button>
       <button class="db-nav-btn" onclick="showTab('new-post',this)">
         <span class="db-nav-icon">✏️</span> پۆستی نوێ
@@ -859,7 +864,7 @@
         <div style="font-size: 2.5rem; line-height: 1;">📰</div>
         <div>
           <div style="color: var(--txt2); font-size: 0.85rem; font-weight: 700;">کۆی پۆستەکان</div>
-          <div style="font-size: 1.5rem; font-weight: 900; color: var(--gold-lt);">{{ $posts->count() }}</div>
+          <div style="font-size: 1.5rem; font-weight: 900; color: var(--gold-lt);">{{ $posts->total() }}</div>
         </div>
       </div>
     </div>
@@ -888,7 +893,7 @@
         @endif
       @endif
 
-      <form method="POST" action="{{ route('portal.institution.save') }}" enctype="multipart/form-data" onsubmit="return handleFormSubmit(this, 'btn-save-inst')">
+      <form id="form-inst" method="POST" action="{{ route('portal.institution.save') }}" enctype="multipart/form-data" onsubmit="handleAjaxSubmit(event, 'btn-save-inst')">
         @csrf
 
         {{-- ناو --}}
@@ -913,7 +918,7 @@
             </div>
             <div class="f-group">
               <label class="f-label">ئینگلیزی</label>
-              <input type="text" id="nen" name="nen" class="f-input" placeholder="English name..." value="{{ old('nen', $institution?->nen) }}">
+              <input type="text" id="nen" name="nen" class="f-input" placeholder="English name..." value="{{ old('nen', $institution?->nen) }}" dir="ltr" style="text-align: left;">
               @error('nen') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
           </div>
@@ -992,12 +997,12 @@
             </div>
             <div class="f-group">
               <label class="f-label">ئیمەیڵ</label>
-              <input type="email" name="email" class="f-input" placeholder="info@example.com" value="{{ old('email', $institution?->email) }}">
+              <input type="email" name="email" class="f-input" placeholder="info@example.com" value="{{ old('email', $institution?->email) }}" dir="ltr" style="text-align: left;">
               @error('email') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">وێبسایت</label>
-              <input type="url" name="web" class="f-input" placeholder="https://..." value="{{ old('web', $institution?->web) }}">
+              <input type="url" name="web" class="f-input" placeholder="https://..." value="{{ old('web', $institution?->web) }}" dir="ltr" style="text-align: left;">
               @error('web') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
           </div>
@@ -1208,12 +1213,12 @@
           <div class="f-row">
             <div class="f-group">
               <label class="f-label">Facebook</label>
-              <input type="url" name="fb" class="f-input" placeholder="https://facebook.com/..." value="{{ old('fb', $institution?->fb) }}">
+              <input type="url" name="fb" class="f-input" placeholder="https://facebook.com/..." value="{{ old('fb', $institution?->fb) }}" dir="ltr" style="text-align: left;">
               @error('fb') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">Instagram</label>
-              <input type="url" name="ig" class="f-input" placeholder="https://instagram.com/..." value="{{ old('ig', $institution?->ig) }}">
+              <input type="url" name="ig" class="f-input" placeholder="https://instagram.com/..." value="{{ old('ig', $institution?->ig) }}" dir="ltr" style="text-align: left;">
               @error('ig') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
@@ -1305,38 +1310,71 @@
         @endif
       </div>
 
-      @if($posts->isEmpty())
-        <div class="empty-state">
-          <div class="empty-icon">📭</div>
-          <div class="empty-txt">هیچ پۆستێکت نییە هێشتا</div>
-          <div class="empty-sub">پاش قبوڵکردنی دامەزراوەکەت دەتوانیت پۆست بکەیت</div>
-        </div>
-      @else
-        <div class="posts-grid">
-          @foreach($posts as $post)
-            <div class="p-card">
-              @if($post->image)
-                <img src="{{ $post->image }}" class="p-img" alt="">
-              @endif
-              <div class="p-body">
-                <div class="p-title">{{ $post->title }}</div>
-                <div class="p-text">{!! Str::limit(strip_tags($post->content), 120) !!}</div>
-                <div class="p-foot">
-                  <span class="chip {{ $post->approved ? 'chip-ok' : 'chip-pending' }}">
-                    <span class="chip-dot"></span>
-                    {{ $post->approved ? 'پەسەندکراو' : 'چاوەڕوانی پەسەند' }}
-                  </span>
-                  <span class="p-date">{{ $post->created_at->diffForHumans() }}</span>
-                  <form method="POST" action="{{ route('portal.posts.delete', $post->id) }}" onsubmit="return confirm('دڵنیایت؟')" style="margin-right:auto">
-                    @csrf @method('DELETE')
-                    <button type="submit" style="background:none;border:none;cursor:pointer;color:#ff7070;font-size:.78rem;font-family:inherit;font-weight:700">🗑 سڕینەوە</button>
-                  </form>
-                </div>
-              </div>
+      @forelse($posts as $post)
+        <div class="p-card">
+          @if($post->image)
+            <img src="{{ $post->image }}" class="p-img" alt="">
+          @endif
+          <div class="p-body">
+            <div class="p-title">{{ $post->title }}</div>
+            <div class="p-text">{!! Str::limit(strip_tags($post->content), 120) !!}</div>
+            <div class="p-foot">
+              <span class="chip {{ $post->approved ? 'chip-ok' : 'chip-pending' }}">
+                <span class="chip-dot"></span>
+                {{ $post->approved ? 'پەسەندکراو' : 'چاوەڕوانی پەسەند' }}
+              </span>
+              <span class="p-date">{{ $post->created_at->diffForHumans() }}</span>
+              <form method="POST" action="{{ route('portal.posts.delete', $post->id) }}" onsubmit="return confirm('دڵنیایت؟')" style="margin-right:auto">
+                @csrf @method('DELETE')
+                <button type="submit" style="background:none;border:none;cursor:pointer;color:#ff7070;font-size:.78rem;font-family:inherit;font-weight:700">🗑 سڕینەوە</button>
+              </form>
             </div>
-          @endforeach
+          </div>
+        </div>
+      @empty
+        <div class="db-card" style="text-align:center;padding:3rem 1rem">
+          <div style="font-size:3rem;margin-bottom:1rem;opacity:0.5">📭</div>
+          <p style="color:var(--txt2);font-weight:600">هێشتا هیچ پۆستێکت نەکردووە.</p>
+        </div>
+      @endforelse
+
+      @if($posts->hasPages())
+        <div style="margin-top: 1.5rem;">
+          {{ $posts->links() }}
         </div>
       @endif
+    </div>
+
+    {{-- ══ TAB: SETTINGS ══ --}}
+    <div class="db-tab" id="tab-settings">
+      <div class="pg-head">
+        <div class="pg-title">ڕێکخستنەکان<span>ی هەژمار</span></div>
+        <p class="pg-sub">گۆڕینی ناو، ئیمەیڵ و وشەی نهێنی</p>
+      </div>
+
+      <div class="db-card">
+        <form id="form-settings" method="POST" action="{{ route('portal.settings.save') }}" onsubmit="handleAjaxSubmit(event, 'btn-save-settings')">
+          @csrf
+          <div class="f-group">
+            <label class="f-label">ناوی تەواو <span class="f-req">*</span></label>
+            <input type="text" name="name" class="f-input" value="{{ auth()->user()->name }}" required>
+          </div>
+          <div class="f-group">
+            <label class="f-label">ئیمەیڵ <span class="f-req">*</span></label>
+            <input type="email" name="email" class="f-input" value="{{ auth()->user()->email }}" dir="ltr" style="text-align: left;" required>
+          </div>
+          <div class="f-group">
+            <label class="f-label">وشەی نهێنی نوێ</label>
+            <input type="password" name="password" class="f-input" placeholder="گەر نایگۆڕیت بەتاڵی جێبهێڵە" dir="ltr" style="text-align: left;">
+            <div class="f-file-hint" style="margin-top:4px;">لایەنی کەم دەبێت ٨ پیت یان ژمارە بێت</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;margin-top:1.5rem">
+            <button type="submit" id="btn-save-settings" class="btn-primary">
+              <span class="btn-icon">💾</span> <span>نوێکردنەوەی زانیارییەکان</span>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     {{-- ══ TAB: NEW POST ══ --}}
@@ -1356,7 +1394,7 @@
         </div>
       @else
         <div class="db-card">
-          <form method="POST" action="{{ route('portal.posts.store') }}" enctype="multipart/form-data" onsubmit="return handleFormSubmit(this, 'btn-save-post')">
+          <form id="form-post" method="POST" action="{{ route('portal.posts.store') }}" enctype="multipart/form-data" onsubmit="handleAjaxSubmit(event, 'btn-save-post')">
             @csrf
             <div class="f-group">
               <label class="f-label">ناونیشانی پۆست <span class="f-req">*</span></label>
@@ -1466,23 +1504,59 @@ function attachCurrencyFormatter() {
     });
 }
 
-// Handle Form Submission (Loading State)
-function handleFormSubmit(form, btnId) {
+// Handle Form Submission (Loading State) via AJAX
+async function handleAjaxSubmit(e, btnId) {
+    e.preventDefault();
+    const form = e.target;
+
     // Sync Quill Editors
     if (quillEditors['desc']) document.getElementById('desc').value = quillEditors['desc'].root.innerHTML;
     if (quillEditors['desc_ar']) document.getElementById('desc_ar').value = quillEditors['desc_ar'].root.innerHTML;
     if (quillEditors['desc_en']) document.getElementById('desc_en').value = quillEditors['desc_en'].root.innerHTML;
-    if (quillEditors['post']) document.getElementById('post-content').value = quillEditors['post'].root.innerHTML;
+    if (quillEditors['post'] && document.getElementById('post-content')) document.getElementById('post-content').value = quillEditors['post'].root.innerHTML;
 
     const btn = document.getElementById(btnId);
+    let originalHtml = '';
     if (btn) {
+        originalHtml = btn.innerHTML;
         btn.disabled = true;
         btn.classList.add('loading');
         const icon = btn.querySelector('.btn-icon');
         if (icon) icon.style.display = 'none';
         btn.querySelector('span').innerHTML = '⏳ چاوەڕوان بە...';
     }
-    return true;
+
+    try {
+        const formData = new FormData(form);
+        const res = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+            showToast(data.message || 'سەرکەوتوو بوو', 'success');
+            if (form.id === 'form-post' || form.id === 'form-settings') {
+                setTimeout(() => location.reload(), 1500);
+            }
+        } else {
+            let msg = data.message || 'هەڵەیەک ڕوویدا';
+            if (data.errors) {
+                const firstKey = Object.keys(data.errors)[0];
+                msg = data.errors[firstKey][0];
+            }
+            showToast(msg, 'error');
+        }
+    } catch (err) {
+        showToast('هێڵی ئینتەرنێتەکەت کێشەی هەیە یان سێرڤەر وەڵام ناداتەوە', 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btn.innerHTML = originalHtml;
+        }
+    }
 }
 
 let quillEditors = {};
@@ -1506,13 +1580,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     attachCurrencyFormatter();
+
+    // Restore active tab
+    const activeTab = localStorage.getItem('db_active_tab') || 'institution';
+    const activeBtn = document.querySelector(`[onclick="showTab('${activeTab}', this)"]`);
+    if (activeBtn) activeBtn.click();
+    else showTab('institution', document.querySelector('.db-nav-btn'));
 });
 
 function showTab(name, sideBtn) {
     document.querySelectorAll('.db-tab').forEach(p => p.classList.remove('is-active'));
     document.querySelectorAll('.db-nav-btn').forEach(b => b.classList.remove('is-active'));
-    document.getElementById('tab-' + name).classList.add('is-active');
+    const tab = document.getElementById('tab-' + name);
+    if(tab) tab.classList.add('is-active');
     if (sideBtn) sideBtn.classList.add('is-active');
+    localStorage.setItem('db_active_tab', name);
 }
 function syncMobile(name) {
     document.querySelectorAll('.db-mob-btn').forEach(b => b.classList.remove('is-active'));
@@ -1522,10 +1604,18 @@ function syncMobile(name) {
 function previewImg(input, previewId) {
     const file = input.files[0];
     if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+        if(typeof showToast === 'function') showToast('گەورەترین قەبارەی ڕێگەپێدراو 10 مێگابایتە', 'error');
+        else alert('گەورەترین قەبارەی ڕێگەپێدراو 10 مێگابایتە');
+        input.value = '';
+        return;
+    }
     const reader = new FileReader();
     reader.onload = e => {
         const img = document.getElementById(previewId);
         if (img) { img.src = e.target.result; img.style.display = 'block'; }
+        if(input.id === 'logo-input' && document.getElementById('logo-wrapper')) document.getElementById('logo-wrapper').style.display = 'inline-block';
+        if(input.id === 'img-input' && document.getElementById('img-wrapper')) document.getElementById('img-wrapper').style.display = 'inline-block';
     };
     reader.readAsDataURL(file);
 }
