@@ -599,12 +599,18 @@
 @media (max-width: 600px) {
   .college-header-inputs { flex-wrap: wrap; }
   .clg-fee, .clg-disc { width: calc(50% - .2rem); }
-  .dept-col-labels, .dept-row,
-  .fee-header, .fee-row { grid-template-columns: 1fr 30px; }
-  .dept-col-labels span:nth-child(2), .dept-col-labels span:nth-child(3),
-  .fee-header span:nth-child(2), .fee-header span:nth-child(3) { display: none; }
-  .dept-row .f-input:nth-child(2), .dept-row .f-input:nth-child(3),
-  .fee-row .f-input:nth-child(2), .fee-row .f-input:nth-child(3) { display: none; }
+  .dept-col-labels, .fee-header { display: none; }
+  .dept-row, .fee-row {
+    grid-template-columns: 1fr 1fr 30px;
+    grid-template-areas: "name name del" "fee disc del";
+    row-gap: .6rem; column-gap: .4rem;
+    padding: .5rem 0; border-bottom: 1px dashed rgba(255,255,255,0.05);
+  }
+  .dept-row:last-child, .fee-row:last-child { border-bottom: none; }
+  .dept-row .f-input:nth-child(1), .fee-row .f-input:nth-child(1) { grid-area: name; }
+  .dept-row .f-input:nth-child(2), .fee-row .f-input:nth-child(2) { grid-area: fee; display: block; }
+  .dept-row .f-input:nth-child(3), .fee-row .f-input:nth-child(3) { grid-area: disc; display: block; }
+  .dept-row button, .fee-row button { grid-area: del; height: 100%; }
 }
 
 /* ════════════════════════════════════════════════
@@ -768,14 +774,33 @@
 }
 @media (max-width: 580px) {
   .f-row { grid-template-columns: 1fr; gap: 0; }
-  .fee-header, .fee-row { grid-template-columns: 1fr 1fr; }
-  .fee-header span:nth-child(3), .fee-header span:nth-child(4) { display: none; }
-  .fee-row .f-input:nth-child(3), .fee-row .rm-btn { display: none; }
   .db-card { padding: 1.25rem; border-radius: 15px; }
 }
 
 /* ── Hide fees for public institutions ── */
 #academic-section.hide-fees .college-fee-strip {
+  display: none !important;
+}
+#academic-section.hide-fees .dept-col-labels,
+#academic-section.hide-fees .dept-row,
+#academic-section.hide-fees .fee-header,
+#academic-section.hide-fees .fee-row {
+  grid-template-columns: 1fr 30px !important;
+}
+@media (max-width: 600px) {
+  #academic-section.hide-fees .dept-row,
+  #academic-section.hide-fees .fee-row {
+    grid-template-areas: "name del" !important;
+    padding: 0 !important;
+    border-bottom: none !important;
+  }
+}
+#academic-section.hide-fees .dept-col-labels span:nth-child(2),
+#academic-section.hide-fees .dept-col-labels span:nth-child(3),
+#academic-section.hide-fees .fee-header span:nth-child(2),
+#academic-section.hide-fees .fee-header span:nth-child(3),
+#academic-section.hide-fees .f-input:nth-child(2),
+#academic-section.hide-fees .f-input:nth-child(3) {
   display: none !important;
 }
 #academic-section.hide-fees .dept-col-labels,
@@ -1086,15 +1111,15 @@
                         @php $di = $loop->index; @endphp
                         <div class="dept-row">
                           <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][name]" class="f-input" value="{{ $dept['name'] }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][fee]" class="f-input currency-input" value="{{ $dept['fee'] }}" placeholder="150,000">
-                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][discount]" class="f-input" value="{{ $dept['discount'] }}" placeholder="10%">
+                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][fee]" class="f-input currency-input" value="{{ $dept['fee'] }}" placeholder="پارە (150,000)">
+                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][discount]" class="f-input" value="{{ $dept['discount'] }}" placeholder="داشکان (10%)">
                           <button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>
                         </div>
                       @empty
                         <div class="dept-row">
                           <input type="text" name="clg[{{ $ci }}][depts][0][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                          <input type="text" name="clg[{{ $ci }}][depts][0][fee]" class="f-input currency-input" placeholder="150,000">
-                          <input type="text" name="clg[{{ $ci }}][depts][0][discount]" class="f-input" placeholder="10%">
+                          <input type="text" name="clg[{{ $ci }}][depts][0][fee]" class="f-input currency-input" placeholder="پارە (150,000)">
+                          <input type="text" name="clg[{{ $ci }}][depts][0][discount]" class="f-input" placeholder="داشکان (10%)">
                           <button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>
                         </div>
                       @endforelse
@@ -1120,8 +1145,8 @@
                     <div class="depts-wrap">
                       <div class="dept-row">
                         <input type="text" name="clg[0][depts][0][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                        <input type="text" name="clg[0][depts][0][fee]" class="f-input currency-input" placeholder="150,000">
-                        <input type="text" name="clg[0][depts][0][discount]" class="f-input" placeholder="10%">
+                        <input type="text" name="clg[0][depts][0][fee]" class="f-input currency-input" placeholder="پارە (150,000)">
+                        <input type="text" name="clg[0][depts][0][discount]" class="f-input" placeholder="داشکان (10%)">
                         <button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>
                       </div>
                     </div>
@@ -1145,15 +1170,15 @@
               @forelse($simpleDeptRows as $row)
                 <div class="fee-row">
                   <input type="text" name="simple_dept[]" class="f-input" value="{{ $row['dept'] ?? $row['name'] ?? '' }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                  <input type="text" name="simple_fee[]" class="f-input currency-input" value="{{ $row['fee'] ?? '' }}" placeholder="150,000">
-                  <input type="text" name="simple_discount[]" class="f-input" value="{{ $row['discount'] ?? '' }}" placeholder="10%">
+                  <input type="text" name="simple_fee[]" class="f-input currency-input" value="{{ $row['fee'] ?? '' }}" placeholder="پارە (150,000)">
+                  <input type="text" name="simple_discount[]" class="f-input" value="{{ $row['discount'] ?? '' }}" placeholder="داشکان (10%)">
                   <button type="button" class="dept-del-btn" onclick="removeRow(this)">✕</button>
                 </div>
               @empty
                 <div class="fee-row">
                   <input type="text" name="simple_dept[]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                  <input type="text" name="simple_fee[]" class="f-input currency-input" placeholder="150,000">
-                  <input type="text" name="simple_discount[]" class="f-input" placeholder="10%">
+                  <input type="text" name="simple_fee[]" class="f-input currency-input" placeholder="پارە (150,000)">
+                  <input type="text" name="simple_discount[]" class="f-input" placeholder="داشکان (10%)">
                   <button type="button" class="dept-del-btn" onclick="removeRow(this)">✕</button>
                 </div>
               @endforelse
@@ -1704,8 +1729,8 @@ function addCollege() {
           `<div class="depts-wrap">` +
             `<div class="dept-row">` +
               `<input type="text" name="clg[${ci}][depts][0][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
-              `<input type="text" name="clg[${ci}][depts][0][fee]" class="f-input" placeholder="150,000">` +
-              `<input type="text" name="clg[${ci}][depts][0][discount]" class="f-input" placeholder="10%">` +
+              `<input type="text" name="clg[${ci}][depts][0][fee]" class="f-input" placeholder="پارە (150,000)">` +
+              `<input type="text" name="clg[${ci}][depts][0][discount]" class="f-input" placeholder="داشکان (10%)">` +
               `<button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>` +
             `</div>` +
           `</div>` +
@@ -1728,8 +1753,8 @@ function addDept(btn) {
     row.className = 'dept-row';
     row.innerHTML =
         `<input type="text" name="clg[${ci}][depts][${di}][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
-        `<input type="text" name="clg[${ci}][depts][${di}][fee]" class="f-input" placeholder="150,000">` +
-        `<input type="text" name="clg[${ci}][depts][${di}][discount]" class="f-input" placeholder="10%">` +
+        `<input type="text" name="clg[${ci}][depts][${di}][fee]" class="f-input" placeholder="پارە (150,000)">` +
+        `<input type="text" name="clg[${ci}][depts][${di}][discount]" class="f-input" placeholder="داشکان (10%)">` +
         `<button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>`;
     wrap.appendChild(row);
     row.querySelector('input').focus();
@@ -1745,8 +1770,8 @@ function addSimpleDeptRow() {
     row.className = 'fee-row';
     row.innerHTML =
         `<input type="text" name="simple_dept[]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
-        `<input type="text" name="simple_fee[]" class="f-input" placeholder="150,000">` +
-        `<input type="text" name="simple_discount[]" class="f-input" placeholder="10%">` +
+        `<input type="text" name="simple_fee[]" class="f-input" placeholder="پارە (150,000)">` +
+        `<input type="text" name="simple_discount[]" class="f-input" placeholder="داشکان (10%)">` +
         `<button type="button" class="dept-del-btn" onclick="removeRow(this)">✕</button>`;
     list.appendChild(row);
     row.querySelector('input').focus();
