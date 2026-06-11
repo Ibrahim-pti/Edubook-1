@@ -105,7 +105,7 @@ Route::prefix('portal')->name('portal.')->group(function () {
                 ->first();
             $posts = $institution
                 ? Post::where('institution_id', $institution->id)->latest()->paginate(10)
-                : collect();
+                : new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
             $types = InstitutionType::active()->ordered()->get();
             // Map of type key → academic flags for JavaScript
             $typeFlags = $types->keyBy('key')->map(fn($t) => [
