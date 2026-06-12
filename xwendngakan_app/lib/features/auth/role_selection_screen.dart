@@ -281,14 +281,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          _GlassIconButton(
-                            icon: Icons.arrow_back_ios_new_rounded,
-                            onTap: () => context.go('/onboarding'),
-                            isDark: isDark,
-                          ),
-                          const SizedBox(width: 12),
                           Flexible(
                             child: Material(
                               color: Colors.transparent,
