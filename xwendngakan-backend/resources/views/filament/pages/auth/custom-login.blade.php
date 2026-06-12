@@ -1,4 +1,5 @@
 <x-filament-panels::layout.base :livewire="$this">
+<div>
     <div class="min-h-screen flex items-center justify-center relative bg-slate-900 overflow-hidden" dir="rtl">
         <!-- Animated Background Elements -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
@@ -74,4 +75,5 @@
             box-shadow: 0 8px 25px -5px rgba(var(--primary-600), 0.5);
         }
     </style>
+</div>
 </x-filament-panels::layout.base>
