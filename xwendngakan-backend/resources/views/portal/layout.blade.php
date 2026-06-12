@@ -147,8 +147,8 @@
 <body>
     <nav class="navbar">
         <a href="{{ route('portal.home') }}" class="nav-brand">
-            <div class="nav-logo" style="width: 48px; height: 48px; background:transparent; border:none; box-shadow:none;">
-                <img src="{{ asset('images/app_logo.png') }}" alt="EduBook" style="width:100%; height:100%; object-fit:contain; border-radius:8px; transform: scale(1.2);">
+            <div class="nav-logo" style="width: 44px; height: 44px; background:transparent; border:none; box-shadow:none;">
+                <img src="{{ asset('images/app_logo.png') }}" alt="EduBook" style="width:100%; height:100%; object-fit:contain; transform: scale(1.1);">
             </div>
             <div class="nav-brand-text"><span>Edu</span>Book</div>
         </a>
