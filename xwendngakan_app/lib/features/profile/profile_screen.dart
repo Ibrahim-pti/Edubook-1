@@ -78,6 +78,13 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     _Divider(isDark: isDark),
                     _NavTile(
+                      icon: Icons.swap_horiz_rounded,
+                      iconBg: const Color(0xFF8B5CF6),
+                      label: l.changeRole,
+                      onTap: () => context.go('/role-selection'),
+                    ),
+                    _Divider(isDark: isDark),
+                    _NavTile(
                       icon: Icons.privacy_tip_rounded,
                       iconBg: const Color(0xFFFF6B35),
                       label: l.privacyPolicy,

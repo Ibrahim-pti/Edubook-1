@@ -103,6 +103,13 @@ class AppLocalizations {
         'en': 'Skip',
         'tr': 'Atla'
       });
+  String get changeRole => _t({
+        'ku': 'گۆڕینی بەش',
+        'kbd': 'گوهۆڕینا بەشی',
+        'ar': 'تغيير القسم',
+        'en': 'Change Section',
+        'tr': 'Bölüm Değiştir'
+      });
   String get search => _t({
         'ku': 'گەڕان',
         'kbd': 'گەڕیان',
