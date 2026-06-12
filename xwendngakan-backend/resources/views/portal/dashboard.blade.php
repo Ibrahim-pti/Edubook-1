@@ -869,30 +869,7 @@
   {{-- ══ MAIN ══ --}}
   <main class="db-main">
 
-    {{-- ══ STATS / ANALYTICS (Placeholder) ══ --}}
-    <div class="db-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
-      <div class="db-card" style="margin-bottom: 0; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-        <div style="font-size: 2.5rem; line-height: 1;">👁️</div>
-        <div>
-          <div style="color: var(--txt2); font-size: 0.85rem; font-weight: 700;">سەردانی پڕۆفایل</div>
-          <div style="font-size: 1.5rem; font-weight: 900; color: var(--gold-lt);">0</div>
-        </div>
-      </div>
-      <div class="db-card" style="margin-bottom: 0; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-        <div style="font-size: 2.5rem; line-height: 1;">📈</div>
-        <div>
-          <div style="color: var(--txt2); font-size: 0.85rem; font-weight: 700;">بینەری پۆستەکان</div>
-          <div style="font-size: 1.5rem; font-weight: 900; color: var(--gold-lt);">0</div>
-        </div>
-      </div>
-      <div class="db-card" style="margin-bottom: 0; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-        <div style="font-size: 2.5rem; line-height: 1;">📰</div>
-        <div>
-          <div style="color: var(--txt2); font-size: 0.85rem; font-weight: 700;">کۆی پۆستەکان</div>
-          <div style="font-size: 1.5rem; font-weight: 900; color: var(--gold-lt);">{{ $posts->total() }}</div>
-        </div>
-      </div>
-    </div>
+
 
     {{-- ══ TAB: INSTITUTION ══ --}}
     <div class="db-tab is-active" id="tab-institution">
