@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->login(CustomLogin::class)
             ->brandName('edu book')
             ->brandLogo(fn () => view('filament.components.logo'))
-            ->favicon(asset('images/app_logo.png') . '?v=2')
+            ->favicon(asset('images/app_logo.png') . '?v=' . time())
             ->colors([
                 'primary' => Color::hex('#c49a3c'),
                 'danger'  => Color::Rose,

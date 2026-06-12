@@ -1,7 +1,7 @@
 <div class="flex items-center gap-x-2">
-    <img src="{{ asset('images/logo.svg') }}"
+    <img src="{{ asset('images/app_logo.png') }}?v={{ time() }}"
          alt="edu book logo"
-         class="h-9 w-9 rounded-xl shadow-md"
+         class="h-9 w-9 rounded-xl shadow-md object-contain"
          style="background:transparent;">
     <div class="flex flex-col leading-none">
         <span class="text-base font-extrabold tracking-tight text-gray-900 dark:text-white"

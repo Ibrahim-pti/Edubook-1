@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>edu book - پلاتفۆرمی پەروەردەیی مۆدێرن</title>
-    <link rel="icon" href="{{ asset('images/app_logo.png') }}?v=2" type="image/png">
-    <link rel="apple-touch-icon" href="{{ asset('images/app_logo.png') }}?v=2">
+    <link rel="icon" href="{{ asset('images/app_logo.png') }}?v={{ time() }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('images/app_logo.png') }}?v={{ time() }}">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -154,7 +154,7 @@
          :class="scrolled ? 'glass-nav py-3 shadow-sm' : 'py-6'">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
             <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location.href='/'">
-                <img src="{{ asset('images/app_logo.png') }}" class="w-16 h-16 object-contain group-hover:scale-110 transition-transform drop-shadow-md">
+                <img src="{{ asset('images/app_logo.png') }}?v={{ time() }}" class="w-16 h-16 object-contain group-hover:scale-110 transition-transform drop-shadow-md">
                 <div class="flex flex-col">
                     <span class="text-xl font-black tracking-tight text-slate-900 leading-none">edu book</span>
                     <span class="text-[10px] uppercase tracking-[0.2em] font-bold text-brand-600 mt-1 opacity-70 italic">پەروەردەیەکی جیاواز</span>
@@ -423,7 +423,7 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-center gap-12">
                 <div class="flex items-center gap-4 group">
-                    <img src="{{ asset('images/app_logo.png') }}" class="w-14 h-14 object-contain drop-shadow-md">
+                    <img src="{{ asset('images/app_logo.png') }}?v={{ time() }}" class="w-14 h-14 object-contain drop-shadow-md">
                     <div class="flex flex-col">
                         <span class="text-xl font-black text-slate-900 tracking-tight">edu book</span>
                         <span class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-0.5 italic">Education Platform</span>
