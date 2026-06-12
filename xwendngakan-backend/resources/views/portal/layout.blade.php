@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'EduBook — پلاتفۆرمی پەروەردەیی')</title>
+    <link rel="icon" href="{{ asset('images/app_logo.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('images/app_logo.png') }}">
     <meta name="description" content="EduBook — تۆمارکردنی دامەزراوەت و بەڕێوەبردنی پۆستەکانت بە ئاسانی">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -145,7 +147,9 @@
 <body>
     <nav class="navbar">
         <a href="{{ route('portal.home') }}" class="nav-brand">
-            <div class="nav-logo">📚</div>
+            <div class="nav-logo" style="background:transparent; border:none; box-shadow:none;">
+                <img src="{{ asset('images/app_logo.png') }}" alt="EduBook" style="width:100%; height:100%; object-fit:contain; border-radius:8px;">
+            </div>
             <div class="nav-brand-text"><span>Edu</span>Book</div>
         </a>
         <div class="nav-links">
