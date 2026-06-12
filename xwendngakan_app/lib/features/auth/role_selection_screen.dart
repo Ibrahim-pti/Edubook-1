@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:xwendngakan_app/core/localization/app_localizations.dart';
 import 'dart:ui';
 import '../../core/constants/app_colors.dart';
@@ -55,16 +56,19 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
     )..forward();
 
     _fade = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _anim, curve: const Interval(0.0, 0.6, curve: Curves.easeIn)),
+      CurvedAnimation(
+          parent: _anim, curve: const Interval(0.0, 0.6, curve: Curves.easeIn)),
     );
 
     _staggeredSlides = List.generate(3, (index) {
       final start = 0.2 + (index * 0.1);
       final end = start + 0.4;
-      return Tween<Offset>(begin: const Offset(0.2, 0), end: Offset.zero).animate(
+      return Tween<Offset>(begin: const Offset(0.2, 0), end: Offset.zero)
+          .animate(
         CurvedAnimation(
           parent: _anim,
-          curve: Interval(start, end > 1.0 ? 1.0 : end, curve: Curves.easeOutBack),
+          curve:
+              Interval(start, end > 1.0 ? 1.0 : end, curve: Curves.easeOutBack),
         ),
       );
     });
@@ -74,6 +78,157 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
   void dispose() {
     _anim.dispose();
     super.dispose();
+  }
+
+  void _showPremiumHelp(BuildContext context, AppLocalizations l, bool isDark) {
+    showGeneralDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.6),
+      barrierDismissible: true,
+      barrierLabel: 'Help',
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (context, anim1, anim2) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Align(
+            alignment: Alignment.center,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.85,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  borderRadius: BorderRadius.circular(32),
+                  border: Border.all(
+                    color: isDark ? Colors.white10 : Colors.white,
+                    width: 2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.2),
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Icon Header
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: AppColors.primaryGradient,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.4),
+                            blurRadius: 15,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.headset_mic_rounded,
+                        color: Colors.white,
+                        size: 36,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      l.helpCenter,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        color: isDark ? Colors.white : const Color(0xFF1E293B),
+                        fontFamily: 'Rabar',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      l.helpDialogDesc,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.white60 : Colors.black54,
+                        fontFamily: 'Rabar',
+                        height: 1.6,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // WhatsApp Button
+                    _PremiumContactButton(
+                      title: l.contactWhatsapp,
+                      icon: Icons.chat_rounded,
+                      color: const Color(0xFF25D366),
+                      isDark: isDark,
+                      onTap: () async {
+                        final uri = Uri.parse('https://wa.me/9647512596050');
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri,
+                              mode: LaunchMode.externalApplication);
+                        }
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Phone Button
+                    _PremiumContactButton(
+                      title: l.contactPhone,
+                      icon: Icons.phone_rounded,
+                      color: AppColors.primary,
+                      isDark: isDark,
+                      onTap: () async {
+                        final uri = Uri.parse('tel:+9647512596050');
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri);
+                        }
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Cancel Button
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                      ),
+                      child: Text(
+                        l.close,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white54 : Colors.black45,
+                          fontFamily: 'Rabar',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return Transform.scale(
+          scale:
+              CurvedAnimation(parent: anim1, curve: Curves.easeOutBack).value,
+          child: FadeTransition(
+            opacity: anim1,
+            child: child,
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -87,7 +242,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
         if (!didPop) context.go('/onboarding');
       },
       child: Scaffold(
-        backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+        backgroundColor:
+            isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
         body: Stack(
           children: [
             // ── Background Blobs with RepaintBoundary ──
@@ -99,7 +255,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                     right: -50,
                     child: _CircularBlob(
                       size: 300,
-                      color: AppColors.primary.withValues(alpha: isDark ? 0.15 : 0.08),
+                      color: AppColors.primary
+                          .withValues(alpha: isDark ? 0.15 : 0.08),
                     ),
                   ),
                   Positioned(
@@ -107,7 +264,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                     left: -50,
                     child: _CircularBlob(
                       size: 250,
-                      color: const Color(0xFF6366F1).withValues(alpha: isDark ? 0.12 : 0.05),
+                      color: const Color(0xFF6366F1)
+                          .withValues(alpha: isDark ? 0.12 : 0.05),
                     ),
                   ),
                 ],
@@ -132,35 +290,47 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                           ),
                           const SizedBox(width: 12),
                           Flexible(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.1),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: AppColors.primary.withValues(alpha: 0.2),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 18),
-                                  const SizedBox(width: 8),
-                                  Flexible(
-                                    child: Text(
-                                      l.help,
-                                      style: const TextStyle(
-                                        color: AppColors.primary,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w800,
-                                        fontFamily: 'Rabar',
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                                onTap: () =>
+                                    _showPremiumHelp(context, l, isDark),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary
+                                        .withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: AppColors.primary
+                                          .withValues(alpha: 0.2),
+                                      width: 1,
                                     ),
                                   ),
-                                ],
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.info_outline_rounded,
+                                          color: AppColors.primary, size: 18),
+                                      const SizedBox(width: 8),
+                                      Flexible(
+                                        child: Text(
+                                          l.help,
+                                          style: const TextStyle(
+                                            color: AppColors.primary,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w800,
+                                            fontFamily: 'Rabar',
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -185,7 +355,9 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                               style: TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.w900,
-                                color: isDark ? Colors.white : const Color(0xFF1E293B),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF1E293B),
                                 fontFamily: 'Rabar',
                                 height: 1.2,
                               ),
@@ -226,7 +398,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                                   role: role,
                                   isSelected: _selectedRole == role.id,
                                   isDark: isDark,
-                                  onTap: () => setState(() => _selectedRole = role.id),
+                                  onTap: () =>
+                                      setState(() => _selectedRole = role.id),
                                 ),
                               ),
                             ),
@@ -255,7 +428,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                                 gradient: AppColors.primaryGradient,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.primary.withValues(alpha: 0.35),
+                                    color: AppColors.primary
+                                        .withValues(alpha: 0.35),
                                     blurRadius: 20,
                                     offset: const Offset(0, 10),
                                   ),
@@ -269,7 +443,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                                         } else if (_selectedRole == 'teacher') {
                                           context.push('/teacher-register');
                                         } else {
-                                          Provider.of<AuthProvider>(context, listen: false)
+                                          Provider.of<AuthProvider>(context,
+                                                  listen: false)
                                               .setSelectedRole(_selectedRole!);
                                           context.go('/login');
                                         }
@@ -295,7 +470,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                                       ),
                                     ),
                                     const SizedBox(width: 12),
-                                    const Icon(Icons.arrow_forward_rounded, color: Colors.white),
+                                    const Icon(Icons.arrow_forward_rounded,
+                                        color: Colors.white),
                                   ],
                                 ),
                               ),
@@ -338,10 +514,16 @@ class _RoleCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDark
               ? (isSelected ? const Color(0xFF1E293B) : const Color(0xFF0F172A))
-              : (isSelected ? Colors.white : Colors.white.withValues(alpha: 0.7)),
+              : (isSelected
+                  ? Colors.white
+                  : Colors.white.withValues(alpha: 0.7)),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
-            color: isSelected ? AppColors.primary : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
+            color: isSelected
+                ? AppColors.primary
+                : (isDark
+                    ? Colors.white10
+                    : Colors.black.withValues(alpha: 0.05)),
             width: isSelected ? 2.5 : 1,
           ),
           boxShadow: isSelected
@@ -392,12 +574,15 @@ class _RoleCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: isSelected ? AppColors.primary : Colors.transparent,
                 border: Border.all(
-                  color: isSelected ? AppColors.primary : (isDark ? Colors.white24 : Colors.black12),
+                  color: isSelected
+                      ? AppColors.primary
+                      : (isDark ? Colors.white24 : Colors.black12),
                   width: 2,
                 ),
               ),
               child: isSelected
-                  ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
+                  ? const Icon(Icons.check_rounded,
+                      color: Colors.white, size: 18)
                   : null,
             ),
           ],
@@ -425,7 +610,8 @@ class _GlassIconButton extends StatelessWidget {
   final VoidCallback onTap;
   final bool isDark;
 
-  const _GlassIconButton({required this.icon, required this.onTap, required this.isDark});
+  const _GlassIconButton(
+      {required this.icon, required this.onTap, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
@@ -439,13 +625,18 @@ class _GlassIconButton extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05),
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.black.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.1)
+                    : Colors.black.withValues(alpha: 0.05),
               ),
             ),
-            child: Icon(icon, color: isDark ? Colors.white : Colors.black87, size: 20),
+            child: Icon(icon,
+                color: isDark ? Colors.white : Colors.black87, size: 20),
           ),
         ),
       ),
@@ -488,4 +679,90 @@ class _Role {
     required this.icon,
     this.isDefault = false,
   });
+}
+
+class _PremiumContactButton extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const _PremiumContactButton({
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? color.withValues(alpha: 0.1) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark
+              ? color.withValues(alpha: 0.2)
+              : color.withValues(alpha: 0.1),
+          width: 1.5,
+        ),
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.08),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(icon, color: color, size: 28),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color:
+                              isDark ? Colors.white : const Color(0xFF1E293B),
+                          fontFamily: 'Rabar',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: isDark ? Colors.white24 : Colors.black26,
+                  size: 16,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
