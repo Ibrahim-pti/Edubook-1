@@ -431,14 +431,13 @@ class _AdvancedFilterSheetState extends State<_AdvancedFilterSheet> {
   String? _city;
   String? _education;
   
-  final List<String> _eduLevels = [
-    'خوێندنی ناوەندی',
-    'ئامادەیی',
-    'دیپلۆم',
-    'بکالۆریۆس',
-    'ماستەر',
-    'دکتۆرا'
-  ];
+  late List<String> _eduLevels;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _eduLevels = AppLocalizations.of(context).educationLevels;
+  }
 
   @override
   void initState() {
@@ -450,6 +449,7 @@ class _AdvancedFilterSheetState extends State<_AdvancedFilterSheet> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l = AppLocalizations.of(context);
     
     return Container(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -483,7 +483,7 @@ class _AdvancedFilterSheetState extends State<_AdvancedFilterSheet> {
               ),
               const SizedBox(height: 24),
               Text(
-                'فلتەری پێشکەوتوو',
+                l.advancedFilter,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                       fontFamily: 'Rabar',
@@ -493,7 +493,7 @@ class _AdvancedFilterSheetState extends State<_AdvancedFilterSheet> {
               
               // City Section
               Text(
-                'شار / شوێنی نیشتەجێبوون',
+                l.cityResidence,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
@@ -515,11 +515,11 @@ class _AdvancedFilterSheetState extends State<_AdvancedFilterSheet> {
                 ),
                 dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
                 icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                hint: Text('هەموو شارەکان', style: TextStyle(fontFamily: 'Rabar', color: isDark ? Colors.white38 : Colors.black38)),
+                hint: Text(l.allCities, style: TextStyle(fontFamily: 'Rabar', color: isDark ? Colors.white38 : Colors.black38)),
                 items: [
-                  const DropdownMenuItem<String>(
+                  DropdownMenuItem<String>(
                     value: null,
-                    child: Text('هەموو شارەکان', style: TextStyle(fontFamily: 'Rabar')),
+                    child: Text(l.allCities, style: const TextStyle(fontFamily: 'Rabar')),
                   ),
                   ...AppConstants.iraqiCities.map((city) {
                     return DropdownMenuItem(
@@ -538,7 +538,7 @@ class _AdvancedFilterSheetState extends State<_AdvancedFilterSheet> {
               
               // Education Section
               Text(
-                'ئاستی خوێندن',
+                l.educationLevelTitle,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,

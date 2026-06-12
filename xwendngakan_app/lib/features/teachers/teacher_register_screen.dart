@@ -119,7 +119,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
           decoration: BoxDecoration(
             gradient: const LinearGradient(colors: [Color(0xFFFF4757), Color(0xFFFF6B81)]),
             borderRadius: BorderRadius.circular(18),
-            boxShadow: [BoxShadow(color: const Color(0xFFFF4757).withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 6))],
+            boxShadow: [BoxShadow(color: const Color(0xFFFF4757).withValues(alpha: 0.3), blurRadius: 16, offset: const Offset(0, 6))],
           ),
           child: Row(
             children: [
@@ -143,7 +143,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide(color: Colors.grey.withOpacity(0.25)),
+        borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.25)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(20),
@@ -197,7 +197,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                       color: Colors.white,
                       shape: BoxShape.circle,
                       boxShadow: [
-                        BoxShadow(color: _kGold1.withOpacity(0.35), blurRadius: 32, offset: const Offset(0, 12)),
+                        BoxShadow(color: _kGold1.withValues(alpha: 0.35), blurRadius: 32, offset: const Offset(0, 12)),
                       ],
                     ),
                     child: const Icon(Icons.pending_actions_rounded, color: _kGold1, size: 60),
@@ -218,7 +218,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                       'چاوەڕوانی تەسدیقی ئەدمین بە\nدوای پەسەندکردن دەردەکەوییتە لیستی مامۆستاکان',
                       style: TextStyle(
                         fontSize: 13, fontFamily: 'Rabar',
-                        color: Colors.white.withOpacity(0.88), height: 1.75,
+                        color: Colors.white.withValues(alpha: 0.88), height: 1.75,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -233,7 +233,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                         color: isDark ? const Color(0xFF1E2A3A) : Colors.white,
                         borderRadius: BorderRadius.circular(26),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 18, offset: const Offset(0, 6)),
+                          BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 18, offset: const Offset(0, 6)),
                         ],
                       ),
                       child: Column(
@@ -260,7 +260,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                             colors: [Color(0xFF534AB7), Color(0xFF7F77DD)],
                           ),
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [BoxShadow(color: const Color(0xFF534AB7).withOpacity(0.35), blurRadius: 18, offset: const Offset(0, 6))],
+                          boxShadow: [BoxShadow(color: const Color(0xFF534AB7).withValues(alpha: 0.35), blurRadius: 18, offset: const Offset(0, 6))],
                         ),
                         child: ElevatedButton.icon(
                           onPressed: () => context.go('/home'),
@@ -309,14 +309,14 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                     top: -50, right: -50,
                     child: Container(
                       width: 220, height: 220,
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withOpacity(0.1)),
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.1)),
                     ),
                   ),
                   Positioned(
                     top: 140, left: -40,
                     child: Container(
                       width: 140, height: 140,
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withOpacity(0.07)),
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.07)),
                     ),
                   ),
                 ],
@@ -344,7 +344,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(24),
-                                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10))],
+                                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, 10))],
                               ),
                               child: const Center(
                                 child: Icon(Icons.school_rounded, color: _kGold1, size: 44),
@@ -361,7 +361,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                             const SizedBox(height: 6),
                             Text(
                               'پرۆفایلەکەت پڕبکەرەوە',
-                              style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.88), fontFamily: 'Rabar'),
+                              style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.88), fontFamily: 'Rabar'),
                             ),
                           ],
                         ),
@@ -374,7 +374,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                           borderRadius: BorderRadius.circular(32),
                           boxShadow: [
                             BoxShadow(
-                              color: isDark ? Colors.black38 : _kGold1.withOpacity(0.10),
+                              color: isDark ? Colors.black38 : _kGold1.withValues(alpha: 0.10),
                               blurRadius: 40, offset: const Offset(0, 15),
                             ),
                           ],
@@ -431,7 +431,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                               const SizedBox(height: 14),
                               // Type
                               DropdownButtonFormField<String>(
-                                value: _type,
+                                initialValue: _type,
                                 decoration: _inputDeco(l.teacherType, Icons.category_outlined),
                                 borderRadius: BorderRadius.circular(20),
                                 items: [
@@ -453,7 +453,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                               const SizedBox(height: 14),
                               // City
                               DropdownButtonFormField<String>(
-                                value: _city,
+                                initialValue: _city,
                                 decoration: _inputDeco(l.city, Icons.location_on_outlined),
                                 borderRadius: BorderRadius.circular(20),
                                 items: AppConstants.iraqiCities.map((c) => DropdownMenuItem(
@@ -543,7 +543,7 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(colors: [_kGold1, _kGold2]),
                                     borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [BoxShadow(color: _kGold1.withOpacity(0.35), blurRadius: 16, offset: const Offset(0, 6))],
+                                    boxShadow: [BoxShadow(color: _kGold1.withValues(alpha: 0.35), blurRadius: 16, offset: const Offset(0, 6))],
                                   ),
                                   child: ElevatedButton.icon(
                                     onPressed: _loading ? null : _submit,
@@ -581,9 +581,9 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                 child: Container(
                   width: 42, height: 42,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                   ),
                   child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 18),
                 ),
@@ -671,7 +671,7 @@ class _PhotoPicker extends StatelessWidget {
           color: isDark ? const Color(0xFF1E293B) : const Color(0xFFFFF8E1),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: file != null ? accentColor : accentColor.withOpacity(0.3),
+            color: file != null ? accentColor : accentColor.withValues(alpha: 0.3),
             width: file != null ? 1.5 : 1,
           ),
           image: file != null
@@ -684,7 +684,7 @@ class _PhotoPicker extends StatelessWidget {
                 children: [
                   Icon(icon, size: 30, color: accentColor),
                   const SizedBox(height: 6),
-                  Icon(Icons.add_circle_rounded, size: 18, color: accentColor.withOpacity(0.7)),
+                  Icon(Icons.add_circle_rounded, size: 18, color: accentColor.withValues(alpha: 0.7)),
                   const SizedBox(height: 4),
                   Text(label, style: TextStyle(fontSize: 11, color: accentColor, fontFamily: 'Rabar', fontWeight: FontWeight.w500), textAlign: TextAlign.center),
                 ],

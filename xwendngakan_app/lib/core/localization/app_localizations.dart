@@ -1209,6 +1209,179 @@ class AppLocalizations {
         'en': 'Please confirm password',
         'tr': 'Lütfen şifreyi onaylayın'
       });
+  String get passwordResetSuccess => _t({
+        'ku': 'تۆمارکردنی وشەی نهێنی نوێ سەرکەوتوو بوو',
+        'kbd': 'تۆمارکرنا پەیڤا نهێنی یا نوێ سەرکەفتی بوو',
+        'ar': 'تم تعيين كلمة المرور الجديدة بنجاح',
+        'en': 'New password set successfully',
+        'tr': 'Yeni şifre başarıyla ayarlandı'
+      });
+  String get privacyPolicyTitle => _t({
+        'ku': 'سیاسەتی تایبەتمەندی',
+        'kbd': 'سیاسەتا تایبەتمەندیێ',
+        'ar': 'سياسة الخصوصية',
+        'en': 'Privacy Policy',
+        'tr': 'Gizlilik Politikası'
+      });
+  String get privacySec1Title => _t({
+        'ku': '١. کۆکردنەوەی زانیاری',
+        'kbd': '١. کۆمکرنا پێزانینان',
+        'ar': '١. جمع المعلومات',
+        'en': '1. Information Collection',
+        'tr': '1. Bilgi Toplama'
+      });
+  String get privacySec1Body => _t({
+        'ku': 'ئێمە هەندێک زانیاری کەسی کۆدەکەینەوە وەک ناو، ئیمەیڵ، و ژمارەی مۆبایل کاتێک هەژمار دروست دەکەیت بۆ ئەوەی خزمەتگوزارییەکانمان پێشکەش بکەین.',
+        'kbd': 'ئەم هندەک پێزانینێن کەسی کۆمدکەین وەک ناڤ، ئیمەیڵ، و ژمارەیا مۆبایلێ دەمێ هەژمارێ دروست دکەی بۆ پێشکێشکرنا خزمەتگوزارییان.',
+        'ar': 'نقوم بجمع بعض المعلومات الشخصية مثل الاسم والبريد الإلكتروني ورقم الهاتف عند إنشاء حساب لتقديم خدماتنا.',
+        'en': 'We collect some personal information such as name, email, and phone number when you create an account to provide our services.',
+        'tr': 'Hizmetlerimizi sunmak için hesap oluşturduğunuzda isim, e-posta ve telefon numarası gibi bazı kişisel bilgileri toplarız.'
+      });
+  String get privacySec2Title => _t({
+        'ku': '٢. چۆنیەتی بەکارهێنانی زانیاری',
+        'kbd': '٢. چەوانیا بکارئینانا پێزانینان',
+        'ar': '٢. كيفية استخدام المعلومات',
+        'en': '2. How We Use Information',
+        'tr': '2. Bilgileri Nasıl Kullanıyoruz'
+      });
+  String get privacySec2Body => _t({
+        'ku': 'زانیارییەکانت بەکاردێن بۆ باشترکردنی خزمەتگوزارییەکان، ناردنی ئاگادارکردنەوەی گرنگ، و دڵنیابوونەوە لە ناسنامەی بەکارهێنەر.',
+        'kbd': 'پێزانینێن تە بکاردئین بۆ باشترکرنا خزمەتگوزارییان، هنارتنا ئاگەهدارکرنێن گرنگ، و پشتڕاستبوون ژ ناسنامەیا بکارئینەری.',
+        'ar': 'تُستخدم معلوماتك لتحسين الخدمات وإرسال الإشعارات الهامة والتحقق من هوية المستخدم.',
+        'en': 'Your information is used to improve services, send important notifications, and verify user identity.',
+        'tr': 'Bilgileriniz hizmetleri iyileştirmek, önemli bildirimler göndermek ve kullanıcı kimliğini doğrulamak için kullanılır.'
+      });
+  String get privacySec3Title => _t({
+        'ku': '٣. پاراستنی زانیاری',
+        'kbd': '٣. پاراستنا پێزانینان',
+        'ar': '٣. حماية المعلومات',
+        'en': '3. Information Protection',
+        'tr': '3. Bilgi Koruma'
+      });
+  String get privacySec3Body => _t({
+        'ku': 'ئێمە ڕێکاری توندی تەکنیکی دەگرینەبەر بۆ پاراستنی زانیارییەکانت لە هەر دەستوەردانێکی دەرەکی یان دزەپێکردن.',
+        'kbd': 'ئەم ڕێکارێن توند یێن تەکنیکی دگرینەبەر بۆ پاراستنا پێزانینێن تە ژ هەر دەستوەردانەکا دەرەکی یان دزەپێکرنێ.',
+        'ar': 'نتخذ تدابير فنية صارمة لحماية معلوماتك من أي تدخل خارجي أو تسريب.',
+        'en': 'We take strict technical measures to protect your information from any external interference or leakage.',
+        'tr': 'Bilgilerinizi herhangi bir dış müdahale veya sızıntıdan korumak için sıkı teknik önlemler alıyoruz.'
+      });
+  String get privacySec4Title => _t({
+        'ku': '٤. مافەکانی بەکارهێنەر',
+        'kbd': '٤. مافێن بکارئینەری',
+        'ar': '٤. حقوق المستخدم',
+        'en': '4. User Rights',
+        'tr': '4. Kullanıcı Hakları'
+      });
+  String get privacySec4Body => _t({
+        'ku': 'تۆ مافی ئەوەت هەیە داوای سڕینەوەی هەژمارەکەت و هەموو زانیارییەکانت بکەیت لە هەر کاتێکدا بێت لە ڕێگەی ڕێکخستنەکانەوە.',
+        'kbd': 'تە ماف هەیە داخوازا ژێبرنا هەژمارا خۆ و هەموو پێزانینێن خۆ بکەی د هەر دەمەکێ دا بیت ب ڕێکا ڕێکخستنان.',
+        'ar': 'لديك الحق في طلب حذف حسابك وجميع معلوماتك في أي وقت من خلال الإعدادات.',
+        'en': 'You have the right to request the deletion of your account and all your information at any time through the settings.',
+        'tr': 'Ayarlar aracılığıyla hesabınızın ve tüm bilgilerinizin silinmesini istediğiniz zaman talep etme hakkına sahipsiniz.'
+      });
+  String get privacyLastUpdate => _t({
+        'ku': 'دواهەمین نوێکردنەوە: ٩/٥/٢٠٢٤',
+        'kbd': 'دوماهیک نویکرن: ٩/٥/٢٠٢٤',
+        'ar': 'آخر تحديث: ٩/٥/٢٠٢٤',
+        'en': 'Last update: 5/9/2024',
+        'tr': 'Son güncelleme: 09/05/2024'
+      });
+
+  String get certificateOf => _t({
+        'ku': 'بڕوانامەی',
+        'kbd': 'باوەرنامەیا',
+        'ar': 'شهادة',
+        'en': 'Certificate of',
+        'tr': 'Sertifikası'
+      });
+  String get cityResidence => _t({
+        'ku': 'شار / شوێنی نیشتەجێبوون',
+        'kbd': 'باژێر / جهێ ئاکنجیبوونێ',
+        'ar': 'المدينة / مكان الإقامة',
+        'en': 'City / Residence',
+        'tr': 'Şehir / İkametgah'
+      });
+  String get educationLevelTitle => _t({
+        'ku': 'ئاستی خوێندن',
+        'kbd': 'ئاستێ خواندنێ',
+        'ar': 'المستوى التعليمي',
+        'en': 'Education Level',
+        'tr': 'Eğitim Seviyesi'
+      });
+  List<String> get educationLevels => [
+        _t({
+          'ku': 'خوێندنی ناوەندی',
+          'kbd': 'خواندنا ناڤنجی',
+          'ar': 'المدرسة المتوسطة',
+          'en': 'Middle School',
+          'tr': 'Ortaokul'
+        }),
+        _t({
+          'ku': 'ئامادەیی',
+          'kbd': 'ئامادەیی',
+          'ar': 'المدرسة الإعدادية',
+          'en': 'High School',
+          'tr': 'Lise'
+        }),
+        _t({
+          'ku': 'دیپلۆم',
+          'kbd': 'دبلۆم',
+          'ar': 'دبلوم',
+          'en': 'Diploma',
+          'tr': 'Diploma'
+        }),
+        _t({
+          'ku': 'بکالۆریۆس',
+          'kbd': 'بکالۆریۆس',
+          'ar': 'بكالوريوس',
+          'en': 'Bachelor\'s',
+          'tr': 'Lisans'
+        }),
+        _t({
+          'ku': 'ماستەر',
+          'kbd': 'ماستەر',
+          'ar': 'ماجستير',
+          'en': 'Master\'s',
+          'tr': 'Yüksek Lisans'
+        }),
+        _t({
+          'ku': 'دکتۆرا',
+          'kbd': 'دکتۆرا',
+          'ar': 'دكتوراه',
+          'en': 'PhD',
+          'tr': 'Doktora'
+        })
+      ];
+  List<String> get languageLevels => [
+        _t({
+          'ku': 'سەرەتایی',
+          'kbd': 'سەرەتایی',
+          'ar': 'مبتدئ',
+          'en': 'Beginner',
+          'tr': 'Başlangıç'
+        }),
+        _t({
+          'ku': 'مامناوەند',
+          'kbd': 'مامناڤەند',
+          'ar': 'متوسط',
+          'en': 'Intermediate',
+          'tr': 'Orta'
+        }),
+        _t({
+          'ku': 'باش',
+          'kbd': 'باش',
+          'ar': 'جيد',
+          'en': 'Good',
+          'tr': 'İyi'
+        }),
+        _t({
+          'ku': 'زۆرباش',
+          'kbd': 'گەلەک باش',
+          'ar': 'جيد جداً',
+          'en': 'Very Good',
+          'tr': 'Çok İyi'
+        })
+      ];
   String get invalidYear => _t({
         'ku': 'تکایە ساڵێکی دروست بنووسە',
         'kbd': 'تکایە ساڵێکی دروست بنووسە',

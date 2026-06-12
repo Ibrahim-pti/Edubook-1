@@ -33,12 +33,12 @@ class App3DIcon extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: gradientColors.last.withOpacity(0.45),
+            color: gradientColors.last.withValues(alpha: 0.45),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: gradientColors.first.withOpacity(0.2),
+            color: gradientColors.first.withValues(alpha: 0.2),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -55,7 +55,7 @@ class App3DIcon extends StatelessWidget {
               height: size * 0.25,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: Colors.white.withOpacity(0.18),
+                color: Colors.white.withValues(alpha: 0.18),
               ),
             ),
           ),
@@ -68,7 +68,7 @@ class App3DIcon extends StatelessWidget {
               height: size * 0.45,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.07),
+                color: Colors.white.withValues(alpha: 0.07),
               ),
             ),
           ),
@@ -218,7 +218,7 @@ class OnboardingIcon extends StatelessWidget {
               height: 70,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: blobColors[0].withOpacity(0.25),
+                color: blobColors[0].withValues(alpha: 0.25),
               ),
             ),
           ),
@@ -230,7 +230,7 @@ class OnboardingIcon extends StatelessWidget {
               height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: blobColors.last.withOpacity(0.2),
+                color: blobColors.last.withValues(alpha: 0.2),
               ),
             ),
           ),
@@ -242,11 +242,11 @@ class OnboardingIcon extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
-                    color: blobColors[0].withOpacity(0.3),
+                    color: blobColors[0].withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -265,11 +265,11 @@ class OnboardingIcon extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.85),
+                color: Colors.white.withValues(alpha: 0.85),
                 borderRadius: BorderRadius.circular(9),
                 boxShadow: [
                   BoxShadow(
-                    color: blobColors.last.withOpacity(0.3),
+                    color: blobColors.last.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),

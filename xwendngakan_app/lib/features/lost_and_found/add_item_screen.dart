@@ -104,12 +104,12 @@ class _AddLostItemScreenState extends State<AddLostItemScreen> {
               decoration: BoxDecoration(
                 color: isDark ? AppColors.darkCard : Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primary.withOpacity(0.5), style: BorderStyle.solid),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.5), style: BorderStyle.solid),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.add_a_photo_rounded, size: 40, color: AppColors.primary.withOpacity(0.7)),
+                  Icon(Icons.add_a_photo_rounded, size: 40, color: AppColors.primary.withValues(alpha: 0.7)),
                   const SizedBox(height: 8),
                   Text(l.addPhoto, style: const TextStyle(fontFamily: 'Rabar', fontWeight: FontWeight.bold)),
                 ],

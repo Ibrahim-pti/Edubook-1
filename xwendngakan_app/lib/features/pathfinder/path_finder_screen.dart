@@ -178,9 +178,9 @@ class _PathFinderScreenState extends State<PathFinderScreen> {
                     color: isSelected ? AppColors.primary : (isDark ? AppColors.darkCard : Colors.white),
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                      BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
                     ],
-                    border: Border.all(color: isSelected ? Colors.transparent : (isDark ? Colors.white10 : Colors.black.withOpacity(0.05))),
+                    border: Border.all(color: isSelected ? Colors.transparent : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05))),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -230,7 +230,7 @@ class _PathFinderScreenState extends State<PathFinderScreen> {
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primary.withOpacity(0.1) : (isDark ? AppColors.darkCard : Colors.white),
+                      color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : (isDark ? AppColors.darkCard : Colors.white),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: isSelected ? AppColors.primary : Colors.transparent),
                     ),
@@ -285,7 +285,7 @@ class _PathFinderScreenState extends State<PathFinderScreen> {
                 margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary.withOpacity(0.1) : (isDark ? AppColors.darkCard : Colors.white),
+                  color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : (isDark ? AppColors.darkCard : Colors.white),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: isSelected ? AppColors.primary : Colors.transparent),
                 ),
@@ -306,7 +306,7 @@ class _PathFinderScreenState extends State<PathFinderScreen> {
                 ),
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

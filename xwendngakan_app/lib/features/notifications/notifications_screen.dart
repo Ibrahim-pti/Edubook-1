@@ -92,19 +92,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             decoration: BoxDecoration(
                               color: isRead
                                   ? (isDark ? AppColors.darkCard : AppColors.lightCard)
-                                  : AppColors.primary.withOpacity(0.06),
+                                  : AppColors.primary.withValues(alpha: 0.06),
                               borderRadius: BorderRadius.circular(AppConstants.radiusMd),
                               border: Border.all(
                                 color: isRead
                                     ? (isDark ? AppColors.darkBorder : AppColors.lightBorder)
-                                    : AppColors.primary.withOpacity(0.2),
+                                    : AppColors.primary.withValues(alpha: 0.2),
                               ),
                             ),
                             child: ListTile(
                               leading: Container(
                                 width: 44, height: 44,
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.1),
+                                  color: AppColors.primary.withValues(alpha: 0.1),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
@@ -143,8 +143,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget _buildShimmer() => ListView.builder(
     padding: const EdgeInsets.all(16),
     itemCount: 5,
-    itemBuilder: (_, __) => Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+    itemBuilder: (_, __) => const Padding(
+      padding: EdgeInsets.only(bottom: 8),
       child: ShimmerBox(width: double.infinity, height: 72, borderRadius: AppConstants.radiusMd),
     ),
   );

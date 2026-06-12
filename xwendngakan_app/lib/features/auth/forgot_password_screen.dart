@@ -69,7 +69,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   void dispose() {
     _emailCtrl.dispose();
     _passCtrl.dispose();
-    for (final c in _otpCtrl) c.dispose();
+    for (final c in _otpCtrl) {
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -102,7 +104,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         child: Container(
                           width: 40, height: 40,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(Icons.arrow_back_ios_new_rounded,
@@ -118,7 +120,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         Container(
                           width: 72, height: 72,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                           ),
                           child: const Center(child: Text('🔐', style: TextStyle(fontSize: 34))),
@@ -137,7 +139,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     decoration: BoxDecoration(
                       color: isDark ? AppColors.darkCard : AppColors.lightCard,
                       borderRadius: BorderRadius.circular(AppConstants.radiusXl),
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15),
+                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.15),
                           blurRadius: 30)],
                     ),
                     padding: const EdgeInsets.all(24),
@@ -161,7 +163,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           Text(l.resetPassword,
               style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
-          Text('تۆمارکردنی وشەی نهێنی نوێ سەرکەوتوو بوو',
+          Text(l.passwordResetSuccess,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center),
           const SizedBox(height: 24),
@@ -181,9 +183,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             padding: const EdgeInsets.all(12),
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
-              color: AppColors.error.withOpacity(0.1),
+              color: AppColors.error.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppConstants.radiusMd),
-              border: Border.all(color: AppColors.error.withOpacity(0.3)),
+              border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
             ),
             child: Text(_error!, style: const TextStyle(color: AppColors.error, fontSize: 13)),
           ),
@@ -193,9 +195,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           TextField(
             controller: _emailCtrl,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: 'email@example.com',
-              prefixIcon: const Icon(Icons.email_outlined),
+              prefixIcon: Icon(Icons.email_outlined),
             ),
           ),
           const SizedBox(height: 20),

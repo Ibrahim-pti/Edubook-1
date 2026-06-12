@@ -34,9 +34,9 @@ class _CvFormScreenState extends State<CvFormScreen>
   final _prevWorkCtrl = TextEditingController();
   final _socialCtrl = TextEditingController();
 
-  List<Map<String, String>> _selectedLangs = [];
-  List<String> _selectedSkills = [];
-  final List<String> _langLevels = ['سەرەتایی', 'مامناوەند', 'باش', 'زۆرباش'];
+  final List<Map<String, String>> _selectedLangs = [];
+  final List<String> _selectedSkills = [];
+  late List<String> _langLevels;
 
   String? _city;
   String? _gender;
@@ -45,20 +45,19 @@ class _CvFormScreenState extends State<CvFormScreen>
   bool _loading = false;
   bool _submitted = false;
   
-  // Hardcoded as requested
-  final List<String> _eduLevels = [
-    'خوێندنی ناوەندی',
-    'ئامادەیی',
-    'دیپلۆم',
-    'بکالۆریۆس',
-    'ماستەر',
-    'دکتۆرا'
-  ];
+  late List<String> _eduLevels;
 
   final _picker = ImagePicker();
   late AnimationController _animCtrl;
   late Animation<double> _fadeAnim;
   late Animation<Offset> _slideAnim;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _eduLevels = AppLocalizations.of(context).educationLevels;
+    _langLevels = AppLocalizations.of(context).languageLevels;
+  }
 
   @override
   void initState() {
@@ -435,7 +434,7 @@ class _CvFormScreenState extends State<CvFormScreen>
                                         Text(l.languages, style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Rabar')),
                                       ]),
                                       TextButton.icon(
-                                        onPressed: () => setState(() => _selectedLangs.add({'name': '', 'level': 'مامناوەند'})),
+                                        onPressed: () => setState(() => _selectedLangs.add({'name': '', 'level': _langLevels.length > 1 ? _langLevels[1] : ''})),
                                         icon: const Icon(Icons.add_circle_outline, size: 18),
                                         label: Text(l.add, style: const TextStyle(fontFamily: 'Rabar')),
                                       ),
@@ -467,7 +466,7 @@ class _CvFormScreenState extends State<CvFormScreen>
                                           Expanded(
                                             flex: 2,
                                             child: DropdownButtonFormField<String>(
-                                              value: entry.value['level'],
+                                              initialValue: entry.value['level'],
                                               isExpanded: true,
                                               items: _langLevels.map((l) => DropdownMenuItem(value: l, child: Text(l, style: const TextStyle(fontSize: 12, fontFamily: 'Rabar')))).toList(),
                                               onChanged: (v) => setState(() => _selectedLangs[idx]['level'] = v!),
@@ -990,7 +989,7 @@ class _PremiumDropdown<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
       isExpanded: true,
-      value: value,
+      initialValue: value,
       items: items,
       onChanged: onChanged,
       dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,

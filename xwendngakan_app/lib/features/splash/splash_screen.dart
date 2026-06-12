@@ -107,7 +107,6 @@ class _SplashScreenState extends State<SplashScreen>
         }
       }
     } catch (e) {
-      debugPrint('Update check failed: $e');
     }
 
     if (!mounted) return;
@@ -199,7 +198,7 @@ class _SplashScreenState extends State<SplashScreen>
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        const Color(0xFFC49A3C).withOpacity(0.10 * _glowAnim.value),
+                        const Color(0xFFC49A3C).withValues(alpha: 0.10 * _glowAnim.value),
                         Colors.transparent,
                       ],
                     ),
@@ -220,7 +219,7 @@ class _SplashScreenState extends State<SplashScreen>
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        const Color(0xFFC49A3C).withOpacity(0.06 * _glowAnim.value),
+                        const Color(0xFFC49A3C).withValues(alpha: 0.06 * _glowAnim.value),
                         Colors.transparent,
                       ],
                     ),
@@ -251,19 +250,19 @@ class _SplashScreenState extends State<SplashScreen>
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(32),
                                 border: Border.all(
-                                  color: const Color(0xFFC49A3C).withOpacity(
+                                  color: const Color(0xFFC49A3C).withValues(alpha: 
                                       0.35 + (_glowAnim.value - 0.4) * 0.25),
                                   width: 1.5,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFC49A3C).withOpacity(
+                                    color: const Color(0xFFC49A3C).withValues(alpha: 
                                         0.18 + (_glowAnim.value - 0.4) * 0.18),
                                     blurRadius: 28 + (_glowAnim.value - 0.4) * 28,
                                     spreadRadius: (_glowAnim.value - 0.4) * 6,
                                   ),
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.07),
+                                    color: Colors.black.withValues(alpha: 0.07),
                                     blurRadius: 16,
                                     offset: const Offset(0, 6),
                                   ),
@@ -315,7 +314,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   l.appTagline,
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: const Color(0xFF5E6E82).withOpacity(0.85),
+                                    color: const Color(0xFF5E6E82).withValues(alpha: 0.85),
                                     letterSpacing: 0.5,
                                     fontFamily: 'Rabar',
                                   ),
@@ -357,7 +356,7 @@ class _SplashScreenState extends State<SplashScreen>
                                 height: 6,
                                 margin: const EdgeInsets.symmetric(horizontal: 3),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFC49A3C).withOpacity(
+                                  color: const Color(0xFFC49A3C).withValues(alpha: 
                                       0.25 + (0.75 * closeness)),
                                   borderRadius: BorderRadius.circular(3),
                                 ),
@@ -370,7 +369,7 @@ class _SplashScreenState extends State<SplashScreen>
                       Text(
                         'v1.0.0',
                         style: TextStyle(
-                          color: const Color(0xFF8A9BB0).withOpacity(0.55),
+                          color: const Color(0xFF8A9BB0).withValues(alpha: 0.55),
                           fontSize: 11,
                           letterSpacing: 1.2,
                         ),

@@ -154,7 +154,7 @@ class _TeachersScreenState extends State<TeachersScreen> {
                                       const SizedBox(height: 2),
                                       Text(
                                         l.teachersSubtitle,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.white70,

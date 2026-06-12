@@ -121,7 +121,7 @@ class _EventsScreenState extends State<EventsScreen>
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.04),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.04),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),
@@ -152,7 +152,7 @@ class _EventsScreenState extends State<EventsScreen>
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFF6B35).withOpacity(0.1),
+                      color: const Color(0xFFFF6B35).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -179,7 +179,7 @@ class _EventsScreenState extends State<EventsScreen>
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFFF6B35).withOpacity(0.35),
+                      color: const Color(0xFFFF6B35).withValues(alpha: 0.35),
                       blurRadius: 16,
                       offset: const Offset(0, 8),
                     ),
@@ -208,7 +208,7 @@ class _EventsScreenState extends State<EventsScreen>
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
@@ -231,7 +231,7 @@ class _EventsScreenState extends State<EventsScreen>
                 shape: BoxShape.circle,
               ),
               todayDecoration: BoxDecoration(
-                color: const Color(0xFFFF6B35).withOpacity(0.2),
+                color: const Color(0xFFFF6B35).withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
               todayTextStyle: const TextStyle(
@@ -347,8 +347,8 @@ class _EventsScreenState extends State<EventsScreen>
   Widget _buildUpcomingTab(
       BuildContext context, bool isDark, EventsProvider prov) {
     if (prov.upcomingEvents.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 60),
+      return const Padding(
+        padding: EdgeInsets.only(top: 60),
         child: EmptyState(
           icon: Icons.event_busy_rounded,
           message: 'هیچ ڕووداوێکی داهاتوو نییە',
@@ -384,7 +384,7 @@ class _EventCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.25 : 0.06),
+            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.06),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),
@@ -396,13 +396,13 @@ class _EventCard extends StatelessWidget {
           Container(
             width: 72,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
                 colors: [Color(0xFFFF6B35), Color(0xFFFF8C61)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 bottomLeft: Radius.circular(20),
               ),
@@ -456,7 +456,7 @@ class _EventCard extends StatelessWidget {
                       children: [
                         Icon(Icons.location_on_rounded,
                             size: 14,
-                            color: const Color(0xFFFF6B35).withOpacity(0.8)),
+                            color: const Color(0xFFFF6B35).withValues(alpha: 0.8)),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -479,7 +479,7 @@ class _EventCard extends StatelessWidget {
                       children: [
                         Icon(Icons.access_time_rounded,
                             size: 14,
-                            color: const Color(0xFFFF6B35).withOpacity(0.8)),
+                            color: const Color(0xFFFF6B35).withValues(alpha: 0.8)),
                         const SizedBox(width: 4),
                         Text(
                           '${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}',
@@ -498,7 +498,7 @@ class _EventCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFF6B35).withOpacity(0.1),
+                        color: const Color(0xFFFF6B35).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(

@@ -164,7 +164,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> with SingleTick
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.04),
+                                  color: Colors.black.withValues(alpha: 0.04),
                                   blurRadius: 15,
                                   offset: const Offset(0, 5),
                                 )
@@ -178,7 +178,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> with SingleTick
                                   height: 100,
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.horizontal(right: Radius.circular(20)),
-                                    color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
+                                    color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
                                     image: item['image'] != null
                                         ? DecorationImage(image: NetworkImage(item['image']), fit: BoxFit.cover)
                                         : null,
@@ -201,7 +201,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> with SingleTick
                                             Container(
                                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                               decoration: BoxDecoration(
-                                                color: isLost ? const Color(0xFFFF4757).withOpacity(0.1) : const Color(0xFF2ED573).withOpacity(0.1),
+                                                color: isLost ? const Color(0xFFFF4757).withValues(alpha: 0.1) : const Color(0xFF2ED573).withValues(alpha: 0.1),
                                                 borderRadius: BorderRadius.circular(8),
                                               ),
                                               child: Text(
@@ -315,7 +315,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> with SingleTick
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: isLost ? const Color(0xFFFF4757).withOpacity(0.1) : const Color(0xFF2ED573).withOpacity(0.1),
+                          color: isLost ? const Color(0xFFFF4757).withValues(alpha: 0.1) : const Color(0xFF2ED573).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
@@ -349,7 +349,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> with SingleTick
                     children: [
                       Container(
                         padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), shape: BoxShape.circle),
+                        decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), shape: BoxShape.circle),
                         child: const Icon(Icons.location_on_rounded, color: AppColors.primary, size: 20),
                       ),
                       const SizedBox(width: 16),

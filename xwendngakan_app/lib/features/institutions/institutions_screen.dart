@@ -199,7 +199,7 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Colors.grey.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -252,7 +252,7 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
                         side: BorderSide(
                             color: isSelected
                                 ? AppColors.primary
-                                : Colors.grey.withOpacity(0.2)),
+                                : Colors.grey.withValues(alpha: 0.2)),
                       ),
                     );
                   }).toList(),
@@ -320,7 +320,7 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
         childAspectRatio: 0.76,
       ),
       itemCount: 6,
-      itemBuilder: (_, __) => ShimmerBox(
+      itemBuilder: (_, __) => const ShimmerBox(
         width: double.infinity,
         height: double.infinity,
         borderRadius: AppConstants.radiusLg,

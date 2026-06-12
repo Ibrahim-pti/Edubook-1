@@ -52,8 +52,8 @@ class GlassCard extends StatelessWidget {
             [
               BoxShadow(
                 color: isDark
-                    ? Colors.black.withOpacity(0.3)
-                    : AppColors.primary.withOpacity(0.06),
+                    ? Colors.black.withValues(alpha: 0.3)
+                    : AppColors.primary.withValues(alpha: 0.06),
                 blurRadius: 20,
                 offset: const Offset(0, 4),
               ),
@@ -110,7 +110,7 @@ class GradientButton extends StatelessWidget {
               ? []
               : [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.4),
+                    color: AppColors.primary.withValues(alpha: 0.4),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -170,10 +170,10 @@ class FrostCard extends StatelessWidget {
     return Container(
       padding: padding ?? const EdgeInsets.all(AppConstants.spacingMd),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(opacity),
+        color: Colors.white.withValues(alpha: opacity),
         borderRadius: BorderRadius.circular(borderRadius ?? AppConstants.radiusLg),
         border: Border.all(
-          color: Colors.white.withOpacity(0.15),
+          color: Colors.white.withValues(alpha: 0.15),
           width: 0.8,
         ),
       ),
@@ -228,9 +228,9 @@ class AppBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: bg.withOpacity(0.15),
+        color: bg.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(AppConstants.radiusFull),
-        border: Border.all(color: bg.withOpacity(0.3)),
+        border: Border.all(color: bg.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -454,7 +454,7 @@ class AppSearchBar extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -502,7 +502,7 @@ class StatCard extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 22),
@@ -555,10 +555,10 @@ class EmptyState extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 36, color: AppColors.primary.withOpacity(0.7)),
+            child: Icon(icon, size: 36, color: AppColors.primary.withValues(alpha: 0.7)),
           ),
           const SizedBox(height: 16),
           Text(
@@ -603,7 +603,7 @@ class OfflineBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.wifi_off_rounded, color: Colors.white, size: 16),
@@ -623,7 +623,7 @@ class OfflineBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Text(

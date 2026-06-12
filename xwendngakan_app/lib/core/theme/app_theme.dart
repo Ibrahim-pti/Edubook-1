@@ -254,7 +254,7 @@ class AppTheme {
 
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.darkCard,
-        selectedColor: AppColors.primary.withOpacity(0.2),
+        selectedColor: AppColors.primary.withValues(alpha: 0.2),
         labelStyle: const TextStyle(
           fontFamily: _fontFamily,
           fontSize: 12,
@@ -274,7 +274,7 @@ class AppTheme {
         ),
         trackColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
-              ? AppColors.primary.withOpacity(0.3)
+              ? AppColors.primary.withValues(alpha: 0.3)
               : AppColors.darkCard,
         ),
       ),
@@ -321,7 +321,7 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: AppColors.lightCard,
         elevation: 0,
-        shadowColor: AppColors.primary.withOpacity(0.1),
+        shadowColor: AppColors.primary.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppConstants.radiusLg),
           side: const BorderSide(color: AppColors.lightBorder, width: 0.5),
@@ -408,7 +408,7 @@ class AppTheme {
 
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.lightCardElevated,
-        selectedColor: AppColors.primary.withOpacity(0.15),
+        selectedColor: AppColors.primary.withValues(alpha: 0.15),
         labelStyle: const TextStyle(
           fontFamily: _fontFamily,
           fontSize: 12,
@@ -428,7 +428,7 @@ class AppTheme {
         ),
         trackColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
-              ? AppColors.primary.withOpacity(0.3)
+              ? AppColors.primary.withValues(alpha: 0.3)
               : AppColors.lightBorder,
         ),
       ),

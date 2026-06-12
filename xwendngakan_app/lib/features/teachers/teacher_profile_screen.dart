@@ -281,7 +281,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen>
             ),
           ),
         ),
-        SizedBox(height: 170 + 55 + 130.0 + 30),
+        const SizedBox(height: 170 + 55 + 130.0 + 30),
       ],
     );
   }
@@ -417,8 +417,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen>
   Widget _avatarFallback(String name) {
     final parts = name.split(RegExp(r'\s+')).where((e) => e.isNotEmpty).toList();
     String init = '?';
-    if (parts.length >= 2) init = '${parts[0][0]}${parts[1][0]}';
-    else if (name.isNotEmpty) init = name[0];
+    if (parts.length >= 2) {
+      init = '${parts[0][0]}${parts[1][0]}';
+    } else if (name.isNotEmpty) init = name[0];
     return Container(color: _kGold, child: Center(child: Text(init.toUpperCase(), style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white))));
   }
 

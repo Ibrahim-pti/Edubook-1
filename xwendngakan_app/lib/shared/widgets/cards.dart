@@ -54,8 +54,8 @@ class InstitutionCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: isDark
-                  ? Colors.black.withOpacity(0.4)
-                  : typeColor.withOpacity(0.15),
+                  ? Colors.black.withValues(alpha: 0.4)
+                  : typeColor.withValues(alpha: 0.15),
               blurRadius: 20,
               offset: const Offset(0, 7),
             ),
@@ -93,7 +93,7 @@ class InstitutionCard extends StatelessWidget {
                             stops: const [0.3, 1.0],
                             colors: [
                               Colors.transparent,
-                              Colors.black.withOpacity(0.72),
+                              Colors.black.withValues(alpha: 0.72),
                             ],
                           ),
                         ),
@@ -111,7 +111,7 @@ class InstitutionCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: typeColor.withOpacity(0.5),
+                              color: typeColor.withValues(alpha: 0.5),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),
@@ -139,13 +139,13 @@ class InstitutionCard extends StatelessWidget {
                           height: 30,
                           decoration: BoxDecoration(
                             color: isFavorite
-                                ? const Color(0xFFFF4757).withOpacity(0.2)
-                                : Colors.black.withOpacity(0.35),
+                                ? const Color(0xFFFF4757).withValues(alpha: 0.2)
+                                : Colors.black.withValues(alpha: 0.35),
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: isFavorite
-                                  ? const Color(0xFFFF4757).withOpacity(0.5)
-                                  : Colors.white.withOpacity(0.2),
+                                  ? const Color(0xFFFF4757).withValues(alpha: 0.5)
+                                  : Colors.white.withValues(alpha: 0.2),
                             ),
                           ),
                           child: Icon(
@@ -248,12 +248,12 @@ class InstitutionCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [typeColor, typeColor.withOpacity(0.78)],
+                          colors: [typeColor, typeColor.withValues(alpha: 0.78)],
                         ),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: typeColor.withOpacity(0.35),
+                            color: typeColor.withValues(alpha: 0.35),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -301,7 +301,7 @@ class _InstCardFallback extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [typeColor, typeColor.withOpacity(0.55)],
+            colors: [typeColor, typeColor.withValues(alpha: 0.55)],
           ),
         ),
         child: Center(child: Text(emoji, style: const TextStyle(fontSize: 46))),
@@ -321,7 +321,7 @@ class _InfoBadge extends StatelessWidget {
         width: 24,
         height: 24,
         decoration: BoxDecoration(
-          color: color.withOpacity(isDark ? 0.2 : 0.1),
+          color: color.withValues(alpha: isDark ? 0.2 : 0.1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(icon, size: 12, color: color),
@@ -358,12 +358,12 @@ class FeaturedInstitutionCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [typeColor, typeColor.withOpacity(0.6)],
+            colors: [typeColor, typeColor.withValues(alpha: 0.6)],
           ),
           borderRadius: BorderRadius.circular(AppConstants.radiusXl),
           boxShadow: [
             BoxShadow(
-              color: typeColor.withOpacity(0.4),
+              color: typeColor.withValues(alpha: 0.4),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -380,7 +380,7 @@ class FeaturedInstitutionCard extends StatelessWidget {
                   width: 240,
                   height: double.infinity,
                   fit: BoxFit.cover,
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                   colorBlendMode: BlendMode.darken,
                   errorWidget: (_, __, ___) => const SizedBox(),
                 ),
@@ -814,7 +814,7 @@ class CvCard extends StatelessWidget {
                   if (cv.field != null)
                     Text(
                       cv.field!,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: AppColors.primary,

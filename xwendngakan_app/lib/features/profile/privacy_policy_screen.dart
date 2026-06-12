@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/localization/app_localizations.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
@@ -11,7 +12,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBg : const Color(0xFFF8F9FA),
       appBar: AppBar(
-        title: const Text('سیاسەتی تایبەتمەندی', style: TextStyle(fontFamily: 'Rabar', fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context).privacyPolicyTitle, style: const TextStyle(fontFamily: 'Rabar', fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -22,29 +23,29 @@ class PrivacyPolicyScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSection(
-              '١. کۆکردنەوەی زانیاری',
-              'ئێمە هەندێک زانیاری کەسی کۆدەکەینەوە وەک ناو، ئیمەیڵ، و ژمارەی مۆبایل کاتێک هەژمار دروست دەکەیت بۆ ئەوەی خزمەتگوزارییەکانمان پێشکەش بکەین.',
+              AppLocalizations.of(context).privacySec1Title,
+              AppLocalizations.of(context).privacySec1Body,
               isDark,
             ),
             _buildSection(
-              '٢. چۆنیەتی بەکارهێنانی زانیاری',
-              'زانیارییەکانت بەکاردێن بۆ باشترکردنی خزمەتگوزارییەکان، ناردنی ئاگادارکردنەوەی گرنگ، و دڵنیابوونەوە لە ناسنامەی بەکارهێنەر.',
+              AppLocalizations.of(context).privacySec2Title,
+              AppLocalizations.of(context).privacySec2Body,
               isDark,
             ),
             _buildSection(
-              '٣. پاراستنی زانیاری',
-              'ئێمە ڕێکاری توندی تەکنیکی دەگرینەبەر بۆ پاراستنی زانیارییەکانت لە هەر دەستوەردانێکی دەرەکی یان دزەپێکردن.',
+              AppLocalizations.of(context).privacySec3Title,
+              AppLocalizations.of(context).privacySec3Body,
               isDark,
             ),
             _buildSection(
-              '٤. مافەکانی بەکارهێنەر',
-              'تۆ مافی ئەوەت هەیە داوای سڕینەوەی هەژمارەکەت و هەموو زانیارییەکانت بکەیت لە هەر کاتێکدا بێت لە ڕێگەی ڕێکخستنەکانەوە.',
+              AppLocalizations.of(context).privacySec4Title,
+              AppLocalizations.of(context).privacySec4Body,
               isDark,
             ),
             const SizedBox(height: 40),
             Center(
               child: Text(
-                'دواهەمین نوێکردنەوە: ٩/٥/٢٠٢٤',
+                AppLocalizations.of(context).privacyLastUpdate,
                 style: TextStyle(
                   color: isDark ? Colors.white30 : Colors.black26,
                   fontSize: 12,
@@ -66,7 +67,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: AppColors.primary,

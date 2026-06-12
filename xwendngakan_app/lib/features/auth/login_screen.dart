@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen>
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFFF4757).withOpacity(0.35),
+                    color: const Color(0xFFFF4757).withValues(alpha: 0.35),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
@@ -179,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen>
                       height: 220,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.12),
+                        color: Colors.white.withValues(alpha: 0.12),
                       ),
                     ),
                   ),
@@ -191,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen>
                       height: 140,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.08),
+                        color: Colors.white.withValues(alpha: 0.08),
                       ),
                     ),
                   ),
@@ -223,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 borderRadius: BorderRadius.circular(24),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Colors.black.withValues(alpha: 0.1),
                                     blurRadius: 20,
                                     offset: const Offset(0, 10),
                                   ),
@@ -253,7 +253,7 @@ class _LoginScreenState extends State<LoginScreen>
                               'چوونەژوورەوە بۆ هەژمارەکەت',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withValues(alpha: 0.9),
                                 fontFamily: 'Rabar',
                               ),
                             ),
@@ -271,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen>
                             BoxShadow(
                               color: isDark
                                   ? Colors.black38
-                                  : AppColors.primary.withOpacity(0.08),
+                                  : AppColors.primary.withValues(alpha: 0.08),
                               blurRadius: 40,
                               offset: const Offset(0, 15),
                             ),

@@ -98,16 +98,16 @@ class MainShell extends StatelessWidget {
               height: 70,
               decoration: BoxDecoration(
                 color: (isDark ? AppColors.darkCard : Colors.white)
-                    .withOpacity(0.7),
+                    .withValues(alpha: 0.7),
                 borderRadius: BorderRadius.circular(32),
                 border: Border.all(
                   color:
-                      (isDark ? Colors.white : Colors.black).withOpacity(0.15),
+                      (isDark ? Colors.white : Colors.black).withValues(alpha: 0.15),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -130,7 +130,7 @@ class MainShell extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.35),
+                              color: AppColors.primary.withValues(alpha: 0.35),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -154,7 +154,7 @@ class MainShell extends StatelessWidget {
                           horizontal: 10, vertical: 8),
                       decoration: BoxDecoration(
                         color: isActive
-                            ? AppColors.primary.withOpacity(0.15)
+                            ? AppColors.primary.withValues(alpha: 0.15)
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(20),
                       ),

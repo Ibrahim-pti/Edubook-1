@@ -76,7 +76,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFFF4757).withOpacity(0.35),
+                    color: const Color(0xFFFF4757).withValues(alpha: 0.35),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
@@ -190,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                       height: 220,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.12),
+                        color: Colors.white.withValues(alpha: 0.12),
                       ),
                     ),
                   ),
@@ -202,7 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                       height: 140,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.08),
+                        color: Colors.white.withValues(alpha: 0.08),
                       ),
                     ),
                   ),
@@ -234,7 +234,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                 borderRadius: BorderRadius.circular(24),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Colors.black.withValues(alpha: 0.1),
                                     blurRadius: 20,
                                     offset: const Offset(0, 10),
                                   ),
@@ -264,7 +264,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                               'هەژمارێکی نوێ دروست بکە',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withValues(alpha: 0.9),
                                 fontFamily: 'Rabar',
                               ),
                             ),
@@ -279,7 +279,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           borderRadius: BorderRadius.circular(32),
                           boxShadow: [
                             BoxShadow(
-                              color: isDark ? Colors.black38 : AppColors.primary.withOpacity(0.08),
+                              color: isDark ? Colors.black38 : AppColors.primary.withValues(alpha: 0.08),
                               blurRadius: 40,
                               offset: const Offset(0, 15),
                             ),
@@ -406,9 +406,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                   width: 42,
                   height: 42,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                   ),
                   child: const Icon(Icons.arrow_back_ios_new_rounded,
                       color: Colors.white, size: 18),

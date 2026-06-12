@@ -165,7 +165,7 @@ class _CvDetailScreenState extends State<CvDetailScreen> {
     }
 
     final cv = _cv!;
-    final accentColor = AppColors.primary;
+    const accentColor = AppColors.primary;
     final bgColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
 
@@ -277,7 +277,7 @@ class _CvDetailScreenState extends State<CvDetailScreen> {
                                 fontFamily: 'Rabar')),
                         const SizedBox(height: 4),
                         Text(cv.field ?? '',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 15,
                                 color: accentColor,
                                 fontWeight: FontWeight.w700,
@@ -333,7 +333,7 @@ class _CvDetailScreenState extends State<CvDetailScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('بڕوانامەی ${cv.educationLevel!}',
+                                  Text('${l.certificateOf} ${cv.educationLevel!}',
                                       style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w900,

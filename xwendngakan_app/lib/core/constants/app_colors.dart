@@ -89,9 +89,9 @@ class AppColors {
   static const Color info    = Color(0xFF3B82F6);
 
   // === GLASS EFFECT ===
-  static Color glassLight  = const Color(0xFFC49A3C).withOpacity(0.08);
-  static Color glassDark   = const Color(0xFF000000).withOpacity(0.3);
-  static Color glassBorder = const Color(0xFFC49A3C).withOpacity(0.18);
+  static Color glassLight  = const Color(0xFFC49A3C).withValues(alpha: 0.08);
+  static Color glassDark   = const Color(0xFF000000).withValues(alpha: 0.3);
+  static Color glassBorder = const Color(0xFFC49A3C).withValues(alpha: 0.18);
 
   // === INSTITUTION TYPE COLORS ===
   static const Map<String, Color> typeColors = {

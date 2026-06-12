@@ -108,7 +108,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -133,7 +133,7 @@ class _ScannerOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black.withOpacity(0.6)
+      ..color = Colors.black.withValues(alpha: 0.6)
       ..style = PaintingStyle.fill;
 
     final rect = Rect.fromCenter(
@@ -225,13 +225,13 @@ class _ScannerLineState extends State<_ScannerLine> with SingleTickerProviderSta
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primary.withOpacity(0),
+                  AppColors.primary.withValues(alpha: 0),
                   AppColors.primary,
-                  AppColors.primary.withOpacity(0),
+                  AppColors.primary.withValues(alpha: 0),
                 ],
               ),
               boxShadow: [
-                BoxShadow(color: AppColors.primary.withOpacity(0.5), blurRadius: 10, spreadRadius: 2),
+                BoxShadow(color: AppColors.primary.withValues(alpha: 0.5), blurRadius: 10, spreadRadius: 2),
               ],
             ),
           ),

@@ -786,7 +786,7 @@ class _StatsRow extends StatelessWidget {
         color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
+          color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
         ),
         boxShadow: [
           BoxShadow(
@@ -981,10 +981,12 @@ class _ContactCard extends StatelessWidget {
       ));
     }
 
-    if (inst.addr != null && inst.addr!.isNotEmpty)
+    if (inst.addr != null && inst.addr!.isNotEmpty) {
       add(Icons.location_on_rounded, inst.addr!, const Color(0xFFF43F5E), null);
-    if (inst.email != null && inst.email!.isNotEmpty)
+    }
+    if (inst.email != null && inst.email!.isNotEmpty) {
       add(Icons.email_rounded, inst.email!, const Color(0xFF3B82F6), 'mailto:${inst.email}');
+    }
 
     if (items.isEmpty) {
       return Text(
@@ -1079,7 +1081,7 @@ class _CollegesCard extends StatelessWidget {
             color: isDark ? AppColors.darkCard : Colors.white,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
+              color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
             ),
             boxShadow: [
               BoxShadow(
@@ -1159,7 +1161,7 @@ class _PostCard extends StatelessWidget {
         color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
+          color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
         ),
         boxShadow: [
           BoxShadow(

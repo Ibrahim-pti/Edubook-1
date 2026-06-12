@@ -318,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 150,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.05),
+                color: Colors.white.withValues(alpha: 0.05),
               ),
             ),
           ),
@@ -330,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 200,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.05),
+                color: Colors.white.withValues(alpha: 0.05),
               ),
             ),
           ),
@@ -415,7 +415,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 15,
                               offset: const Offset(0, 5),
                             )
@@ -443,7 +443,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.1),
+                                  color: AppColors.primary.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: const Icon(Icons.tune_rounded,
@@ -495,7 +495,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const BorderRadius.vertical(top: Radius.circular(32)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 20,
                     offset: const Offset(0, -5),
                   )
@@ -735,10 +735,10 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(14),
               border:
-                  Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+                  Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1),
             ),
             child: const Icon(Icons.notifications_none_rounded,
                 color: Colors.white, size: 22),
@@ -785,9 +785,9 @@ class _HomeScreenState extends State<HomeScreen> {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.15),
+          color: Colors.white.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1),
         ),
         child: Icon(icon, color: Colors.white, size: iconSize),
       ),
@@ -996,8 +996,8 @@ class _FilterChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withOpacity(0.12)
-              : (isDark ? AppColors.darkBg : Colors.grey.withOpacity(0.1)),
+              ? AppColors.primary.withValues(alpha: 0.12)
+              : (isDark ? AppColors.darkBg : Colors.grey.withValues(alpha: 0.1)),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected
@@ -1167,7 +1167,7 @@ class _AdsCarouselState extends State<AdsCarousel> {
             activeDotColor: AppColors.primary,
             dotColor: widget.isDark
                 ? Colors.white24
-                : AppColors.textGrey.withOpacity(0.3),
+                : AppColors.textGrey.withValues(alpha: 0.3),
           ),
         ),
       ],
@@ -1187,7 +1187,7 @@ class _AdsCarouselState extends State<AdsCarousel> {
         ),
         boxShadow: [
           BoxShadow(
-            color: c1.withOpacity(0.3),
+            color: c1.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -1227,7 +1227,7 @@ class _AdsCarouselState extends State<AdsCarousel> {
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
                 colors: [
-                  Colors.black.withOpacity(0.72),
+                  Colors.black.withValues(alpha: 0.72),
                   Colors.transparent,
                 ],
               ),
@@ -1247,9 +1247,9 @@ class _AdsCarouselState extends State<AdsCarousel> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.22),
+                    color: Colors.white.withValues(alpha: 0.22),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                   ),
                   child: Text(
                     b.tag!,
@@ -1313,7 +1313,7 @@ class _AdsCarouselState extends State<AdsCarousel> {
           child: Icon(
             icon,
             size: 110,
-            color: Colors.white.withOpacity(0.12),
+            color: Colors.white.withValues(alpha: 0.12),
           ),
         ),
         // Text content
@@ -1327,9 +1327,9 @@ class _AdsCarouselState extends State<AdsCarousel> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.22),
+                    color: Colors.white.withValues(alpha: 0.22),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white.withOpacity(0.35)),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.35)),
                   ),
                   child: Text(
                     tag,
@@ -1363,7 +1363,7 @@ class _AdsCarouselState extends State<AdsCarousel> {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                     fontFamily: 'Rabar',
                   ),
                   maxLines: 1,
@@ -1388,7 +1388,7 @@ class _AdsCarouselState extends State<AdsCarousel> {
         ),
         boxShadow: [
           BoxShadow(
-            color: colors[0].withOpacity(0.3),
+            color: colors[0].withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
