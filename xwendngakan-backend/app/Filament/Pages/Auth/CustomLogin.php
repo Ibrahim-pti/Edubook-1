@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomLogin extends BaseLogin
 {
+    protected static string $view = 'filament.pages.auth.custom-login';
+
     public function getHeading(): string | Htmlable
     {
         return 'چوونە ژوورەوە';
