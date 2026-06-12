@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class CustomLogin extends BaseLogin
 {
     protected static string $view = 'filament.pages.auth.custom-login';
+    protected static string $layout = 'filament-panels::components.layout.base';
 
     public function getHeading(): string | Htmlable
     {

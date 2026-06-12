@@ -1,4 +1,4 @@
-<x-filament-panels::layout.base :livewire="$this">
+
 <div>
     <div class="min-h-screen flex items-center justify-center relative bg-slate-900 overflow-hidden" dir="rtl">
         <!-- Animated Background Elements -->
@@ -76,4 +76,4 @@
         }
     </style>
 </div>
-</x-filament-panels::layout.base>
+
