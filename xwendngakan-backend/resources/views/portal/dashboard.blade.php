@@ -1884,7 +1884,7 @@ function getCurrentLocation(btn) {
             btn.innerHTML = originalText;
             btn.disabled = false;
         },
-        { enableHighAccuracy: true, timeout: 8000 }
+        { enableHighAccuracy: false, timeout: 25000, maximumAge: 60000 }
     );
 }
 </script>
