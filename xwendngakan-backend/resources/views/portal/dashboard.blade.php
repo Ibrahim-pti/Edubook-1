@@ -1187,7 +1187,7 @@
           </div>
           <div class="f-group">
             <label class="f-label">ئینگلیزی</label>
-            <div id="editor-desc_en" class="quill-editor">{!! old('desc_en', $institution?->desc_en) !!}</div>
+            <div id="editor-desc_en" class="quill-editor" dir="ltr">{!! old('desc_en', $institution?->desc_en) !!}</div>
             <textarea id="desc_en" name="desc_en" style="display:none;"></textarea>
             @error('desc_en') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
           </div>
@@ -1460,6 +1460,14 @@
     min-height: 120px;
   }
   .ql-editor { direction: rtl; text-align: right; }
+  .quill-editor[dir="ltr"] .ql-editor { direction: ltr !important; text-align: left !important; }
+  .quill-editor:not([dir="ltr"]) .ql-editor ol,
+  .quill-editor:not([dir="ltr"]) .ql-editor ul { padding-left: 0; padding-right: 1.5em; }
+  .quill-editor:not([dir="ltr"]) .ql-editor li::before { 
+      margin-left: 0 !important; 
+      margin-right: -1.5em !important; 
+      text-align: right !important; 
+  }
   .ql-stroke { stroke: var(--txt2) !important; }
   .ql-fill { fill: var(--txt2) !important; }
   .ql-picker-label { color: var(--txt2) !important; }
