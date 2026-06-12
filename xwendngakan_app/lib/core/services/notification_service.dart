@@ -1,5 +1,4 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import '../../data/services/api_service.dart';
 
 class NotificationService {
@@ -9,7 +8,7 @@ class NotificationService {
 
   Future<void> initialize() async {
     final FirebaseMessaging fcm = FirebaseMessaging.instance;
-    
+
     // Request permission for iOS
     NotificationSettings settings = await fcm.requestPermission(
       alert: true,
@@ -18,7 +17,6 @@ class NotificationService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      
       // Get FCM Token
       String? token = await fcm.getToken();
       if (token != null) {
@@ -32,11 +30,8 @@ class NotificationService {
 
       // Handle foreground messages
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-
-        if (message.notification != null) {
-        }
+        if (message.notification != null) {}
       });
-    } else {
-    }
+    } else {}
   }
 }
