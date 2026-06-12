@@ -96,6 +96,7 @@ class PostResource extends Resource
                 Tables\Columns\ImageColumn::make('image')
                     ->label('وێنە')
                     ->disk('public')
+                    ->state(fn ($record) => $record->image ? str_replace('/storage/', '', $record->image) : null)
                     ->square()
                     ->size(50),
                 

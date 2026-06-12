@@ -266,7 +266,7 @@ Route::prefix('portal')->name('portal.')->group(function () {
             $post->institution_id = $institution->id;
             $post->title          = $data['title'];
             $post->content        = $data['content'];
-            $post->approved       = false;
+            $post->approved       = true;
 
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
@@ -276,9 +276,9 @@ Route::prefix('portal')->name('portal.')->group(function () {
             }
             $post->save();
             if ($request->wantsJson()) {
-                return response()->json(['success' => true, 'message' => 'پۆستەکەت بە سەرکەوتوویی نێردرا — چاوەڕوانی پەسەندکردنی ئەدمینە.']);
+                return response()->json(['success' => true, 'message' => 'پۆستەکەت بە سەرکەوتوویی بڵاوکرایەوە.']);
             }
-            return back()->with('success', 'پۆستەکەت بە سەرکەوتوویی نێردرا — چاوەڕوانی پەسەندکردنی ئەدمینە.');
+            return back()->with('success', 'پۆستەکەت بە سەرکەوتوویی بڵاوکرایەوە.');
         })->name('posts.store');
 
         Route::post('/settings/save', function (Request $request) {
