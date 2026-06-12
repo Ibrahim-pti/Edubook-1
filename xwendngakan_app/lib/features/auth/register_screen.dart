@@ -296,7 +296,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             controller: _nameCtrl,
                             style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                             decoration: inputDeco(l.fullName, Icons.person_outline, hint: l.fullName),
-                            validator: (v) => (v == null || v.isEmpty) ? l.required : null,
+                            validator: (v) => (v == null || v.isEmpty) ? l.requiredName : null,
                           ),
                           const SizedBox(height: 16),
                           TextFormField(
@@ -305,7 +305,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                             decoration: inputDeco(l.email, Icons.email_outlined, hint: 'example@gmail.com'),
                             validator: (v) {
-                              if (v == null || v.trim().isEmpty) return l.required;
+                              if (v == null || v.trim().isEmpty) return l.requiredEmail;
                               final emailRegex = RegExp(r'^[\w.+\-]+@[a-zA-Z\d\-]+\.[a-zA-Z]{2,}$');
                               if (!emailRegex.hasMatch(v.trim())) return l.invalidEmail;
                               return null;
@@ -327,7 +327,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                               ),
                             ),
                             validator: (v) {
-                              if (v == null || v.isEmpty) return l.required;
+                              if (v == null || v.isEmpty) return l.requiredPassword;
                               if (v.length < 8) return l.passwordMinLength;
                               return null;
                             },
@@ -348,7 +348,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                               ),
                             ),
                             validator: (v) {
-                              if (v == null || v.isEmpty) return l.required;
+                              if (v == null || v.isEmpty) return l.requiredConfirmPassword;
                               if (v != _passCtrl.text) return l.passwordsDoNotMatch;
                               return null;
                             },

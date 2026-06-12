@@ -1188,6 +1188,27 @@ class AppLocalizations {
         'en': 'Please enter email',
         'tr': 'Lütfen e-posta girin'
       });
+  String get requiredPassword => _t({
+        'ku': 'تکایە وشەی نهێنی بنووسە',
+        'kbd': 'تکایە پەیڤا نهێنی بنڤیسە',
+        'ar': 'يرجى إدخال كلمة المرور',
+        'en': 'Please enter password',
+        'tr': 'Lütfen şifre girin'
+      });
+  String get requiredName => _t({
+        'ku': 'تکایە ناو بنووسە',
+        'kbd': 'تکایە ناڤ بنڤیسە',
+        'ar': 'يرجى إدخال الاسم',
+        'en': 'Please enter name',
+        'tr': 'Lütfen isim girin'
+      });
+  String get requiredConfirmPassword => _t({
+        'ku': 'تکایە وشەی نهێنی دووبارە بکەرەوە',
+        'kbd': 'تکایە پەیڤا نهێنی دووبارە بکە',
+        'ar': 'يرجى تأكيد كلمة المرور',
+        'en': 'Please confirm password',
+        'tr': 'Lütfen şifreyi onaylayın'
+      });
   String get invalidYear => _t({
         'ku': 'تکایە ساڵێکی دروست بنووسە',
         'kbd': 'تکایە ساڵێکی دروست بنووسە',

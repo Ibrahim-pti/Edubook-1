@@ -30,8 +30,8 @@ class _LoginScreenState extends State<LoginScreen>
       vsync: this,
       duration: const Duration(milliseconds: 800),
     )..forward();
-    _fade = Tween<double>(begin: 0, end: 1).animate(
-        CurvedAnimation(parent: _anim, curve: Curves.easeIn));
+    _fade = Tween<double>(begin: 0, end: 1)
+        .animate(CurvedAnimation(parent: _anim, curve: Curves.easeIn));
     _slide = Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero)
         .animate(CurvedAnimation(parent: _anim, curve: Curves.easeOut));
   }
@@ -85,7 +85,8 @@ class _LoginScreenState extends State<LoginScreen>
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.error_outline_rounded, color: Colors.white, size: 22),
+                  const Icon(Icons.error_outline_rounded,
+                      color: Colors.white, size: 22),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -114,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
 
-      InputDecoration inputDeco(String label, IconData icon, {String? hint}) {
+    InputDecoration inputDeco(String label, IconData icon, {String? hint}) {
       return InputDecoration(
         labelText: label,
         hintText: hint,
@@ -128,7 +129,8 @@ class _LoginScreenState extends State<LoginScreen>
           fontSize: 14,
           fontFamily: 'Rabar',
         ),
-        prefixIcon: Icon(icon, color: isDark ? Colors.white54 : Colors.black54, size: 22),
+        prefixIcon: Icon(icon,
+            color: isDark ? Colors.white54 : Colors.black54, size: 22),
         filled: true,
         fillColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF4F6F9),
         border: OutlineInputBorder(
@@ -143,12 +145,14 @@ class _LoginScreenState extends State<LoginScreen>
           borderRadius: BorderRadius.circular(20),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
       );
     }
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF4F6F9),
+      backgroundColor:
+          isDark ? const Color(0xFF0F172A) : const Color(0xFFF4F6F9),
       body: Stack(
         children: [
           // Elegant curved background
@@ -260,17 +264,21 @@ class _LoginScreenState extends State<LoginScreen>
                       // Form Card
                       Container(
                         decoration: BoxDecoration(
-                          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                          color:
+                              isDark ? const Color(0xFF1E293B) : Colors.white,
                           borderRadius: BorderRadius.circular(32),
                           boxShadow: [
                             BoxShadow(
-                              color: isDark ? Colors.black38 : AppColors.primary.withOpacity(0.08),
+                              color: isDark
+                                  ? Colors.black38
+                                  : AppColors.primary.withOpacity(0.08),
                               blurRadius: 40,
                               offset: const Offset(0, 15),
                             ),
                           ],
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 32),
                         child: Form(
                           key: _formKey,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -280,11 +288,16 @@ class _LoginScreenState extends State<LoginScreen>
                               TextFormField(
                                 controller: _emailCtrl,
                                 keyboardType: TextInputType.emailAddress,
-                                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-                                decoration: inputDeco(l.email, Icons.email_outlined, hint: 'example@gmail.com'),
+                                style: TextStyle(
+                                    color:
+                                        isDark ? Colors.white : Colors.black87),
+                                decoration: inputDeco(
+                                    l.email, Icons.email_outlined,
+                                    hint: 'example@gmail.com'),
                                 validator: (v) {
-                                  if (v == null || v.isEmpty) return l.required;
-                                  if (!v.contains('@')) return l.invalidEmail;
+                                  if (v == null || v.isEmpty) return l.requiredEmail;
+                                  final emailRegex = RegExp(r'^[\w.+\-]+@[a-zA-Z\d\-]+\.[a-zA-Z]{2,}$');
+                                  if (!emailRegex.hasMatch(v.trim())) return l.invalidEmail;
                                   return null;
                                 },
                               ),
@@ -292,28 +305,45 @@ class _LoginScreenState extends State<LoginScreen>
                               TextFormField(
                                 controller: _passCtrl,
                                 obscureText: _obscure,
-                                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-                                decoration: inputDeco(l.password, Icons.lock_outline, hint: '••••••••').copyWith(
+                                style: TextStyle(
+                                    color:
+                                        isDark ? Colors.white : Colors.black87),
+                                decoration: inputDeco(
+                                        l.password, Icons.lock_outline,
+                                        hint: '••••••••')
+                                    .copyWith(
                                   suffixIcon: IconButton(
                                     icon: Icon(
-                                      _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                                      color: isDark ? Colors.white54 : Colors.black54,
+                                      _obscure
+                                          ? Icons.visibility_outlined
+                                          : Icons.visibility_off_outlined,
+                                      color: isDark
+                                          ? Colors.white54
+                                          : Colors.black54,
                                       size: 22,
                                     ),
-                                    onPressed: () => setState(() => _obscure = !_obscure),
+                                    onPressed: () =>
+                                        setState(() => _obscure = !_obscure),
                                   ),
                                 ),
-                                validator: (v) => (v == null || v.length < 6) ? l.passwordMinLength : null,
+                                validator: (v) {
+                                  if (v == null || v.isEmpty) return l.requiredPassword;
+                                  if (v.length < 8) return l.passwordMinLength;
+                                  return null;
+                                },
                               ),
                               const SizedBox(height: 12),
                               Align(
                                 alignment: AlignmentDirectional.centerEnd,
                                 child: TextButton(
-                                  onPressed: () => context.push('/forgot-password'),
+                                  onPressed: () =>
+                                      context.push('/forgot-password'),
                                   style: TextButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
                                     minimumSize: Size.zero,
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
                                   ),
                                   child: Text(
                                     l.forgotPassword,
