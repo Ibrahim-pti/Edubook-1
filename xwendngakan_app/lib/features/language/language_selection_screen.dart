@@ -352,16 +352,19 @@ class _LangTile extends StatelessWidget {
               const SizedBox(width: 14),
               // Text
               Expanded(
-                child: Text(
-                  displayName ?? lang.name,
-                  textDirection: (isRTLDisplay ?? lang.isRTL) ? TextDirection.rtl : TextDirection.ltr,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'Rabar',
-                    color: isSelected
-                        ? lang.iconColor
-                        : (isDark ? Colors.white : AppColors.textDark),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    displayName ?? lang.name,
+                    textDirection: (isRTLDisplay ?? lang.isRTL) ? TextDirection.rtl : TextDirection.ltr,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'Rabar',
+                      color: isSelected
+                          ? lang.iconColor
+                          : (isDark ? Colors.white : AppColors.textDark),
+                    ),
                   ),
                 ),
               ),
