@@ -1644,7 +1644,10 @@ async function translateDeptNames(btn) {
     finally { btn.classList.remove('loading'); btn.disabled = false; }
 }
 async function autoTranslate(sourceId, targetIds, btn) {
-    const text = document.getElementById(sourceId).value;
+    let text = document.getElementById(sourceId).value;
+    if (quillEditors[sourceId]) {
+        text = quillEditors[sourceId].getText().trim();
+    }
     if (!text) { alert('تکایە سەرەتا دەقەکە بنووسە.'); return; }
     btn.classList.add('loading'); btn.disabled = true;
     try {
@@ -1652,7 +1655,14 @@ async function autoTranslate(sourceId, targetIds, btn) {
             const lang = targetId.includes('ar') ? 'ar' : 'en';
             const url  = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ckb&tl=${lang}&dt=t&q=${encodeURIComponent(text)}`;
             const data = await (await fetch(url)).json();
-            if (data?.[0]) document.getElementById(targetId).value = data[0].map(p => p[0] ?? '').join('');
+            if (data?.[0]) {
+                const translated = data[0].map(p => p[0] ?? '').join('');
+                if (quillEditors[targetId]) {
+                    quillEditors[targetId].root.innerHTML = translated;
+                } else {
+                    document.getElementById(targetId).value = translated;
+                }
+            }
         }
     } catch { alert('هەڵەیەک ڕوویدا لە کاتی وەرگێڕان.'); }
     finally { btn.classList.remove('loading'); btn.disabled = false; }
