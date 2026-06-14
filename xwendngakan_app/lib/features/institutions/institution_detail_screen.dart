@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_localizations.dart';
@@ -479,6 +481,21 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
               isDark: isDark,
               child: _ContactCard(inst: inst, isDark: isDark, onLaunch: _launch),
             ),
+            if (inst.lat != null && inst.lng != null && inst.lat != 0.0 && inst.lng != 0.0) ...[
+              const SizedBox(height: 20),
+              _AcademicSection(
+                icon: Icons.map_rounded,
+                title: l.location,
+                accentColor: AppColors.typeColor(inst.type),
+                isDark: isDark,
+                child: _MapCard(
+                  lat: inst.lat!,
+                  lng: inst.lng!,
+                  typeColor: AppColors.typeColor(inst.type),
+                  isDark: isDark,
+                ),
+              ),
+            ],
           ],
         );
       case 1: // Colleges & Departments
@@ -998,6 +1015,69 @@ class _ContactCard extends StatelessWidget {
       );
     }
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: items);
+  }
+}
+
+// ─── Map card ─────────────────────────────────────────────────────────────────
+
+class _MapCard extends StatelessWidget {
+  final double lat;
+  final double lng;
+  final Color typeColor;
+  final bool isDark;
+
+  const _MapCard({
+    required this.lat,
+    required this.lng,
+    required this.typeColor,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 220,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.04),
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: FlutterMap(
+          options: MapOptions(
+            initialCenter: LatLng(lat, lng),
+            initialZoom: 15.0,
+            interactionOptions: const InteractionOptions(
+              flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+            ),
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.edu_book.app',
+            ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: LatLng(lat, lng),
+                  width: 40,
+                  height: 40,
+                  child: Icon(
+                    Icons.location_on,
+                    color: typeColor,
+                    size: 40,
+                  ),
+                  alignment: Alignment.topCenter,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
