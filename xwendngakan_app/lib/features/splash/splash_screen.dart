@@ -92,6 +92,7 @@ class _SplashScreenState extends State<SplashScreen>
     // Check for updates (Production ready)
     try {
       final info = await PackageInfo.fromPlatform();
+      if (!mounted) return;
       final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'ios' : 'android';
       final buildNumber = int.tryParse(info.buildNumber) ?? 0;
 
@@ -107,11 +108,13 @@ class _SplashScreenState extends State<SplashScreen>
         }
       }
     } catch (e) {
+      debugPrint('Update check error: $e');
     }
 
     if (!mounted) return;
     final prefs = await SharedPreferences.getInstance();
 
+    if (!mounted) return;
     // First launch: show language selection before anything else
     final langSelected = prefs.getBool(AppConstants.langSelectedKey) ?? false;
     if (!langSelected) {

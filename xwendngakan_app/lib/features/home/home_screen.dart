@@ -853,7 +853,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final subCats = _getSubFilters(p.institutionTypes);
 
         if (key == 'all') {
-          p.setFilter(type: null, sector: null);
+          p.setFilter(type: 'all');
         } else {
           // Find first available sub-category other than 'all' if present, to show some data,
           // OR just default to 'all' so it shows everything in that parent?
@@ -864,9 +864,9 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() {
               _selectedChildFilterId = firstReal.id;
             });
-            p.setFilter(type: firstReal.type, sector: null);
+            p.setFilter(type: firstReal.type ?? 'all');
           } else {
-            p.setFilter(type: null, sector: null);
+            p.setFilter(type: 'all');
           }
         }
       },
@@ -930,7 +930,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _selectedChildFilterId = item.id;
         });
         final p = Provider.of<InstitutionsProvider>(context, listen: false);
-        p.setFilter(type: item.type ?? 'all', sector: 'all');
+        p.setFilter(type: item.type ?? 'all');
       },
       child: AnimatedContainer(
         duration: AppConstants.medium,

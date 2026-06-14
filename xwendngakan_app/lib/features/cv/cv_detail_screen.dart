@@ -48,7 +48,7 @@ class _CvDetailScreenState extends State<CvDetailScreen> {
   void _shareCv(CvModel cv, AppLocalizations l) {
     final text =
         'EduBook CV: ${cv.name}\n${cv.field ?? ""}\n\n${cv.experience ?? ""}\n\nDownloaded from EduBook App';
-    Share.share(text);
+    SharePlus.instance.share(ShareParams(text: text));
   }
 
   void _showContactSheet(CvModel cv, AppLocalizations l, bool isDark) {

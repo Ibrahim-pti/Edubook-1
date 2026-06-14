@@ -68,6 +68,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
     } else {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(AppConstants.langSelectedKey, true);
+      if (!mounted) return;
       context.go('/onboarding');
     }
   }

@@ -96,7 +96,7 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen>
 
   void _shareTeacher(TeacherModel t) {
     final text = '${t.name}\n${t.subject ?? ""}\n\nخوێندنگاکانم App';
-    Share.share(text);
+    SharePlus.instance.share(ShareParams(text: text));
   }
 
   // ── Build ──────────────────────────────────────────────────
@@ -419,7 +419,9 @@ class _TeacherProfileScreenState extends State<TeacherProfileScreen>
     String init = '?';
     if (parts.length >= 2) {
       init = '${parts[0][0]}${parts[1][0]}';
-    } else if (name.isNotEmpty) init = name[0];
+    } else if (name.isNotEmpty) {
+      init = name[0];
+    }
     return Container(color: _kGold, child: Center(child: Text(init.toUpperCase(), style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white))));
   }
 

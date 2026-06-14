@@ -503,7 +503,7 @@ class _AdvancedFilterSheetState extends State<_AdvancedFilterSheet> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: _city,
+                initialValue: _city,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),

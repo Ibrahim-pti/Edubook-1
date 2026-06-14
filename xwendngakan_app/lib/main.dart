@@ -15,12 +15,14 @@ void main() async {
     );
     firebaseReady = true;
   } catch (e) {
+    debugPrint('Firebase init error: $e');
   }
 
   if (firebaseReady) {
     try {
       await NotificationService().initialize();
     } catch (e) {
+      debugPrint('NotificationService init error: $e');
     }
   }
 
