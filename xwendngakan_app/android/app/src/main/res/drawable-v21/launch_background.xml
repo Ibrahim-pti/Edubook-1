@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Blank background that matches the Flutter splash gradient's top colour, so
+     the native splash blends seamlessly into the Flutter splash (no double logo). -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <bitmap android:gravity="fill" android:src="@drawable/background"/>
-    </item>
-    <item>
-        <bitmap android:gravity="center" android:src="@drawable/splash"/>
+        <color android:color="#FFFDF8"/>
     </item>
 </layer-list>

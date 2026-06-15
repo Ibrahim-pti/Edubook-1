@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../providers/auth_provider.dart';
 import 'dart:math' as math;
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
@@ -124,10 +126,30 @@ class _SplashScreenState extends State<SplashScreen>
 
     final onboardingDone = prefs.getBool(AppConstants.onboardingKey) ?? false;
     if (!mounted) return;
-    if (onboardingDone) {
-      context.go('/role-selection');
-    } else {
+    if (!onboardingDone) {
       context.go('/onboarding');
+      return;
+    }
+
+    // Wait (briefly) for AuthProvider to finish restoring any saved session.
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    int waited = 0;
+    while (auth.status == AuthStatus.initial && waited < 4000) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      waited += 100;
+    }
+    if (!mounted) return;
+
+    final hasToken = prefs.getString(AppConstants.tokenKey) != null;
+    if (auth.status == AuthStatus.authenticated ||
+        (auth.status == AuthStatus.initial && hasToken)) {
+      // Logged-in session persists → straight to home, no role/login again.
+      // (If the auth check is still pending but a token exists, trust it.)
+      context.go('/home');
+    } else {
+      // Returning users who already chose a role skip the role picker.
+      final roleSelected = prefs.getBool(AppConstants.roleSelectedKey) ?? false;
+      context.go(roleSelected ? '/login' : '/role-selection');
     }
   }
 

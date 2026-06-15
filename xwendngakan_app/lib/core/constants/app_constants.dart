@@ -17,6 +17,8 @@ class AppConstants {
   static const String langSelectedKey = 'lang_selected';
   static const String themeKey = 'app_theme';
   static const String onboardingKey = 'onboarding_done';
+  static const String roleSelectedKey = 'role_selected';
+  static const String selectedRoleKey = 'selected_role';
   static const String favoritesKey = 'favorites';
 
   // === DEFAULTS ===

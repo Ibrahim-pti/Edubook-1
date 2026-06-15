@@ -14,14 +14,18 @@ class ApiResult<T> {
   final T? data;
   final String? error;
   final bool success;
+  final int? statusCode;
 
-  ApiResult.success(this.data)
+  ApiResult.success(this.data, {this.statusCode})
       : success = true,
         error = null;
 
-  ApiResult.failure(this.error)
+  ApiResult.failure(this.error, {this.statusCode})
       : success = false,
         data = null;
+
+  /// True when the server rejected the auth token (session is genuinely invalid).
+  bool get isUnauthorized => statusCode == 401;
 }
 
 class ApiService {
@@ -166,11 +170,13 @@ class ApiService {
           .timeout(AppConstants.connectTimeout);
 
       final data = _safeJson(res);
-      if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
+      if (data == null) {
+        return ApiResult.failure(_serverMessage(res.statusCode), statusCode: res.statusCode);
+      }
       if (res.statusCode == 200) {
         return ApiResult.success(UserModel.fromJson(data['data'] ?? data));
       }
-      return ApiResult.failure(data['message'] ?? 'Failed to get user');
+      return ApiResult.failure(data['message'] ?? 'Failed to get user', statusCode: res.statusCode);
     } catch (e) {
       return ApiResult.failure(_connectionMessage);
     }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:xwendngakan_app/core/localization/app_localizations.dart';
 import 'dart:ui';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_constants.dart';
 import '../../providers/auth_provider.dart';
 import '../../shared/widgets/app_3d_icons.dart';
 
@@ -431,7 +433,17 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                               ),
                               child: ElevatedButton(
                                 onPressed: _selectedRole != null
-                                    ? () {
+                                    ? () async {
+                                        // Remember the choice so the role picker
+                                        // is shown only on the first launch.
+                                        final prefs = await SharedPreferences
+                                            .getInstance();
+                                        await prefs.setBool(
+                                            AppConstants.roleSelectedKey, true);
+                                        await prefs.setString(
+                                            AppConstants.selectedRoleKey,
+                                            _selectedRole!);
+                                        if (!context.mounted) return;
                                         if (_selectedRole == 'cv_owner') {
                                           context.push('/cv-form');
                                         } else if (_selectedRole == 'teacher') {

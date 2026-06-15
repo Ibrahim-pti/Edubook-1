@@ -43,9 +43,14 @@ class AuthProvider extends ChangeNotifier {
 
         // Re-register FCM token on app restart if logged in
         await NotificationService().registerFcmToken();
-      } else {
+      } else if (result.isUnauthorized) {
+        // Token genuinely rejected by the server → log out.
         await _clearToken();
         _status = AuthStatus.unauthenticated;
+      } else {
+        // Network / server hiccup (offline, 503, timeout) — keep the saved
+        // session so the user isn't kicked back to login on every cold start.
+        _status = AuthStatus.authenticated;
       }
     } else {
       _status = AuthStatus.unauthenticated;
