@@ -23,15 +23,15 @@ class EventModel {
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
     return EventModel(
-      id: json['id'] as int,
-      title: json['title'] as String,
-      description: json['description'] as String,
+      id: json['id'] as int? ?? 0,
+      title: json['title'] as String? ?? '',
+      description: json['description'] as String? ?? '',
       imageUrl: json['image_url'] as String?,
-      startDate: json['start_date'] as String,
+      startDate: json['start_date'] as String? ?? '',
       endDate: json['end_date'] as String?,
       location: json['location'] as String?,
       organizer: json['organizer'] as String?,
-      createdAt: json['created_at'] as String,
+      createdAt: json['created_at'] as String? ?? '',
     );
   }
 }
