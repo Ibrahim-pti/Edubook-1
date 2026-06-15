@@ -78,20 +78,41 @@ class SendNotifications extends Page implements HasForms
                                                         }
                                                     }
 
-                                                    $users = User::where('notifications_enabled', true)->get();
-                                                    $count = 0;
+                                                    $users = User::where('notifications_enabled', true)
+                                                        ->whereNotNull('fcm_token')
+                                                        ->get();
+                                                    $tokens = $users->pluck('fcm_token')->filter()->values()->toArray();
+                                                    $count  = count($tokens);
+
+                                                    if ($count === 0) {
+                                                        Notification::make()
+                                                            ->title('هیچ بەکارهێنەرێک تۆکنی نەی نیە')
+                                                            ->warning()
+                                                            ->send();
+                                                        return;
+                                                    }
+
+                                                    // Save to DB for all users
                                                     foreach ($users as $user) {
                                                         $user->notify(new AdminMessage(
                                                             $data['broadcast_title'],
                                                             $data['broadcast_body'],
                                                             $customData
                                                         ));
-                                                        $count++;
                                                     }
+
+                                                    // Send push via FCM batch
+                                                    $firebase = app(\App\Services\FirebaseNotificationService::class);
+                                                    $result   = $firebase->sendToMultipleTokens(
+                                                        $tokens,
+                                                        $data['broadcast_title'],
+                                                        $data['broadcast_body'],
+                                                        $customData
+                                                    );
 
                                                     Notification::make()
                                                         ->title("بڵاوکردنەوەی سەرکەوتوو")
-                                                        ->body("ناردرا بۆ {$count} بەکارهێنەر")
+                                                        ->body("نێردرا بۆ {$result['successful']} لە {$count} بەکارهێنەر")
                                                         ->success()
                                                         ->send();
                                                 }),
@@ -174,6 +195,17 @@ class SendNotifications extends Page implements HasForms
                                                         $data['single_body'],
                                                         $customData
                                                     ));
+
+                                                    // Also send push directly
+                                                    if ($user->fcm_token) {
+                                                        $firebase = app(\App\Services\FirebaseNotificationService::class);
+                                                        $firebase->sendToToken(
+                                                            $user->fcm_token,
+                                                            $data['single_title'],
+                                                            $data['single_body'],
+                                                            $customData
+                                                        );
+                                                    }
 
                                                     Notification::make()
                                                         ->title('نۆتیفیکەیشن بە سەرکەوتوویی نێردرا')
