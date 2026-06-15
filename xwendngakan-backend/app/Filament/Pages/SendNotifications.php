@@ -129,9 +129,8 @@ class SendNotifications extends Page implements HasForms
                                     ->schema([
                                         Forms\Components\Select::make('single_user_id')
                                             ->label('بەکارهێنەر')
-                                            ->options(User::query()->whereNotNull('name')->pluck('name', 'id')->toArray())
+                                            ->options(User::whereNotNull('name')->pluck('name', 'id'))
                                             ->searchable()
-                                            ->preload()
                                             ->placeholder('بەکارهێنەرێک هەڵبژێرە')
                                             ->columnSpanFull(),
 
