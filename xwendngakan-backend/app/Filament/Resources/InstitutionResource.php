@@ -366,6 +366,18 @@ class InstitutionResource extends Resource
                         default => 'gray',
                     })
                     ->sortable(),
+                Tables\Columns\ToggleColumn::make('approved')
+                    ->label('پەسەند')
+                    ->onColor('success')
+                    ->offColor('danger')
+                    ->sortable()
+                    ->afterStateUpdated(function (bool $state): void {
+                        \Filament\Notifications\Notification::make()
+                            ->title($state ? 'خوێندنگاکە پەسەندکرا ✅' : 'خوێندنگاکە ڕەتکرایەوە')
+                            ->success()
+                            ->send();
+                    }),
+
                 Tables\Columns\TextColumn::make('phone')
                     ->label('مۆبایل')
                     ->searchable()
@@ -408,24 +420,6 @@ class InstitutionResource extends Resource
             ->filtersFormColumns(3)
             ->filtersLayout(Tables\Enums\FiltersLayout::AboveContent)
             ->actions([
-                Tables\Actions\Action::make('toggleApproval')
-                    ->label(fn (Institution $record) => $record->approved ? 'ڕەتکردنەوە' : 'پەسەندکردن')
-                    ->icon(fn (Institution $record) => $record->approved ? 'heroicon-m-x-circle' : 'heroicon-m-check-circle')
-                    ->color(fn (Institution $record) => $record->approved ? 'danger' : 'success')
-                    ->button()
-                    ->requiresConfirmation()
-                    ->modalHeading('دڵنیایت؟')
-                    ->modalDescription('دەتەوێت بارودۆخی ئەم خوێندنگایە بگۆڕیت؟')
-                    ->modalSubmitActionLabel('بەڵێ، گۆڕین')
-                    ->action(function (Institution $record) {
-                        $record->approved = !$record->approved;
-                        $record->save();
-                        
-                        \Filament\Notifications\Notification::make()
-                            ->title($record->approved ? 'پەسەندکرا' : 'ڕەتکرایەوە')
-                            ->success()
-                            ->send();
-                    }),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make()->label('بینین'),
                     Tables\Actions\EditAction::make()->label('دەستکاری'),
