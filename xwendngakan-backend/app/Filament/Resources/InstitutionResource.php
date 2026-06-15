@@ -372,9 +372,7 @@ class InstitutionResource extends Resource
                     ->icon('heroicon-o-phone')
                     ->copyable()
                     ->toggleable(),
-                Tables\Columns\ToggleColumn::make('approved')
-                    ->label('پەسەند')
-                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('بەروار')
                     ->since()
