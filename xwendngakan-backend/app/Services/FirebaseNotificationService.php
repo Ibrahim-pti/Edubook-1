@@ -145,30 +145,32 @@ class FirebaseNotificationService
                     $chunk
                 );
 
-                /** @var MulticastSendReport $report */
+                /** @var \Kreait\Firebase\Messaging\MulticastSendReport $report */
                 $report = $this->messaging->sendAll($messages);
 
-                foreach ($report->successes()->getItems() as $success) {
-                    $successful++;
+                // Count successes
+                $successful += $report->successes()->count();
+
+                // Log and collect failures using kreait 8.x API
+                foreach ($report->failures()->getItems() as $failure) {
+                    $failedToken = $failure->target()->value();
+                    $failed[]    = $failedToken;
+                    Log::error(
+                        'FCM token failed: ' . substr($failedToken, 0, 20) . '... => ' .
+                        ($failure->error()?->getMessage() ?? 'unknown error')
+                    );
                 }
 
-                foreach ($report->failures()->getItems() as $failure) {
-                    $failedToken = $chunk[$failure->messageIndex()] ?? null;
-                    if ($failedToken) {
-                        $failed[] = $failedToken;
-                        $error    = $failure->error()?->getMessage() ?? '';
-                        if (
-                            str_contains($error, 'Requested entity was not found') ||
-                            str_contains($error, 'not a valid FCM registration token') ||
-                            str_contains($error, 'registration-token-not-registered') ||
-                            str_contains($error, 'invalid-registration-token')
-                        ) {
-                            $this->clearInvalidToken($failedToken);
-                        }
-                    }
+                // Auto-remove invalid/unknown tokens from DB (kreait 8.x provides these directly)
+                $tokensToRemove = array_merge(
+                    $report->invalidTokens(),
+                    $report->unknownTokens()
+                );
+                foreach ($tokensToRemove as $badToken) {
+                    $this->clearInvalidToken($badToken);
                 }
             } catch (\Exception $e) {
-                Log::error('Firebase Batch Send Error: ' . $e->getMessage());
+                Log::error('Firebase Batch Send Exception: ' . $e->getMessage());
                 // Fall back to one-by-one for this chunk
                 foreach ($chunk as $token) {
                     if ($this->sendToToken($token, $title, $body, $data)) {
