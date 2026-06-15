@@ -7,6 +7,20 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\InstitutionController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\TeacherController;
+use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\InstitutionTypeController;
+use App\Http\Controllers\Admin\CvController;
+use App\Http\Controllers\Admin\InstitutionRequestController;
+use App\Http\Controllers\Admin\TeacherRequestController;
+use App\Http\Controllers\Admin\NotificationController;
 
 // Root: redirect to portal
 Route::get('/', function () {
@@ -14,15 +28,101 @@ Route::get('/', function () {
     return redirect()->route('portal.home');
 })->name('home');
 
-// Admin: approve/reject an institution straight from the list (plain GET link,
-// no Livewire — guaranteed to work from the table action button).
-Route::get('/admin/institutions/{institution}/toggle-approval', function (Institution $institution) {
-    abort_unless(auth()->check() && auth()->user()->is_admin, 403);
-    $institution->update(['approved' => ! $institution->approved]);
-    // Go straight back to the admin institutions list (not back(), which can
-    // fall back to "/" and bounce the admin into the portal).
-    return redirect()->route('filament.admin.resources.institutions.index');
-})->middleware('auth')->name('admin.institutions.toggle-approval');
+// =====================
+//  ADMIN PANEL ROUTES
+// =====================
+Route::prefix('admin')->name('admin.')->group(function () {
+
+    // Auth (بێ middleware)
+    Route::get('/login',  [AdminAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
+    Route::post('/logout',[AdminAuthController::class, 'logout'])->name('logout');
+
+    // پارێزراو — تەنیا ئەدمین
+    Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {
+
+        // Dashboard
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Institutions
+        Route::get('/institutions',                  [InstitutionController::class, 'index'])->name('institutions.index');
+        Route::get('/institutions/create',           [InstitutionController::class, 'create'])->name('institutions.create');
+        Route::post('/institutions',                 [InstitutionController::class, 'store'])->name('institutions.store');
+        Route::get('/institutions/{institution}/edit',[InstitutionController::class, 'edit'])->name('institutions.edit');
+        Route::put('/institutions/{institution}',    [InstitutionController::class, 'update'])->name('institutions.update');
+        Route::delete('/institutions/{institution}', [InstitutionController::class, 'destroy'])->name('institutions.destroy');
+        Route::post('/institutions/{institution}/toggle-approval',[InstitutionController::class,'toggleApproval'])->name('institutions.toggle');
+
+        // Users
+        Route::get('/users',                        [UserController::class, 'index'])->name('users.index');
+        Route::post('/users/{user}/toggle-approval',[UserController::class, 'toggleApproval'])->name('users.toggle');
+        Route::post('/users/{user}/notify',         [UserController::class, 'sendNotification'])->name('users.notify');
+        Route::delete('/users/{user}',              [UserController::class, 'destroy'])->name('users.destroy');
+
+        // Teachers
+        Route::get('/teachers',                         [TeacherController::class, 'index'])->name('teachers.index');
+        Route::get('/teachers/{teacher}/edit',          [TeacherController::class, 'edit'])->name('teachers.edit');
+        Route::put('/teachers/{teacher}',               [TeacherController::class, 'update'])->name('teachers.update');
+        Route::post('/teachers/{teacher}/toggle-approval',[TeacherController::class,'toggleApproval'])->name('teachers.toggle');
+        Route::delete('/teachers/{teacher}',            [TeacherController::class, 'destroy'])->name('teachers.destroy');
+
+        // Posts
+        Route::get('/posts',                        [PostController::class, 'index'])->name('posts.index');
+        Route::post('/posts/{post}/toggle-approval',[PostController::class, 'toggleApproval'])->name('posts.toggle');
+        Route::delete('/posts/{post}',              [PostController::class, 'destroy'])->name('posts.destroy');
+
+        // News
+        Route::get('/news',           [NewsController::class, 'index'])->name('news.index');
+        Route::get('/news/create',    [NewsController::class, 'create'])->name('news.create');
+        Route::post('/news',          [NewsController::class, 'store'])->name('news.store');
+        Route::get('/news/{news}/edit',[NewsController::class, 'edit'])->name('news.edit');
+        Route::put('/news/{news}',    [NewsController::class, 'update'])->name('news.update');
+        Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('news.destroy');
+
+        // Banners
+        Route::get('/banners',              [BannerController::class, 'index'])->name('banners.index');
+        Route::get('/banners/create',       [BannerController::class, 'create'])->name('banners.create');
+        Route::post('/banners',             [BannerController::class, 'store'])->name('banners.store');
+        Route::get('/banners/{banner}/edit',[BannerController::class, 'edit'])->name('banners.edit');
+        Route::put('/banners/{banner}',     [BannerController::class, 'update'])->name('banners.update');
+        Route::delete('/banners/{banner}',  [BannerController::class, 'destroy'])->name('banners.destroy');
+
+        // Events
+        Route::get('/events',              [EventController::class, 'index'])->name('events.index');
+        Route::get('/events/create',       [EventController::class, 'create'])->name('events.create');
+        Route::post('/events',             [EventController::class, 'store'])->name('events.store');
+        Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+        Route::put('/events/{event}',      [EventController::class, 'update'])->name('events.update');
+        Route::delete('/events/{event}',   [EventController::class, 'destroy'])->name('events.destroy');
+
+        // Institution Types
+        Route::get('/institution-types',                          [InstitutionTypeController::class,'index'])->name('types.index');
+        Route::post('/institution-types',                         [InstitutionTypeController::class,'store'])->name('types.store');
+        Route::put('/institution-types/{institutionType}',        [InstitutionTypeController::class,'update'])->name('types.update');
+        Route::delete('/institution-types/{institutionType}',     [InstitutionTypeController::class,'destroy'])->name('types.destroy');
+
+        // CVs
+        Route::get('/cvs',                    [CvController::class, 'index'])->name('cvs.index');
+        Route::get('/cvs/{cv}',               [CvController::class, 'show'])->name('cvs.show');
+        Route::post('/cvs/{cv}/toggle-review',[CvController::class, 'toggleReview'])->name('cvs.toggle');
+        Route::delete('/cvs/{cv}',            [CvController::class, 'destroy'])->name('cvs.destroy');
+
+        // Institution Requests
+        Route::get('/requests/institutions',                           [InstitutionRequestController::class,'index'])->name('inst-requests.index');
+        Route::post('/requests/institutions/{institutionRequest}/approve',[InstitutionRequestController::class,'approve'])->name('inst-requests.approve');
+        Route::post('/requests/institutions/{institutionRequest}/reject', [InstitutionRequestController::class,'reject'])->name('inst-requests.reject');
+        Route::delete('/requests/institutions/{institutionRequest}',      [InstitutionRequestController::class,'destroy'])->name('inst-requests.destroy');
+
+        // Teacher Requests
+        Route::get('/requests/teachers',                             [TeacherRequestController::class,'index'])->name('teacher-requests.index');
+        Route::post('/requests/teachers/{teacherRequest}/status',    [TeacherRequestController::class,'updateStatus'])->name('teacher-requests.status');
+        Route::delete('/requests/teachers/{teacherRequest}',         [TeacherRequestController::class,'destroy'])->name('teacher-requests.destroy');
+
+        // Notifications
+        Route::get('/notifications',  [NotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/broadcast', [NotificationController::class, 'broadcast'])->name('notifications.broadcast');
+    });
+});
 
 // =====================
 //  INSTITUTION PORTAL
