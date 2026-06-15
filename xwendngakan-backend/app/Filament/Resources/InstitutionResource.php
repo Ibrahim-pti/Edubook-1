@@ -421,7 +421,13 @@ class InstitutionResource extends Resource
                     ->icon(fn (Institution $record): string => $record->approved ? 'heroicon-m-x-mark' : 'heroicon-m-check')
                     ->color(fn (Institution $record): string => $record->approved ? 'danger' : 'success')
                     ->button()
-                    ->url(fn (Institution $record): string => route('admin.institutions.toggle-approval', $record)),
+                    ->action(function (Institution $record) {
+                        $record->update(['approved' => !$record->approved]);
+                        Notification::make()
+                            ->title($record->approved ? 'پەسەندکرا' : 'ڕەتکرایەوە')
+                            ->success()
+                            ->send();
+                    }),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make()->label('بینین'),
                     Tables\Actions\EditAction::make()->label('دەستکاری'),
