@@ -31,32 +31,19 @@ class AdminMessage extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', \App\Channels\FirebaseChannel::class];
     }
 
     /**
-     * Send FCM push notification manually.
+     * Get the Firebase representation of the notification.
      */
-    protected function sendFcmNotification($token)
+    public function toFirebase(object $notifiable): array
     {
-        try {
-            $messaging = app('firebase.messaging');
-            
-            $message = CloudMessage::fromArray([
-                'token' => $token,
-                'notification' => [
-                    'title' => $this->title,
-                    'body' => $this->body,
-                ],
-                'data' => array_merge($this->data, [
-                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                ]),
-            ]);
-
-            $messaging->send($message);
-        } catch (\Exception $e) {
-            \Log::error('FCM Error: ' . $e->getMessage());
-        }
+        return [
+            'title' => $this->title,
+            'body' => $this->body,
+            'data' => $this->data,
+        ];
     }
 
     /**
