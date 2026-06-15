@@ -14,6 +14,14 @@ Route::get('/', function () {
     return redirect()->route('portal.home');
 })->name('home');
 
+// Admin: approve/reject an institution straight from the list (plain GET link,
+// no Livewire — guaranteed to work from the table action button).
+Route::get('/admin/institutions/{institution}/toggle-approval', function (Institution $institution) {
+    abort_unless(auth()->check() && auth()->user()->is_admin, 403);
+    $institution->update(['approved' => ! $institution->approved]);
+    return back();
+})->middleware('auth')->name('admin.institutions.toggle-approval');
+
 // =====================
 //  INSTITUTION PORTAL
 // =====================

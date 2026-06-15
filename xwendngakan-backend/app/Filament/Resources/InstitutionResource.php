@@ -414,20 +414,14 @@ class InstitutionResource extends Resource
             ->actions([
                 // Direct approve/reject button — updates the column straight in the
                 // DB (no modal, no full model save) so it always works from the list.
+                // Plain GET link (not a Livewire action) so it always fires from
+                // the list — toggles approval server-side and reloads the table.
                 Tables\Actions\Action::make('approve')
                     ->label(fn (Institution $record): string => $record->approved ? 'ڕەتکردنەوە' : 'پەسەندکردن')
                     ->icon(fn (Institution $record): string => $record->approved ? 'heroicon-m-x-mark' : 'heroicon-m-check')
                     ->color(fn (Institution $record): string => $record->approved ? 'danger' : 'success')
                     ->button()
-                    ->action(function (Institution $record): void {
-                        $newState = ! $record->approved;
-                        Institution::whereKey($record->getKey())->update(['approved' => $newState]);
-
-                        \Filament\Notifications\Notification::make()
-                            ->title($newState ? 'خوێندنگاکە پەسەندکرا ✅' : 'خوێندنگاکە ڕەتکرایەوە')
-                            ->success()
-                            ->send();
-                    }),
+                    ->url(fn (Institution $record): string => route('admin.institutions.toggle-approval', $record)),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make()->label('بینین'),
                     Tables\Actions\EditAction::make()->label('دەستکاری'),
