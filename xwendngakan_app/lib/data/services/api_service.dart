@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xwendngakan_app/data/models/post_model.dart';
@@ -36,10 +37,10 @@ class ApiService {
   }
 
   Map<String, String> _headers({String? token}) => {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    if (token != null) 'Authorization': 'Bearer $token',
-  };
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      };
 
   Future<Map<String, String>> _authHeaders() async {
     final token = await _getToken();
@@ -50,13 +51,16 @@ class ApiService {
   // AUTH
   // ==================
 
-  Future<ApiResult<Map<String, dynamic>>> login(String email, String password) async {
+  Future<ApiResult<Map<String, dynamic>>> login(
+      String email, String password) async {
     try {
-      final res = await http.post(
-        Uri.parse('$_base/login'),
-        headers: _headers(),
-        body: jsonEncode({'email': email, 'password': password}),
-      ).timeout(AppConstants.connectTimeout);
+      final res = await http
+          .post(
+            Uri.parse('$_base/login'),
+            headers: _headers(),
+            body: jsonEncode({'email': email, 'password': password}),
+          )
+          .timeout(AppConstants.connectTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
@@ -71,16 +75,18 @@ class ApiService {
   Future<ApiResult<Map<String, dynamic>>> register(
       String name, String email, String password) async {
     try {
-      final res = await http.post(
-        Uri.parse('$_base/register'),
-        headers: _headers(),
-        body: jsonEncode({
-          'name': name,
-          'email': email,
-          'password': password,
-          'password_confirmation': password,
-        }),
-      ).timeout(AppConstants.connectTimeout);
+      final res = await http
+          .post(
+            Uri.parse('$_base/register'),
+            headers: _headers(),
+            body: jsonEncode({
+              'name': name,
+              'email': email,
+              'password': password,
+              'password_confirmation': password,
+            }),
+          )
+          .timeout(AppConstants.connectTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 201 && data['success'] == true) {
@@ -95,10 +101,12 @@ class ApiService {
   Future<ApiResult<bool>> logout() async {
     try {
       final headers = await _authHeaders();
-      await http.post(
-        Uri.parse('$_base/logout'),
-        headers: headers,
-      ).timeout(AppConstants.connectTimeout);
+      await http
+          .post(
+            Uri.parse('$_base/logout'),
+            headers: headers,
+          )
+          .timeout(AppConstants.connectTimeout);
       return ApiResult.success(true);
     } catch (e) {
       return ApiResult.failure('$e');
@@ -108,10 +116,12 @@ class ApiService {
   Future<ApiResult<UserModel>> getUser() async {
     try {
       final headers = await _authHeaders();
-      final res = await http.get(
-        Uri.parse('$_base/user'),
-        headers: headers,
-      ).timeout(AppConstants.connectTimeout);
+      final res = await http
+          .get(
+            Uri.parse('$_base/user'),
+            headers: headers,
+          )
+          .timeout(AppConstants.connectTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200) {
@@ -125,11 +135,13 @@ class ApiService {
 
   Future<ApiResult<bool>> forgotPassword(String email) async {
     try {
-      final res = await http.post(
-        Uri.parse('$_base/forgot-password'),
-        headers: _headers(),
-        body: jsonEncode({'email': email}),
-      ).timeout(AppConstants.connectTimeout);
+      final res = await http
+          .post(
+            Uri.parse('$_base/forgot-password'),
+            headers: _headers(),
+            body: jsonEncode({'email': email}),
+          )
+          .timeout(AppConstants.connectTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       return data['success'] == true
@@ -142,11 +154,13 @@ class ApiService {
 
   Future<ApiResult<bool>> verifyResetCode(String email, String code) async {
     try {
-      final res = await http.post(
-        Uri.parse('$_base/verify-reset-code'),
-        headers: _headers(),
-        body: jsonEncode({'email': email, 'code': code}),
-      ).timeout(AppConstants.connectTimeout);
+      final res = await http
+          .post(
+            Uri.parse('$_base/verify-reset-code'),
+            headers: _headers(),
+            body: jsonEncode({'email': email, 'code': code}),
+          )
+          .timeout(AppConstants.connectTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       return data['success'] == true
@@ -160,16 +174,18 @@ class ApiService {
   Future<ApiResult<bool>> resetPassword(
       String email, String code, String password) async {
     try {
-      final res = await http.post(
-        Uri.parse('$_base/reset-password'),
-        headers: _headers(),
-        body: jsonEncode({
-          'email': email,
-          'code': code,
-          'password': password,
-          'password_confirmation': password,
-        }),
-      ).timeout(AppConstants.connectTimeout);
+      final res = await http
+          .post(
+            Uri.parse('$_base/reset-password'),
+            headers: _headers(),
+            body: jsonEncode({
+              'email': email,
+              'code': code,
+              'password': password,
+              'password_confirmation': password,
+            }),
+          )
+          .timeout(AppConstants.connectTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       return data['success'] == true
@@ -196,13 +212,16 @@ class ApiService {
         if (type != null && type.isNotEmpty) 'type': type,
         if (city != null && city.isNotEmpty) 'city': city,
         if (search != null && search.isNotEmpty) 'search': search,
-        if (sector != null && sector.isNotEmpty && sector != 'all') 'sector': sector,
+        if (sector != null && sector.isNotEmpty && sector != 'all')
+          'sector': sector,
         'page': '$page',
         'per_page': '${AppConstants.pageSize}',
       };
 
-      final uri = Uri.parse('$_base/institutions').replace(queryParameters: query);
-      final res = await http.get(uri, headers: _headers())
+      final uri =
+          Uri.parse('$_base/institutions').replace(queryParameters: query);
+      final res = await http
+          .get(uri, headers: _headers())
           .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
@@ -210,7 +229,7 @@ class ApiService {
         final list = (data['data'] as List)
             .map((e) => InstitutionModel.fromJson(e))
             .toList();
-        
+
         return ApiResult.success(list);
       }
       return ApiResult.failure(data['message'] ?? 'Failed');
@@ -237,31 +256,51 @@ class ApiService {
         ig: "https://instagram.com",
         tg: "https://t.me",
         wa: "9647501234567",
-        logo: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?q=80&w=200&h=200&auto=format&fit=crop",
-        img: "https://images.unsplash.com/photo-1541339907198-e08756ebafe1?q=80&w=1200&h=800&auto=format&fit=crop",
-        desc: "ئەم ئەکادیمیایە یەکێکە لە ناوەندە زانستییە پێشەنگەکان لە هەرێمی کوردستان، کە ئامانجی پێگەیاندنی نەوەیەکی کارامەیە لە بوارەکانی تەکنەلۆژیا، پزیشکی، و زانستە مرۆییەکان. بە بەکارهێنانی نوێترین پرۆگرامی خوێندن و تاقیگەی پێشکەوتوو، ئێمە داهاتوویەکی گەش بۆ خوێندکاران دابین دەکەین.",
+        logo:
+            "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?q=80&w=200&h=200&auto=format&fit=crop",
+        img:
+            "https://images.unsplash.com/photo-1541339907198-e08756ebafe1?q=80&w=1200&h=800&auto=format&fit=crop",
+        desc:
+            "ئەم ئەکادیمیایە یەکێکە لە ناوەندە زانستییە پێشەنگەکان لە هەرێمی کوردستان، کە ئامانجی پێگەیاندنی نەوەیەکی کارامەیە لە بوارەکانی تەکنەلۆژیا، پزیشکی، و زانستە مرۆییەکان. بە بەکارهێنانی نوێترین پرۆگرامی خوێندن و تاقیگەی پێشکەوتوو، ئێمە داهاتوویەکی گەش بۆ خوێندکاران دابین دەکەین.",
         foundedYear: 2010,
         studentsCount: 12500,
         colleges: jsonEncode([
-          {'name': 'College of Engineering', 'departments': ['Software Engineering', 'Civil Engineering', 'Mechatronics']},
-          {'name': 'College of Medicine', 'departments': ['General Medicine', 'Pharmacy', 'Nursing']},
-          {'name': 'College of Science', 'departments': ['Computer Science', 'Biology', 'Chemistry']},
+          {
+            'name': 'College of Engineering',
+            'departments': [
+              'Software Engineering',
+              'Civil Engineering',
+              'Mechatronics'
+            ]
+          },
+          {
+            'name': 'College of Medicine',
+            'departments': ['General Medicine', 'Pharmacy', 'Nursing']
+          },
+          {
+            'name': 'College of Science',
+            'departments': ['Computer Science', 'Biology', 'Chemistry']
+          },
         ]),
         posts: [
           PostModel(
             id: 1,
             institutionId: 999,
             title: "وەرگرتنی خوێندکاران بۆ ساڵی نوێ",
-            content: "ئاگاداری هەموو خوێندکارانی ئازیز دەکەینەوە کە دەرگای وەرگرتن بۆ ساڵی خوێندنی ٢٠٢٤-٢٠٢٥ کراوەیە. دەتوانن لە ڕێگەی وێبسایتەکەمانەوە داواکاری پێشکەش بکەن.",
-            image: "https://images.unsplash.com/photo-1523050853063-9158946122b2?q=80&w=800&h=500&auto=format&fit=crop",
+            content:
+                "ئاگاداری هەموو خوێندکارانی ئازیز دەکەینەوە کە دەرگای وەرگرتن بۆ ساڵی خوێندنی ٢٠٢٤-٢٠٢٥ کراوەیە. دەتوانن لە ڕێگەی وێبسایتەکەمانەوە داواکاری پێشکەش بکەن.",
+            image:
+                "https://images.unsplash.com/photo-1523050853063-9158946122b2?q=80&w=800&h=500&auto=format&fit=crop",
             createdAt: "2024-05-10T10:00:00Z",
           ),
           PostModel(
             id: 2,
             institutionId: 999,
             title: "سیمینارێکی زانستی لەسەر ژیری دەستکرد",
-            content: "ئەمڕۆ لە هۆڵی کۆنفرانسەکانی ئەکادیمیا، سیمینارێکی تایبەت بە پەرەپێدانی ژیری دەستکرد لە بواری پزیشکیدا بەڕێوەچوو بە بەشداری چەندین پسپۆڕی نێودەوڵەتی.",
-            image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=800&h=500&auto=format&fit=crop",
+            content:
+                "ئەمڕۆ لە هۆڵی کۆنفرانسەکانی ئەکادیمیا، سیمینارێکی تایبەت بە پەرەپێدانی ژیری دەستکرد لە بواری پزیشکیدا بەڕێوەچوو بە بەشداری چەندین پسپۆڕی نێودەوڵەتی.",
+            image:
+                "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=800&h=500&auto=format&fit=crop",
             createdAt: "2024-05-09T14:30:00Z",
           ),
         ],
@@ -270,10 +309,12 @@ class ApiService {
     }
 
     try {
-      final res = await http.get(
-        Uri.parse('$_base/institutions/$id'),
-        headers: _headers(),
-      ).timeout(AppConstants.receiveTimeout);
+      final res = await http
+          .get(
+            Uri.parse('$_base/institutions/$id'),
+            headers: _headers(),
+          )
+          .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
@@ -288,15 +329,18 @@ class ApiService {
   Future<ApiResult<InstitutionModel?>> getMyInstitution() async {
     try {
       final headers = await _authHeaders();
-      final res = await http.get(
-        Uri.parse('$_base/my-institution'),
-        headers: headers,
-      ).timeout(AppConstants.receiveTimeout);
+      final res = await http
+          .get(
+            Uri.parse('$_base/my-institution'),
+            headers: headers,
+          )
+          .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
         final inst = data['data'];
-        return ApiResult.success(inst != null ? InstitutionModel.fromJson(inst) : null);
+        return ApiResult.success(
+            inst != null ? InstitutionModel.fromJson(inst) : null);
       }
       return ApiResult.failure(data['message'] ?? 'Failed');
     } catch (e) {
@@ -331,7 +375,8 @@ class ApiService {
         request.files.add(await http.MultipartFile.fromPath('img', imgPath));
       }
 
-      final streamed = await request.send().timeout(AppConstants.receiveTimeout);
+      final streamed =
+          await request.send().timeout(AppConstants.receiveTimeout);
       final body = await streamed.stream.bytesToString();
       final data = jsonDecode(body) as Map<String, dynamic>;
 
@@ -375,7 +420,8 @@ class ApiService {
         request.files.add(await http.MultipartFile.fromPath('img', imgPath));
       }
 
-      final streamed = await request.send().timeout(AppConstants.receiveTimeout);
+      final streamed =
+          await request.send().timeout(AppConstants.receiveTimeout);
       final body = await streamed.stream.bytesToString();
       final data = jsonDecode(body) as Map<String, dynamic>;
 
@@ -390,10 +436,12 @@ class ApiService {
 
   Future<ApiResult<Map<String, dynamic>>> getStats() async {
     try {
-      final res = await http.get(
-        Uri.parse('$_base/stats'),
-        headers: _headers(),
-      ).timeout(AppConstants.receiveTimeout);
+      final res = await http
+          .get(
+            Uri.parse('$_base/stats'),
+            headers: _headers(),
+          )
+          .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
@@ -407,10 +455,12 @@ class ApiService {
 
   Future<ApiResult<Map<String, dynamic>>> getAppData() async {
     try {
-      final res = await http.get(
-        Uri.parse('$_base/app-data'),
-        headers: _headers(),
-      ).timeout(AppConstants.receiveTimeout);
+      final res = await http
+          .get(
+            Uri.parse('$_base/app-data'),
+            headers: _headers(),
+          )
+          .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
@@ -441,7 +491,8 @@ class ApiService {
       };
 
       final uri = Uri.parse('$_base/teachers').replace(queryParameters: query);
-      final res = await http.get(uri, headers: _headers())
+      final res = await http
+          .get(uri, headers: _headers())
           .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
@@ -459,10 +510,12 @@ class ApiService {
 
   Future<ApiResult<TeacherModel>> getTeacher(int id) async {
     try {
-      final res = await http.get(
-        Uri.parse('$_base/teachers/$id'),
-        headers: _headers(),
-      ).timeout(AppConstants.connectTimeout);
+      final res = await http
+          .get(
+            Uri.parse('$_base/teachers/$id'),
+            headers: _headers(),
+          )
+          .timeout(AppConstants.connectTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
@@ -477,11 +530,13 @@ class ApiService {
 
   Future<ApiResult<bool>> registerTeacher(Map<String, dynamic> form) async {
     try {
-      final res = await http.post(
-        Uri.parse('$_base/teachers'),
-        headers: _headers(),
-        body: jsonEncode(form),
-      ).timeout(AppConstants.receiveTimeout);
+      final res = await http
+          .post(
+            Uri.parse('$_base/teachers'),
+            headers: _headers(),
+            body: jsonEncode(form),
+          )
+          .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       return data['success'] == true
@@ -508,19 +563,20 @@ class ApiService {
         if (search != null && search.isNotEmpty) 'search': search,
         if (city != null && city.isNotEmpty) 'city': city,
         if (field != null && field.isNotEmpty) 'field': field,
-        if (educationLevel != null && educationLevel.isNotEmpty) 'education_level': educationLevel,
+        if (educationLevel != null && educationLevel.isNotEmpty)
+          'education_level': educationLevel,
         'page': '$page',
       };
 
       final uri = Uri.parse('$_base/cvs').replace(queryParameters: query);
-      final res = await http.get(uri, headers: _headers())
+      final res = await http
+          .get(uri, headers: _headers())
           .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
-        final list = (data['data'] as List)
-            .map((e) => CvModel.fromJson(e))
-            .toList();
+        final list =
+            (data['data'] as List).map((e) => CvModel.fromJson(e)).toList();
         return ApiResult.success(list);
       }
       return ApiResult.failure(data['message'] ?? 'Failed');
@@ -529,34 +585,38 @@ class ApiService {
     }
   }
 
-  Future<ApiResult<bool>> submitCv(Map<String, dynamic> form, {String? photoPath}) async {
+  Future<ApiResult<bool>> submitCv(Map<String, dynamic> form,
+      {String? photoPath}) async {
     try {
       if (photoPath != null && photoPath.isNotEmpty) {
         var request = http.MultipartRequest('POST', Uri.parse('$_base/cvs'));
-        
+
         final Map<String, String> multipartHeaders = Map.from(_headers());
         multipartHeaders.remove('Content-Type');
         request.headers.addAll(multipartHeaders);
-        
+
         form.forEach((key, value) {
           if (value != null) request.fields[key] = value.toString();
         });
-        
-        request.files.add(await http.MultipartFile.fromPath('photo', photoPath));
-        
+
+        request.files
+            .add(await http.MultipartFile.fromPath('photo', photoPath));
+
         var res = await request.send().timeout(AppConstants.receiveTimeout);
         var resData = await res.stream.bytesToString();
         var data = jsonDecode(resData) as Map<String, dynamic>;
-        
+
         return data['success'] == true
             ? ApiResult.success(true)
             : ApiResult.failure(data['message'] ?? 'Failed');
       } else {
-        final res = await http.post(
-          Uri.parse('$_base/cvs'),
-          headers: _headers(),
-          body: jsonEncode(form),
-        ).timeout(AppConstants.receiveTimeout);
+        final res = await http
+            .post(
+              Uri.parse('$_base/cvs'),
+              headers: _headers(),
+              body: jsonEncode(form),
+            )
+            .timeout(AppConstants.receiveTimeout);
 
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         return data['success'] == true
@@ -570,10 +630,12 @@ class ApiService {
 
   Future<ApiResult<List<String>>> getEducationLevels() async {
     try {
-      final res = await http.get(
-        Uri.parse('$_base/education-levels'),
-        headers: _headers(),
-      ).timeout(AppConstants.receiveTimeout);
+      final res = await http
+          .get(
+            Uri.parse('$_base/education-levels'),
+            headers: _headers(),
+          )
+          .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
@@ -588,10 +650,12 @@ class ApiService {
 
   Future<ApiResult<CvModel>> getCv(int id) async {
     try {
-      final res = await http.get(
-        Uri.parse('$_base/cvs/$id'),
-        headers: _headers(),
-      ).timeout(AppConstants.connectTimeout);
+      final res = await http
+          .get(
+            Uri.parse('$_base/cvs/$id'),
+            headers: _headers(),
+          )
+          .timeout(AppConstants.connectTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
@@ -611,10 +675,12 @@ class ApiService {
   Future<ApiResult<List<Map<String, dynamic>>>> getNotifications() async {
     try {
       final headers = await _authHeaders();
-      final res = await http.get(
-        Uri.parse('$_base/notifications'),
-        headers: headers,
-      ).timeout(AppConstants.receiveTimeout);
+      final res = await http
+          .get(
+            Uri.parse('$_base/notifications'),
+            headers: headers,
+          )
+          .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
@@ -632,26 +698,38 @@ class ApiService {
   Future<void> markAllNotificationsRead() async {
     try {
       final headers = await _authHeaders();
-      await http.post(
-        Uri.parse('$_base/notifications/mark-read'),
-        headers: headers,
-      ).timeout(AppConstants.connectTimeout);
+      await http
+          .post(
+            Uri.parse('$_base/notifications/mark-read'),
+            headers: headers,
+          )
+          .timeout(AppConstants.connectTimeout);
     } catch (_) {}
   }
 
   Future<ApiResult<bool>> updateFcmToken(String token) async {
     try {
       final headers = await _authHeaders();
-      final res = await http.post(
-        Uri.parse('$_base/fcm-token'),
-        headers: headers,
-        body: jsonEncode({'fcm_token': token}),
-      ).timeout(AppConstants.connectTimeout);
+      debugPrint('[FCM] Sending token to server...');
+      debugPrint(
+          '[FCM] Auth header: ${headers['Authorization']?.substring(0, 20) ?? 'NULL'}...');
+      debugPrint('[FCM] URL: $_base/fcm-token');
+      final res = await http
+          .post(
+            Uri.parse('$_base/fcm-token'),
+            headers: headers,
+            body: jsonEncode({'fcm_token': token}),
+          )
+          .timeout(AppConstants.connectTimeout);
+
+      debugPrint('[FCM] Response status: ${res.statusCode}');
+      debugPrint('[FCM] Response body: ${res.body}');
 
       return res.statusCode == 200
           ? ApiResult.success(true)
-          : ApiResult.failure('Failed');
+          : ApiResult.failure('Status ${res.statusCode}: ${res.body}');
     } catch (e) {
+      debugPrint('[FCM] Exception: $e');
       return ApiResult.failure('$e');
     }
   }
@@ -681,8 +759,10 @@ class ApiService {
 
   Future<ApiResult<List<dynamic>>> getNews({int page = 1}) async {
     try {
-      final uri = Uri.parse('$_base/news').replace(queryParameters: {'page': '$page'});
-      final res = await http.get(uri, headers: _headers())
+      final uri =
+          Uri.parse('$_base/news').replace(queryParameters: {'page': '$page'});
+      final res = await http
+          .get(uri, headers: _headers())
           .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
@@ -695,13 +775,15 @@ class ApiService {
     }
   }
 
-  Future<ApiResult<List<dynamic>>> getPosts({int page = 1, int perPage = 20}) async {
+  Future<ApiResult<List<dynamic>>> getPosts(
+      {int page = 1, int perPage = 20}) async {
     try {
       final uri = Uri.parse('$_base/posts').replace(queryParameters: {
         'page': '$page',
         'per_page': '$perPage',
       });
-      final res = await http.get(uri, headers: _headers())
+      final res = await http
+          .get(uri, headers: _headers())
           .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
@@ -713,8 +795,6 @@ class ApiService {
       return ApiResult.failure('$e');
     }
   }
-
-
 
   // ==================
   // EVENTS
@@ -722,8 +802,10 @@ class ApiService {
 
   Future<ApiResult<List<dynamic>>> getEvents({int page = 1}) async {
     try {
-      final uri = Uri.parse('$_base/events').replace(queryParameters: {'page': '$page'});
-      final res = await http.get(uri, headers: _headers())
+      final uri = Uri.parse('$_base/events')
+          .replace(queryParameters: {'page': '$page'});
+      final res = await http
+          .get(uri, headers: _headers())
           .timeout(AppConstants.receiveTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
@@ -740,16 +822,19 @@ class ApiService {
   // APP VERSION
   // ==================
 
-  Future<ApiResult<Map<String, dynamic>>> checkUpdate(String platform, int build) async {
+  Future<ApiResult<Map<String, dynamic>>> checkUpdate(
+      String platform, int build) async {
     try {
-      final res = await http.post(
-        Uri.parse('$_base/check-update'),
-        headers: _headers(),
-        body: jsonEncode({
-          'platform': platform,
-          'build': build,
-        }),
-      ).timeout(AppConstants.connectTimeout);
+      final res = await http
+          .post(
+            Uri.parse('$_base/check-update'),
+            headers: _headers(),
+            body: jsonEncode({
+              'platform': platform,
+              'build': build,
+            }),
+          )
+          .timeout(AppConstants.connectTimeout);
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode == 200 && data['success'] == true) {
@@ -761,4 +846,3 @@ class ApiService {
     }
   }
 }
-

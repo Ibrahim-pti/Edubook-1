@@ -113,7 +113,12 @@ class NotificationService {
         debugPrint('\n========== FCM TOKEN ==========');
         debugPrint(token);
         debugPrint('===============================\n');
-        await ApiService().updateFcmToken(token);
+        final result = await ApiService().updateFcmToken(token);
+        if (result.success) {
+          debugPrint('[FCM] ✅ Token successfully saved to server!');
+        } else {
+          debugPrint('[FCM] ❌ Failed to save token: ${result.error}');
+        }
       } else {
         debugPrint('FCM token is null — Firebase may not be configured correctly');
       }
