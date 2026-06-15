@@ -104,7 +104,9 @@ class NotificationService {
       final FirebaseMessaging fcm = FirebaseMessaging.instance;
       String? token = await fcm.getToken();
       if (token != null) {
-        debugPrint('FCM Token: ${token.substring(0, 20)}...');
+        debugPrint('\n========== FCM TOKEN ==========');
+        debugPrint(token);
+        debugPrint('===============================\n');
         await ApiService().updateFcmToken(token);
       }
 
