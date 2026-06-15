@@ -196,16 +196,28 @@ class SendNotifications extends Page implements HasForms
                                                         $customData
                                                     ));
 
-                                                     // Note: notify() already triggers FirebaseChannel
-                                                     // which sends the push notification via FCM.
-                                                     // No need to call sendToToken() separately.
-
                                                      if ($user->fcm_token) {
-                                                         Notification::make()
-                                                             ->title('نۆتیفیکەیشن بە سەرکەوتوویی نێردرا')
-                                                             ->body('نێردرا بۆ ' . $user->name . ' ✅')
-                                                             ->success()
-                                                             ->send();
+                                                         $firebase = app(\App\Services\FirebaseNotificationService::class);
+                                                         $success = $firebase->sendToToken(
+                                                             $user->fcm_token,
+                                                             $data['single_title'],
+                                                             $data['single_body'],
+                                                             $customData
+                                                         );
+
+                                                         if ($success) {
+                                                             Notification::make()
+                                                                 ->title('نۆتیفیکەیشن بە سەرکەوتوویی نێردرا')
+                                                                 ->body('نێردرا بۆ ' . $user->name . ' ✅')
+                                                                 ->success()
+                                                                 ->send();
+                                                         } else {
+                                                             Notification::make()
+                                                                 ->title('هەڵە لە ناردنی Push')
+                                                                 ->body('نۆتیفیکەیشنەکە لە داتابەیس تۆمارکرا بەڵام ناردنی بۆ مۆبایلەکەی سەرکەوتوو نەبوو.')
+                                                                 ->danger()
+                                                                 ->send();
+                                                         }
                                                      } else {
                                                          Notification::make()
                                                              ->title('تۆمارکرا بەڵام Push نێردرا نا')

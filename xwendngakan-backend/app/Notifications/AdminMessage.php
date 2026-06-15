@@ -31,7 +31,7 @@ class AdminMessage extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database', \App\Channels\FirebaseChannel::class];
+        return ['database'];
     }
 
     /**
