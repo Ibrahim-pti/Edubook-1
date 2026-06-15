@@ -77,11 +77,7 @@ class InstitutionResource extends Resource
                                 ->mapWithKeys(fn ($t) => [$t->key => ($t->emoji ? $t->emoji . ' ' : '') . $t->name])
                                 ->toArray()
                             ),
-                        Forms\Components\Toggle::make('approved')
-                            ->label('پەسەندکراو')
-                            ->default(false)
-                            ->helperText('ئەگەر چالاک بکەیت، لە ئەپەکەدا دەردەکەوێت')
-                            ->columnSpanFull(),
+                        // پەسەندکردن تەنها لە لیستەکەوە دەکرێت (دوگمەی پەسەند/ڕەت)
                         Forms\Components\Select::make('country')
                             ->label('وڵات / هەرێم')
                             ->options([
@@ -366,17 +362,13 @@ class InstitutionResource extends Resource
                         default => 'gray',
                     })
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('approved')
-                    ->label('پەسەند')
-                    ->onColor('success')
-                    ->offColor('danger')
-                    ->sortable()
-                    ->afterStateUpdated(function (bool $state): void {
-                        \Filament\Notifications\Notification::make()
-                            ->title($state ? 'خوێندنگاکە پەسەندکرا ✅' : 'خوێندنگاکە ڕەتکرایەوە')
-                            ->success()
-                            ->send();
-                    }),
+                Tables\Columns\TextColumn::make('approved')
+                    ->label('دۆخ')
+                    ->badge()
+                    ->formatStateUsing(fn (bool $state): string => $state ? 'پەسەندکراو' : 'چاوەڕوان')
+                    ->color(fn (bool $state): string => $state ? 'success' : 'warning')
+                    ->icon(fn (bool $state): string => $state ? 'heroicon-m-check-circle' : 'heroicon-m-clock')
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('phone')
                     ->label('مۆبایل')
@@ -420,6 +412,22 @@ class InstitutionResource extends Resource
             ->filtersFormColumns(3)
             ->filtersLayout(Tables\Enums\FiltersLayout::AboveContent)
             ->actions([
+                // Direct approve/reject button — updates the column straight in the
+                // DB (no modal, no full model save) so it always works from the list.
+                Tables\Actions\Action::make('approve')
+                    ->label(fn (Institution $record): string => $record->approved ? 'ڕەتکردنەوە' : 'پەسەندکردن')
+                    ->icon(fn (Institution $record): string => $record->approved ? 'heroicon-m-x-mark' : 'heroicon-m-check')
+                    ->color(fn (Institution $record): string => $record->approved ? 'danger' : 'success')
+                    ->button()
+                    ->action(function (Institution $record): void {
+                        $newState = ! $record->approved;
+                        Institution::whereKey($record->getKey())->update(['approved' => $newState]);
+
+                        \Filament\Notifications\Notification::make()
+                            ->title($newState ? 'خوێندنگاکە پەسەندکرا ✅' : 'خوێندنگاکە ڕەتکرایەوە')
+                            ->success()
+                            ->send();
+                    }),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make()->label('بینین'),
                     Tables\Actions\EditAction::make()->label('دەستکاری'),
