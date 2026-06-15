@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../../data/services/api_service.dart';
+import '../router.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -15,6 +17,10 @@ class NotificationService {
 
   bool _initialized = false;
   StreamSubscription<String>? _tokenRefreshSub;
+
+  /// Called when a push arrives while the app is in the foreground, so the
+  /// in-app notification badge can update in real time.
+  static VoidCallback? onMessageReceived;
 
   /// Android notification channel for high-importance notifications
   static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
@@ -138,8 +144,10 @@ class NotificationService {
   void _handleForegroundMessage(RemoteMessage message) {
     debugPrint('Foreground message received: ${message.messageId}');
 
+    // Bump the in-app notification badge in real time.
+    onMessageReceived?.call();
+
     final notification = message.notification;
-    final android = message.notification?.android;
     final data = message.data;
 
     // Get title/body from notification payload or data payload
@@ -171,7 +179,7 @@ class NotificationService {
             presentSound: true,
           ),
         ),
-        payload: message.data['type'] ?? '',
+        payload: jsonEncode(message.data),
       );
     } catch (e) {
       debugPrint('Error showing local notification: $e');
@@ -191,6 +199,7 @@ class NotificationService {
             ),
             iOS: const DarwinNotificationDetails(),
           ),
+          payload: jsonEncode(message.data),
         );
       } catch (e2) {
         debugPrint('Fallback local notification also failed: $e2');
@@ -198,15 +207,34 @@ class NotificationService {
     }
   }
 
-  /// Handle notification tap from background
+  /// Handle FCM notification tap (background / terminated → opened).
   void _handleNotificationTap(RemoteMessage message) {
     debugPrint('Notification tapped: ${message.messageId}');
-    // Navigation can be handled here if needed
+    _navigateFromData(message.data);
   }
 
-  /// Handle local notification tap
+  /// Handle local (foreground) notification tap — payload is the JSON data.
   void _onNotificationTap(NotificationResponse response) {
     debugPrint('Local notification tapped: ${response.payload}');
-    // Navigation can be handled here if needed
+    final payload = response.payload;
+    if (payload == null || payload.isEmpty) return;
+    try {
+      final data = (jsonDecode(payload) as Map).cast<String, dynamic>();
+      _navigateFromData(data);
+    } catch (e) {
+      debugPrint('Could not parse notification payload: $e');
+    }
+  }
+
+  /// Route a notification to the right screen based on its data payload.
+  /// Currently supports `type == 'post'` → opens the post detail screen.
+  Future<void> _navigateFromData(Map<String, dynamic> data) async {
+    if (data['type'] != 'post' || data['post_id'] == null) return;
+
+    final result = await ApiService().getPost(data['post_id'].toString());
+    if (!result.success || result.data == null) return;
+
+    // Navigate without a BuildContext (tap happens outside the widget tree).
+    appRouter?.push('/news-detail', extra: result.data);
   }
 }

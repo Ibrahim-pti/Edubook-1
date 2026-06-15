@@ -796,6 +796,24 @@ class ApiService {
     }
   }
 
+  /// Fetch a single post by id (used for notification deep-linking).
+  Future<ApiResult<PostModel>> getPost(String id) async {
+    try {
+      final res = await http
+          .get(Uri.parse('$_base/posts/$id'), headers: _headers())
+          .timeout(AppConstants.receiveTimeout);
+
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      if (res.statusCode == 200 && data['success'] == true) {
+        return ApiResult.success(
+            PostModel.fromJson(data['data'] as Map<String, dynamic>));
+      }
+      return ApiResult.failure('Failed');
+    } catch (e) {
+      return ApiResult.failure('$e');
+    }
+  }
+
   // ==================
   // EVENTS
   // ==================

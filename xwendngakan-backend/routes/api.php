@@ -61,6 +61,9 @@ Route::get('/institutions/{institutionId}/posts', [PostController::class, 'index
 // Global public posts feed
 Route::get('/posts', [PostController::class, 'allPosts']);
 
+// Single post (notification deep-linking)
+Route::get('/posts/{id}', [PostController::class, 'show'])->whereNumber('id');
+
 
 // CV Routes (public)
 Route::get('/cvs', [CvController::class, 'index']);

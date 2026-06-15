@@ -102,9 +102,7 @@ class PostController extends Controller
 
         $post = Post::create($data);
         $post->load(['user', 'institution']);
-
-        // Send notification to all users who have notifications enabled
-        $this->sendNewPostNotification($post);
+        // New-post notification is dispatched by App\Observers\PostObserver.
 
         return response()->json([
             'success' => true,
@@ -114,46 +112,16 @@ class PostController extends Controller
     }
 
     /**
-     * Send notification about the new post.
+     * Get a single approved post by id (used for notification deep-linking).
      */
-    protected function sendNewPostNotification(Post $post)
+    public function show(int $id)
     {
-        $institutionName = $post->institution->nku ?? $post->institution->nen ?? 'دامەزراوەکە';
-        
-        $title = "پۆستێکی نوێ بڵاوکرایەوە";
-        $body = "{$institutionName} بابەتێکی نوێی بڵاوکردەوە: " . ($post->title ?: 'پۆستێکی نوێ');
+        $post = Post::with(['user', 'institution'])->findOrFail($id);
 
-        // We can send to all users with notifications enabled
-        $users = User::where('notifications_enabled', true)
-            ->whereNotNull('fcm_token')
-            ->get();
- 
-        if ($users->isNotEmpty()) {
-            $tokens = $users->pluck('fcm_token')->toArray();
-            $this->firebaseService->sendToMultipleTokens(
-                $tokens,
-                $title,
-                $body,
-                [
-                    'type' => 'post',
-                    'post_id' => (string) $post->id,
-                    'institution_id' => (string) $post->institution_id,
-                ]
-            );
-
-            // Also save to database notifications for each user
-            foreach ($users as $user) {
-                $user->notify(new \App\Notifications\AdminMessage(
-                    $title,
-                    $body,
-                    [
-                        'type' => 'post',
-                        'post_id' => (string) $post->id,
-                        'institution_id' => (string) $post->institution_id,
-                    ]
-                ));
-            }
-        }
+        return response()->json([
+            'success' => true,
+            'data'    => $post,
+        ]);
     }
 
     /**

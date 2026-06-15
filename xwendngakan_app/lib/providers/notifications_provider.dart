@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/services/notification_service.dart';
 import '../data/services/api_service.dart';
 import '../providers/auth_provider.dart';
 
@@ -9,6 +10,16 @@ class NotificationsProvider extends ChangeNotifier {
 
   int get unreadCount => _unreadCount;
   bool get hasUnread => _unreadCount > 0;
+
+  NotificationsProvider() {
+    // Update the badge instantly when a push arrives while the app is open.
+    NotificationService.onMessageReceived = _bumpUnread;
+  }
+
+  void _bumpUnread() {
+    _unreadCount++;
+    notifyListeners();
+  }
 
   Future<void> loadUnread(AuthProvider auth) async {
     if (!auth.isAuthenticated) return;

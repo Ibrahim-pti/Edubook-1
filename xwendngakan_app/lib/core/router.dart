@@ -36,10 +36,20 @@ import '../features/lost_and_found/add_item_screen.dart';
 import '../features/language/language_selection_screen.dart';
  
 
+/// Root navigator key — lets services outside the widget tree (e.g. push
+/// notification taps) navigate via [GoRouter].
+final GlobalKey<NavigatorState> rootNavigatorKey =
+    GlobalKey<NavigatorState>();
+
+/// The app's [GoRouter] instance, exposed so services (e.g. push notification
+/// handlers) can navigate without a [BuildContext].
+GoRouter? appRouter;
+
 GoRouter createRouter(BuildContext context) {
   final auth = Provider.of<AuthProvider>(context, listen: false);
 
-  return GoRouter(
+  return appRouter = GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/splash',
     redirect: (context, state) {
       final isAuth = auth.status == AuthStatus.authenticated;

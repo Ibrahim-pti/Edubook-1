@@ -38,22 +38,6 @@ class SendNotifications extends Page implements HasForms
                             ->schema([
                                 Forms\Components\Section::make()
                                     ->schema([
-                                        Forms\Components\Placeholder::make('broadcast_reach')
-                                            ->label('گەیشتنی ئەستۆکراو')
-                                            ->content(function (): string {
-                                                $reachable = User::where('notifications_enabled', true)
-                                                    ->whereNotNull('fcm_token')
-                                                    ->count();
-                                                $total = User::count();
-
-                                                if ($reachable === 0) {
-                                                    return "هیچ بەکارهێنەرێک تۆکنی مۆبایلی چالاک نییە (لە کۆی {$total}). پێویستە بەکارهێنەران ئاپەکە بکەنەوە و بچنە ژوورەوە تا تۆکنیان تۆمار بکرێت.";
-                                                }
-
-                                                return "ئەم بڵاوکردنەوەیە دەگاتە {$reachable} مۆبایل (لە کۆی {$total} بەکارهێنەر کە تۆکنی چالاکیان هەیە).";
-                                            })
-                                            ->columnSpanFull(),
-
                                         Forms\Components\TextInput::make('broadcast_title')
                                             ->label('ناونیشان')
                                             ->placeholder('بۆ نموونە: بەڕێوەبەری سیستەم')
