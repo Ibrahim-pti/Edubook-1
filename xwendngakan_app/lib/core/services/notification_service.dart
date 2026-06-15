@@ -1,5 +1,4 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
 import '../../data/services/api_service.dart';
 
@@ -8,42 +7,15 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
   Future<void> initialize() async {
     final FirebaseMessaging fcm = FirebaseMessaging.instance;
 
-    // Request permission for iOS
+    // Request permission for notifications
     NotificationSettings settings = await fcm.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
-
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings(
-            requestAlertPermission: true,
-            requestBadgePermission: true,
-            requestSoundPermission: true);
-    const InitializationSettings initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-
-    await _localNotificationsPlugin.initialize(settings: initializationSettings);
-
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'high_importance_channel', // id
-      'High Importance Notifications', // title
-      description: 'This channel is used for important notifications.', // description
-      importance: Importance.max,
-    );
-
-    await _localNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
 
     // Update foreground notification presentation options for iOS
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
@@ -64,27 +36,17 @@ class NotificationService {
         await ApiService().updateFcmToken(newToken);
       });
 
-      // Handle foreground messages
+      // Handle foreground messages (Log or handle internally, native UI will not pop up in foreground on Android without local_notifications)
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        RemoteNotification? notification = message.notification;
-        AndroidNotification? android = message.notification?.android;
-
-        if (notification != null && android != null && !kIsWeb) {
-          _localNotificationsPlugin.show(
-            id: notification.hashCode,
-            title: notification.title,
-            body: notification.body,
-            notificationDetails: const NotificationDetails(
-              android: AndroidNotificationDetails(
-                'high_importance_channel',
-                'High Importance Notifications',
-                channelDescription: 'This channel is used for important notifications.',
-                icon: '@mipmap/ic_launcher',
-              ),
-            ),
-          );
-        }
+        debugPrint('Received a foreground message: ${message.messageId}');
       });
-    } else {}
+      
+      // Handle when user taps on the notification in background/terminated state
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        debugPrint('Message opened app: ${message.messageId}');
+      });
+    } else {
+      debugPrint('User declined or has not accepted permission');
+    }
   }
 }
