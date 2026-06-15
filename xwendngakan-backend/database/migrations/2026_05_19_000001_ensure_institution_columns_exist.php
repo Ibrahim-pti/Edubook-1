@@ -10,45 +10,42 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('institutions', function (Blueprint $table) {
-            $columns = DB::select('SHOW COLUMNS FROM institutions');
-            $existing = collect($columns)->pluck('Field')->toArray();
-
             // user_id
-            if (!in_array('user_id', $existing)) {
+            if (!Schema::hasColumn('institutions', 'user_id')) {
                 $table->unsignedBigInteger('user_id')->nullable()->after('id');
             }
 
             // lat / lng
-            if (!in_array('lat', $existing)) {
+            if (!Schema::hasColumn('institutions', 'lat')) {
                 $table->decimal('lat', 10, 7)->nullable()->after('addr');
             }
-            if (!in_array('lng', $existing)) {
+            if (!Schema::hasColumn('institutions', 'lng')) {
                 $table->decimal('lng', 10, 7)->nullable()->after('lat');
             }
 
             // video
-            if (!in_array('video', $existing)) {
+            if (!Schema::hasColumn('institutions', 'video')) {
                 $table->text('video')->nullable()->after('img');
             }
 
             // tuition_plans
-            if (!in_array('tuition_plans', $existing)) {
+            if (!Schema::hasColumn('institutions', 'tuition_plans')) {
                 $table->json('tuition_plans')->nullable()->after('depts');
             }
 
             // multilingual descriptions
-            if (!in_array('desc_en', $existing)) {
+            if (!Schema::hasColumn('institutions', 'desc_en')) {
                 $table->text('desc_en')->nullable()->after('desc');
             }
-            if (!in_array('desc_ar', $existing)) {
+            if (!Schema::hasColumn('institutions', 'desc_ar')) {
                 $table->text('desc_ar')->nullable()->after('desc_en');
             }
 
             // stats
-            if (!in_array('founded_year', $existing)) {
+            if (!Schema::hasColumn('institutions', 'founded_year')) {
                 $table->unsignedSmallInteger('founded_year')->nullable()->after('video');
             }
-            if (!in_array('students_count', $existing)) {
+            if (!Schema::hasColumn('institutions', 'students_count')) {
                 $table->unsignedInteger('students_count')->nullable()->after('founded_year');
             }
         });

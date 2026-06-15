@@ -35,8 +35,9 @@ class InstitutionController extends Controller
 
     public function create()
     {
-        $types = InstitutionType::active()->ordered()->get();
-        return view('admin.institutions.create', compact('types'));
+        $types  = InstitutionType::active()->ordered()->get();
+        $cities = Institution::whereNotNull('city')->distinct()->orderBy('city')->pluck('city');
+        return view('admin.institutions.create', compact('types', 'cities'));
     }
 
     public function store(Request $request)
