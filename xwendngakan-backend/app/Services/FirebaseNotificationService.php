@@ -155,10 +155,21 @@ class FirebaseNotificationService
                 foreach ($report->failures()->getItems() as $failure) {
                     $failedToken = $failure->target()->value();
                     $failed[]    = $failedToken;
+                    
+                    $errorMsg = $failure->error()?->getMessage() ?? 'unknown error';
                     Log::error(
-                        'FCM token failed: ' . substr($failedToken, 0, 20) . '... => ' .
-                        ($failure->error()?->getMessage() ?? 'unknown error')
+                        'FCM token failed: ' . substr($failedToken, 0, 20) . '... => ' . $errorMsg
                     );
+
+                    // Auto-remove invalid / expired tokens from DB
+                    if (
+                        str_contains($errorMsg, 'Requested entity was not found') ||
+                        str_contains($errorMsg, 'not a valid FCM registration token') ||
+                        str_contains($errorMsg, 'registration-token-not-registered') ||
+                        str_contains($errorMsg, 'invalid-registration-token')
+                    ) {
+                        $this->clearInvalidToken($failedToken);
+                    }
                 }
 
                 // Auto-remove invalid/unknown tokens from DB (kreait 8.x provides these directly)
