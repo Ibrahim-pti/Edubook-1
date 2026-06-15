@@ -27,26 +27,49 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
           FlutterLocalNotificationsPlugin();
 
-      await flutterLocalNotificationsPlugin.show(
-        message.hashCode,
-        title,
-        body,
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'high_importance_channel',
-            'ئاگادارکردنەوەکان',
-            channelDescription: 'ئەم کەناڵە بۆ ئاگادارکردنەوەی گرنگ بەکاردێت',
-            importance: Importance.max,
-            priority: Priority.high,
-            icon: '@mipmap/ic_launcher',
+      try {
+        await flutterLocalNotificationsPlugin.show(
+          message.hashCode,
+          title,
+          body,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel',
+              'ئاگادارکردنەوەکان',
+              channelDescription: 'ئەم کەناڵە بۆ ئاگادارکردنەوەی گرنگ بەکاردێت',
+              importance: Importance.max,
+              priority: Priority.high,
+              icon: '@mipmap/ic_launcher',
+            ),
+            iOS: DarwinNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true,
+            ),
           ),
-          iOS: DarwinNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-          ),
-        ),
-      );
+        );
+      } catch (e) {
+        debugPrint('Error showing background local notification: $e');
+        try {
+          await flutterLocalNotificationsPlugin.show(
+            message.hashCode,
+            title,
+            body,
+            const NotificationDetails(
+              android: AndroidNotificationDetails(
+                'high_importance_channel',
+                'ئاگادارکردنەوەکان',
+                channelDescription: 'ئەم کەناڵە بۆ ئاگادارکردنەوەی گرنگ بەکاردێت',
+                importance: Importance.max,
+                priority: Priority.high,
+              ),
+              iOS: DarwinNotificationDetails(),
+            ),
+          );
+        } catch (e2) {
+          debugPrint('Fallback background local notification failed: $e2');
+        }
+      }
     }
   }
 }

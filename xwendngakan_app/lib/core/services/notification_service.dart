@@ -44,12 +44,17 @@ class NotificationService {
       return;
     }
 
-    // Create notification channel on Android
+    // Create notification channel on Android and request permissions
     if (Platform.isAndroid) {
-      await _localNotifications
+      final androidImplementation = _localNotifications
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.createNotificationChannel(_channel);
+              AndroidFlutterLocalNotificationsPlugin>();
+              
+      // Request permission for Android 13+
+      await androidImplementation?.requestNotificationsPermission();
+      
+      // Create channel
+      await androidImplementation?.createNotificationChannel(_channel);
     }
 
     // Initialize local notifications
@@ -127,30 +132,54 @@ class NotificationService {
 
     if (title.isEmpty && body.isEmpty) return;
 
-    _localNotifications.show(
-      message.hashCode,
-      title,
-      body,
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          _channel.id,
-          _channel.name,
-          channelDescription: _channel.description,
-          importance: Importance.max,
-          priority: Priority.high,
-          icon: '@mipmap/ic_launcher',
-          playSound: true,
-          enableVibration: true,
-          styleInformation: BigTextStyleInformation(body),
+    try {
+      _localNotifications.show(
+        message.hashCode,
+        title,
+        body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            _channel.id,
+            _channel.name,
+            channelDescription: _channel.description,
+            importance: Importance.max,
+            priority: Priority.high,
+            icon: '@mipmap/ic_launcher',
+            playSound: true,
+            enableVibration: true,
+            styleInformation: BigTextStyleInformation(body),
+          ),
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
         ),
-        iOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
-      ),
-      payload: message.data['type'] ?? '',
-    );
+        payload: message.data['type'] ?? '',
+      );
+    } catch (e) {
+      debugPrint('Error showing local notification: $e');
+      // Try again without specifying icon to let it use default
+      try {
+        _localNotifications.show(
+          message.hashCode,
+          title,
+          body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              _channel.id,
+              _channel.name,
+              channelDescription: _channel.description,
+              importance: Importance.max,
+              priority: Priority.high,
+            ),
+            iOS: const DarwinNotificationDetails(),
+          ),
+        );
+      } catch (e2) {
+        debugPrint('Fallback local notification also failed: $e2');
+      }
+    }
   }
 
   /// Handle notification tap from background
