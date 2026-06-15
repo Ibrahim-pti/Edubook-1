@@ -72,10 +72,11 @@ class InstitutionResource extends Resource
                             ->required()
                             ->native(false)
                             ->live()
-                            ->options(fn () => InstitutionType::active()->ordered()
-                                ->get()
-                                ->mapWithKeys(fn ($t) => [$t->key => ($t->emoji ? $t->emoji . ' ' : '') . $t->name])
-                                ->toArray()
+                            ->options(
+                                InstitutionType::active()->ordered()
+                                    ->get()
+                                    ->mapWithKeys(fn ($t) => [$t->key => ($t->emoji ? $t->emoji . ' ' : '') . $t->name])
+                                    ->toArray()
                             ),
                         // پەسەندکردن تەنها لە لیستەکەوە دەکرێت (دوگمەی پەسەند/ڕەت)
                         Forms\Components\Select::make('country')
