@@ -19,7 +19,9 @@ Route::get('/', function () {
 Route::get('/admin/institutions/{institution}/toggle-approval', function (Institution $institution) {
     abort_unless(auth()->check() && auth()->user()->is_admin, 403);
     $institution->update(['approved' => ! $institution->approved]);
-    return back();
+    // Go straight back to the admin institutions list (not back(), which can
+    // fall back to "/" and bounce the admin into the portal).
+    return redirect()->route('filament.admin.resources.institutions.index');
 })->middleware('auth')->name('admin.institutions.toggle-approval');
 
 // =====================
