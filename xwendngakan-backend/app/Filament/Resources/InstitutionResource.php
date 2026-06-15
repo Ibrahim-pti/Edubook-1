@@ -151,9 +151,19 @@ class InstitutionResource extends Resource
                             ->maxLength(255)
                             ->placeholder('اسم المؤسسة بالعربية'),
                         Forms\Components\Textarea::make('desc')
-                            ->label('وەسف')
+                            ->label('وەسف (کوردی)')
                             ->rows(3)
                             ->placeholder('کورتەیەک لەسەر دامەزراوەکە...')
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('desc_en')
+                            ->label('وەسف (ئینگلیزی)')
+                            ->rows(3)
+                            ->placeholder('A short description in English...')
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('desc_ar')
+                            ->label('وەسف (عەرەبی)')
+                            ->rows(3)
+                            ->placeholder('وصف موجز بالعربية...')
                             ->columnSpanFull(),
                     ])->columns(2)->collapsible(),
 
@@ -193,8 +203,38 @@ class InstitutionResource extends Resource
                     ->visible(fn (Forms\Get $get): bool => !in_array($get('type'), ['school', 'kg', 'dc']))
                     ->collapsible(),
 
+                // ─── خەرجی و خزمەتگوزاری ───
+                Forms\Components\Section::make('خەرجی و خزمەتگوزاری')
+                    ->description('زانیاری خەرجی و خزمەتگوزاریەکان')
+                    ->icon('heroicon-o-banknotes')
+                    ->schema([
+                        Forms\Components\TextInput::make('level')
+                            ->label('ئاستی خوێندن')
+                            ->maxLength(255)
+                            ->placeholder('بۆ نموونە: بەکالۆریۆس، دیپلۆم...'),
+                        Forms\Components\TextInput::make('fee')
+                            ->label('خەرجی')
+                            ->maxLength(255)
+                            ->placeholder('بۆ نموونە: ١٥٠٠ دۆلار ساڵانە'),
+                        Forms\Components\Textarea::make('tuition_plans')
+                            ->label('پلانی خەرجی')
+                            ->rows(2)
+                            ->placeholder('وردەکاری پلانەکانی پارەدان...')
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('meal')
+                            ->label('خواردن')
+                            ->maxLength(255)
+                            ->placeholder('بۆ نموونە: خواردن دابین دەکرێت'),
+                        Forms\Components\TextInput::make('uniform')
+                            ->label('جلوبەرگ')
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('books')
+                            ->label('پەرتووک')
+                            ->maxLength(255),
+                    ])->columns(2)->collapsible(),
+
                 // ─── ٣. KG/DC ───
-                Forms\Components\Section::make('زانیاری زیادە')
+                Forms\Components\Section::make('زانیاری باخچەی منداڵان')
                     ->icon('heroicon-o-information-circle')
                     ->schema([
                         Forms\Components\TextInput::make('kg_age')
@@ -202,6 +242,15 @@ class InstitutionResource extends Resource
                             ->maxLength(255),
                         Forms\Components\TextInput::make('kg_hours')
                             ->label('کاتی کار')
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('kg_fee')
+                            ->label('خەرجی')
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('kg_meal')
+                            ->label('خواردن')
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('kg_uniform')
+                            ->label('جلوبەرگ')
                             ->maxLength(255),
                     ])->columns(2)
                     ->visible(fn (Forms\Get $get): bool => in_array($get('type'), ['kg', 'dc']))
@@ -240,6 +289,22 @@ class InstitutionResource extends Resource
                             ->prefixIcon('heroicon-o-link'),
                         Forms\Components\TextInput::make('wa')
                             ->label('واتسئاپ')
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-o-link'),
+                        Forms\Components\TextInput::make('ig')
+                            ->label('ئینستاگرام')
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-o-link'),
+                        Forms\Components\TextInput::make('tg')
+                            ->label('تێلێگرام')
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-o-link'),
+                        Forms\Components\TextInput::make('yt')
+                            ->label('یوتیوب')
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-o-link'),
+                        Forms\Components\TextInput::make('tk')
+                            ->label('تیک تۆک')
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-link'),
                     ])->columns(2)->collapsible(),

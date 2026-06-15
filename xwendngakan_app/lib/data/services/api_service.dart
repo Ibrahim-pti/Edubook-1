@@ -47,6 +47,39 @@ class ApiService {
     return _headers(token: token);
   }
 
+  /// Safely decode a JSON response body. Returns null when the body isn't JSON
+  /// (e.g. an HTML maintenance/error page) so callers can show a friendly
+  /// message instead of crashing with a FormatException.
+  Map<String, dynamic>? _safeJson(http.Response res) {
+    final body = res.body.trimLeft();
+    if (body.isEmpty || (!body.startsWith('{') && !body.startsWith('['))) {
+      return null;
+    }
+    try {
+      final decoded = jsonDecode(body);
+      return decoded is Map<String, dynamic>
+          ? decoded
+          : <String, dynamic>{'data': decoded};
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Friendly Kurdish message for a non-JSON / error HTTP response.
+  static String _serverMessage(int status) {
+    if (status == 503) {
+      return 'سێرڤەر ئێستا بەردەست نییە. تکایە دوای چەند خولەکێک هەوڵ بدەرەوە.';
+    }
+    if (status >= 500) {
+      return 'هەڵەیەک لە سێرڤەر ڕوویدا. تکایە دواتر هەوڵ بدەرەوە.';
+    }
+    return 'کێشەیەک لە پەیوەندی ڕوویدا. تکایە دواتر هەوڵ بدەرەوە.';
+  }
+
+  /// Friendly message for network-level failures (timeout, no internet).
+  static const String _connectionMessage =
+      'پەیوەندی بە سێرڤەرەوە نەکرا. دڵنیابە لە ئینتەرنێتەکەت و دووبارە هەوڵ بدەرەوە.';
+
   // ==================
   // AUTH
   // ==================
@@ -62,13 +95,14 @@ class ApiService {
           )
           .timeout(AppConstants.connectTimeout);
 
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final data = _safeJson(res);
+      if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
       if (res.statusCode == 200 && data['success'] == true) {
         return ApiResult.success(data);
       }
-      return ApiResult.failure(data['message'] ?? 'Login failed');
+      return ApiResult.failure(data['message'] ?? 'ئیمەیڵ یان وشەی نهێنی هەڵەیە');
     } catch (e) {
-      return ApiResult.failure('Connection error: $e');
+      return ApiResult.failure(_connectionMessage);
     }
   }
 
@@ -88,13 +122,21 @@ class ApiService {
           )
           .timeout(AppConstants.connectTimeout);
 
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final data = _safeJson(res);
+      if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
       if (res.statusCode == 201 && data['success'] == true) {
         return ApiResult.success(data);
       }
-      return ApiResult.failure(data['message'] ?? 'Registration failed');
+      // Surface the first validation error (e.g. email already taken) if any.
+      final errors = data['errors'];
+      if (errors is Map && errors.isNotEmpty) {
+        final first = errors.values.first;
+        return ApiResult.failure(
+            first is List && first.isNotEmpty ? '${first.first}' : 'تۆمارکردن سەرنەکەوت');
+      }
+      return ApiResult.failure(data['message'] ?? 'تۆمارکردن سەرنەکەوت');
     } catch (e) {
-      return ApiResult.failure('Connection error: $e');
+      return ApiResult.failure(_connectionMessage);
     }
   }
 
@@ -123,13 +165,14 @@ class ApiService {
           )
           .timeout(AppConstants.connectTimeout);
 
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final data = _safeJson(res);
+      if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
       if (res.statusCode == 200) {
         return ApiResult.success(UserModel.fromJson(data['data'] ?? data));
       }
       return ApiResult.failure(data['message'] ?? 'Failed to get user');
     } catch (e) {
-      return ApiResult.failure('$e');
+      return ApiResult.failure(_connectionMessage);
     }
   }
 
@@ -143,7 +186,8 @@ class ApiService {
           )
           .timeout(AppConstants.connectTimeout);
 
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final data = _safeJson(res);
+      if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
       return data['success'] == true
           ? ApiResult.success(true)
           : ApiResult.failure(data['message']);
@@ -162,7 +206,8 @@ class ApiService {
           )
           .timeout(AppConstants.connectTimeout);
 
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final data = _safeJson(res);
+      if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
       return data['success'] == true
           ? ApiResult.success(true)
           : ApiResult.failure(data['message']);
@@ -187,7 +232,8 @@ class ApiService {
           )
           .timeout(AppConstants.connectTimeout);
 
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final data = _safeJson(res);
+      if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
       return data['success'] == true
           ? ApiResult.success(true)
           : ApiResult.failure(data['message']);

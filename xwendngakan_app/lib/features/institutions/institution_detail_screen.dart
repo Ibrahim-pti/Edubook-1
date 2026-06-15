@@ -390,6 +390,12 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
     if (inst.wa != null && inst.wa!.isNotEmpty) {
       add(Icons.chat_bubble_outline_rounded, 'WhatsApp', const Color(0xFF25D366), () => _launch('https://wa.me/${inst.wa}'));
     }
+    if (inst.yt != null && inst.yt!.isNotEmpty) {
+      add(Icons.play_circle_fill_rounded, 'YouTube', const Color(0xFFFF0000), () => _launch(inst.yt!));
+    }
+    if (inst.tk != null && inst.tk!.isNotEmpty) {
+      add(Icons.music_note_rounded, 'TikTok', const Color(0xFF010101), () => _launch(inst.tk!));
+    }
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -443,6 +449,89 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
     );
   }
 
+  /// Treats placeholder/empty payloads ("null", "[]", "{}") as no value.
+  String? _clean(String? v) {
+    if (v == null) return null;
+    final t = v.trim();
+    if (t.isEmpty || t == 'null' || t == '[]' || t == '{}') return null;
+    return t;
+  }
+
+  /// Fees & services section — only rendered when at least one field is filled.
+  Widget _buildServicesSection(InstitutionModel inst, bool isDark) {
+    final accent = AppColors.typeColor(inst.type);
+    final rows = <Widget>[];
+    void add(IconData icon, String label, String? value) {
+      final v = _clean(value);
+      if (v == null) return;
+      if (rows.isNotEmpty) {
+        rows.add(Divider(
+          height: 20,
+          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05),
+        ));
+      }
+      rows.add(_InfoRow(icon: icon, label: label, value: v, accent: accent, isDark: isDark));
+    }
+
+    add(Icons.school_rounded, 'ئاستی خوێندن', inst.level);
+    add(Icons.payments_rounded, 'خەرجی', inst.fee);
+    add(Icons.request_quote_rounded, 'پلانی خەرجی', inst.tuitionPlans);
+    add(Icons.restaurant_rounded, 'خواردن', inst.meal);
+    add(Icons.checkroom_rounded, 'جلوبەرگ', inst.uniform);
+    add(Icons.menu_book_rounded, 'پەرتووک', inst.books);
+
+    if (rows.isEmpty) return const SizedBox.shrink();
+    return Column(
+      children: [
+        _AcademicSection(
+          icon: Icons.account_balance_wallet_rounded,
+          title: 'خەرجی و خزمەتگوزاری',
+          accentColor: accent,
+          isDark: isDark,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: rows),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  /// Kindergarten info section — only rendered when at least one field is filled.
+  Widget _buildKindergartenSection(InstitutionModel inst, bool isDark) {
+    final accent = AppColors.typeColor(inst.type);
+    final rows = <Widget>[];
+    void add(IconData icon, String label, String? value) {
+      final v = _clean(value);
+      if (v == null) return;
+      if (rows.isNotEmpty) {
+        rows.add(Divider(
+          height: 20,
+          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05),
+        ));
+      }
+      rows.add(_InfoRow(icon: icon, label: label, value: v, accent: accent, isDark: isDark));
+    }
+
+    add(Icons.cake_rounded, 'تەمەنی وەرگرتن', inst.kgAge);
+    add(Icons.access_time_rounded, 'کاتژمێرەکانی خوێندن', inst.kgHours);
+    add(Icons.payments_rounded, 'خەرجی', inst.kgFee);
+    add(Icons.restaurant_rounded, 'خواردن', inst.kgMeal);
+    add(Icons.checkroom_rounded, 'جلوبەرگ', inst.kgUniform);
+
+    if (rows.isEmpty) return const SizedBox.shrink();
+    return Column(
+      children: [
+        _AcademicSection(
+          icon: Icons.child_care_rounded,
+          title: 'زانیاری باخچەی منداڵان',
+          accentColor: accent,
+          isDark: isDark,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: rows),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
   Widget _buildTabContent(InstitutionModel inst, bool isDark, String lang, AppLocalizations l) {
     switch (_activeTab) {
       case 0: // About
@@ -472,6 +561,11 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
               ),
               const SizedBox(height: 20),
             ],
+
+            // Fees & services (only the fields the institution actually filled)
+            _buildServicesSection(inst, isDark),
+            // Kindergarten-specific info
+            _buildKindergartenSection(inst, isDark),
 
             // Contact & Social
             _AcademicSection(
@@ -742,6 +836,68 @@ class _AcademicSection extends StatelessWidget {
   }
 }
 
+
+// ─── Info row (label + value) ───────────────────────────────────────────────
+
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color accent;
+  final bool isDark;
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.accent,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: accent.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: accent, size: 16),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Rabar',
+                  color: isDark ? Colors.white54 : AppColors.textDark.withValues(alpha: 0.5),
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Rabar',
+                  height: 1.6,
+                  color: isDark ? Colors.white : AppColors.textDark,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 // ─── Stats row ────────────────────────────────────────────────────────────────
 

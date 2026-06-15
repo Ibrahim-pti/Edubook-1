@@ -26,6 +26,24 @@ class InstitutionModel {
   final String? logo;
   final String? img;
   final String? video;
+  final String? yt; // YouTube
+  final String? tk; // TikTok
+  // Multilingual descriptions
+  final String? descEn;
+  final String? descAr;
+  // Academic / cost & services info
+  final String? level;
+  final String? fee;
+  final String? tuitionPlans;
+  final String? meal;
+  final String? uniform;
+  final String? books;
+  // Kindergarten-specific info
+  final String? kgFee;
+  final String? kgMeal;
+  final String? kgUniform;
+  final String? kgAge;
+  final String? kgHours;
   final int? foundedYear;
   final int? studentsCount;
   final bool approved;
@@ -56,6 +74,21 @@ class InstitutionModel {
     this.logo,
     this.img,
     this.video,
+    this.yt,
+    this.tk,
+    this.descEn,
+    this.descAr,
+    this.level,
+    this.fee,
+    this.tuitionPlans,
+    this.meal,
+    this.uniform,
+    this.books,
+    this.kgFee,
+    this.kgMeal,
+    this.kgUniform,
+    this.kgAge,
+    this.kgHours,
     this.foundedYear,
     this.studentsCount,
     this.approved = false,
@@ -116,8 +149,12 @@ class InstitutionModel {
       desc: json['desc'],
       lat: json['lat']?.toDouble(),
       lng: json['lng']?.toDouble(),
-      colleges: json['colleges'] is String ? json['colleges'] : jsonEncode(json['colleges']),
-      depts: json['depts'] is String ? json['depts'] : jsonEncode(json['depts']),
+      colleges: json['colleges'] == null
+          ? null
+          : (json['colleges'] is String ? json['colleges'] : jsonEncode(json['colleges'])),
+      depts: json['depts'] == null
+          ? null
+          : (json['depts'] is String ? json['depts'] : jsonEncode(json['depts'])),
       fb: json['fb'],
       ig: json['ig'],
       tg: json['tg'],
@@ -125,6 +162,23 @@ class InstitutionModel {
       logo: json['logo'],
       img: json['img'],
       video: json['video'],
+      yt: json['yt'],
+      tk: json['tk'],
+      descEn: json['desc_en'],
+      descAr: json['desc_ar'],
+      level: json['level']?.toString(),
+      fee: json['fee']?.toString(),
+      tuitionPlans: json['tuition_plans'] is String
+          ? json['tuition_plans']
+          : (json['tuition_plans'] != null ? jsonEncode(json['tuition_plans']) : null),
+      meal: json['meal']?.toString(),
+      uniform: json['uniform']?.toString(),
+      books: json['books']?.toString(),
+      kgFee: json['kg_fee']?.toString(),
+      kgMeal: json['kg_meal']?.toString(),
+      kgUniform: json['kg_uniform']?.toString(),
+      kgAge: json['kg_age']?.toString(),
+      kgHours: json['kg_hours']?.toString(),
       foundedYear: json['founded_year'] != null
           ? (json['founded_year'] as num).toInt()
           : null,
