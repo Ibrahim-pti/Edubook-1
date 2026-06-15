@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,7 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   bool _initialized = false;
+  StreamSubscription<String>? _tokenRefreshSub;
 
   /// Android notification channel for high-importance notifications
   static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
@@ -98,21 +100,28 @@ class NotificationService {
     debugPrint('NotificationService initialized successfully');
   }
 
-  /// Register FCM token — call this AFTER user login
+  /// Register FCM token — call this AFTER user login.
+  /// Works independently of initialize() — sends token even if
+  /// notification permission was denied (token still works for data messages).
   Future<void> registerFcmToken() async {
     try {
       final FirebaseMessaging fcm = FirebaseMessaging.instance;
+
+      // Get token regardless of notification permission status
       String? token = await fcm.getToken();
       if (token != null) {
         debugPrint('\n========== FCM TOKEN ==========');
         debugPrint(token);
         debugPrint('===============================\n');
         await ApiService().updateFcmToken(token);
+      } else {
+        debugPrint('FCM token is null — Firebase may not be configured correctly');
       }
 
-      // Listen for token refresh
-      fcm.onTokenRefresh.listen((newToken) async {
-        debugPrint('FCM Token refreshed');
+      // Cancel existing subscription to avoid duplicates
+      await _tokenRefreshSub?.cancel();
+      _tokenRefreshSub = fcm.onTokenRefresh.listen((newToken) async {
+        debugPrint('FCM Token refreshed — updating server');
         await ApiService().updateFcmToken(newToken);
       });
     } catch (e) {

@@ -196,23 +196,25 @@ class SendNotifications extends Page implements HasForms
                                                         $customData
                                                     ));
 
-                                                    // Also send push directly
-                                                    if ($user->fcm_token) {
-                                                        $firebase = app(\App\Services\FirebaseNotificationService::class);
-                                                        $firebase->sendToToken(
-                                                            $user->fcm_token,
-                                                            $data['single_title'],
-                                                            $data['single_body'],
-                                                            $customData
-                                                        );
-                                                    }
+                                                     // Note: notify() already triggers FirebaseChannel
+                                                     // which sends the push notification via FCM.
+                                                     // No need to call sendToToken() separately.
 
-                                                    Notification::make()
-                                                        ->title('نۆتیفیکەیشن بە سەرکەوتوویی نێردرا')
-                                                        ->success()
-                                                        ->send();
-                                                }),
-                                        ])
+                                                     if ($user->fcm_token) {
+                                                         Notification::make()
+                                                             ->title('نۆتیفیکەیشن بە سەرکەوتوویی نێردرا')
+                                                             ->body('نێردرا بۆ ' . $user->name . ' ✅')
+                                                             ->success()
+                                                             ->send();
+                                                     } else {
+                                                         Notification::make()
+                                                             ->title('تۆمارکرا بەڵام Push نێردرا نا')
+                                                             ->body($user->name . ' تۆکنی FCM نییە — نۆتیفیکەیشن تەنها لە داتابەیس تۆمارکرا')
+                                                             ->warning()
+                                                             ->send();
+                                                     }
+                                                 }),
+                                         ])
                                             ->columnSpanFull()
                                             ->alignment('center'),
                                     ]),

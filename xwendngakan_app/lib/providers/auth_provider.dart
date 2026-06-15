@@ -42,7 +42,7 @@ class AuthProvider extends ChangeNotifier {
         _status = AuthStatus.authenticated;
 
         // Re-register FCM token on app restart if logged in
-        NotificationService().registerFcmToken();
+        await NotificationService().registerFcmToken();
       } else {
         await _clearToken();
         _status = AuthStatus.unauthenticated;
@@ -70,7 +70,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
 
       // Register FCM token after successful login
-      NotificationService().registerFcmToken();
+      await NotificationService().registerFcmToken();
 
       return true;
     } else {
@@ -98,7 +98,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
 
       // Register FCM token after successful registration
-      NotificationService().registerFcmToken();
+      await NotificationService().registerFcmToken();
 
       return true;
     } else {
