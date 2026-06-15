@@ -127,7 +127,9 @@ class FirebaseNotificationService
             return ['successful' => 0, 'failed' => $tokens, 'total' => count($tokens)];
         }
 
-        $tokens = array_values(array_filter($tokens));
+        // Filter empties and dedupe so the same device token is never sent
+        // twice in one batch (e.g. shared across multiple accounts).
+        $tokens = array_values(array_unique(array_filter($tokens)));
         if (empty($tokens)) {
             return ['successful' => 0, 'failed' => [], 'total' => 0];
         }

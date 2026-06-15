@@ -241,7 +241,16 @@ class AuthController extends Controller
             'fcm_token' => 'required|string',
         ]);
 
-        $request->user()->update([
+        $user = $request->user();
+
+        // A token belongs to one device = one current user. Detach it from any
+        // other account first (e.g. several accounts logged in on the same
+        // phone) so a broadcast never sends duplicates to the same device.
+        User::where('fcm_token', $request->fcm_token)
+            ->whereKeyNot($user->getKey())
+            ->update(['fcm_token' => null]);
+
+        $user->update([
             'fcm_token' => $request->fcm_token,
         ]);
 

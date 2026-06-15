@@ -97,7 +97,9 @@ class SendNotifications extends Page implements HasForms
                                                     $users = User::where('notifications_enabled', true)
                                                         ->whereNotNull('fcm_token')
                                                         ->get();
-                                                    $tokens = $users->pluck('fcm_token')->filter()->values()->toArray();
+                                                    // Dedupe: the same device token can sit on several
+                                                    // accounts — send once per device, not once per account.
+                                                    $tokens = $users->pluck('fcm_token')->filter()->unique()->values()->toArray();
                                                     $count  = count($tokens);
 
                                                     if ($count === 0) {
