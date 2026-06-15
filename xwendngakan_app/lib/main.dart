@@ -2,14 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'app.dart';
 import 'core/services/notification_service.dart';
 import 'firebase_options.dart';
 
+/// Background message handler — MUST be top-level function
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  debugPrint("Handling a background message: ${message.messageId}");
+  debugPrint("Background message: ${message.messageId}");
+
+  // Show notification via flutter_local_notifications for data-only messages
+  final notification = message.notification;
+  final data = message.data;
+
+  // If there's already a notification payload, Android will show it automatically
+  // Only need to handle data-only messages
+  if (notification == null && data.isNotEmpty) {
+    final title = data['title'] ?? '';
+    final body = data['body'] ?? '';
+
+    if (title.isNotEmpty || body.isNotEmpty) {
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin();
+
+      await flutterLocalNotificationsPlugin.show(
+        message.hashCode,
+        title,
+        body,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'high_importance_channel',
+            'ئاگادارکردنەوەکان',
+            channelDescription: 'ئەم کەناڵە بۆ ئاگادارکردنەوەی گرنگ بەکاردێت',
+            importance: Importance.max,
+            priority: Priority.high,
+            icon: '@mipmap/ic_launcher',
+          ),
+          iOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
+        ),
+      );
+    }
+  }
 }
 
 void main() async {

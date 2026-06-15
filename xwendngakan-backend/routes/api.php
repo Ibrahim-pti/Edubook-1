@@ -158,4 +158,44 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/notifications/broadcast', [NotificationController::class, 'broadcastNotification']);
     Route::post('/admin/notifications/subscribe-topic', [NotificationController::class, 'subscribeTopic']);
     Route::post('/admin/notifications/send-to-topic', [NotificationController::class, 'sendToTopic']);
+
+    // Test route: send test notification to current user
+    Route::post('/test-notification', function (Request $request) {
+        $user = $request->user();
+        
+        if (!$user->fcm_token) {
+            return response()->json([
+                'success' => false,
+                'message' => 'FCM token نەدۆزرایەوە. تکایە ئاپەکە دووبارە بکەوە.',
+                'debug' => [
+                    'user_id' => $user->id,
+                    'has_token' => false,
+                    'notifications_enabled' => $user->notifications_enabled,
+                ],
+            ], 400);
+        }
+        
+        $firebaseService = app(\App\Services\FirebaseNotificationService::class);
+        
+        $success = $firebaseService->sendToToken(
+            $user->fcm_token,
+            'تێستی ئاگادارکردنەوە 🔔',
+            'ئەم پەیامە بۆ تێستکردنی نۆتیفیکەیشنە. ئەگەر ئەمت بینی، نۆتیفیکەیشنەکان کاردەکەن!',
+            ['type' => 'test']
+        );
+        
+        return response()->json([
+            'success' => $success,
+            'message' => $success 
+                ? 'نۆتیفیکەیشنی تێست نێردرا ✅' 
+                : 'هەڵە لە ناردنی نۆتیفیکەیشن ❌',
+            'debug' => [
+                'user_id' => $user->id,
+                'has_token' => true,
+                'token_prefix' => substr($user->fcm_token, 0, 20) . '...',
+                'notifications_enabled' => $user->notifications_enabled,
+                'firebase_service_available' => $firebaseService !== null,
+            ],
+        ]);
+    });
 });

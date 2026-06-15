@@ -2,5 +2,5 @@
 
 return [
     'project_id' => env('FIREBASE_PROJECT_ID'),
-    'credentials' => env('FIREBASE_CREDENTIALS_JSON', storage_path('app/firebase-credentials.json')),
+    'credentials' => env('FIREBASE_CREDENTIALS_JSON') ?: storage_path('app/firebase-credentials.json'),
 ];

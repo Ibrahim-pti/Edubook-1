@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/app_constants.dart';
+import '../core/services/notification_service.dart';
 import '../data/models/user_model.dart';
 import '../data/services/api_service.dart';
 
@@ -39,6 +40,9 @@ class AuthProvider extends ChangeNotifier {
       if (result.success && result.data != null) {
         _user = result.data;
         _status = AuthStatus.authenticated;
+
+        // Re-register FCM token on app restart if logged in
+        NotificationService().registerFcmToken();
       } else {
         await _clearToken();
         _status = AuthStatus.unauthenticated;
@@ -64,6 +68,10 @@ class AuthProvider extends ChangeNotifier {
       await _saveToken(_token!);
       _status = AuthStatus.authenticated;
       notifyListeners();
+
+      // Register FCM token after successful login
+      NotificationService().registerFcmToken();
+
       return true;
     } else {
       _error = result.error;
@@ -88,6 +96,10 @@ class AuthProvider extends ChangeNotifier {
       await _saveToken(_token!);
       _status = AuthStatus.authenticated;
       notifyListeners();
+
+      // Register FCM token after successful registration
+      NotificationService().registerFcmToken();
+
       return true;
     } else {
       _error = result.error;

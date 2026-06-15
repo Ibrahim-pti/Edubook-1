@@ -43,15 +43,33 @@ class FirebaseNotificationService
                     'title' => $title,
                     'body' => $body,
                 ],
-                'data' => array_merge($data, [
+                'data' => array_map('strval', array_merge($data, [
                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                ]),
+                    'title' => $title,
+                    'body' => $body,
+                ])),
                 'android' => [
                     'priority' => 'high',
+                    'notification' => [
+                        'channel_id' => 'high_importance_channel',
+                        'notification_priority' => 'PRIORITY_MAX',
+                        'default_sound' => true,
+                        'default_vibrate_timings' => true,
+                    ],
                 ],
                 'apns' => [
                     'headers' => [
                         'apns-priority' => '10',
+                    ],
+                    'payload' => [
+                        'aps' => [
+                            'alert' => [
+                                'title' => $title,
+                                'body' => $body,
+                            ],
+                            'sound' => 'default',
+                            'badge' => 1,
+                        ],
                     ],
                 ],
             ]);
@@ -125,9 +143,29 @@ class FirebaseNotificationService
                     'title' => $title,
                     'body' => $body,
                 ],
-                'data' => array_merge($data, [
+                'data' => array_map('strval', array_merge($data, [
                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                ]),
+                    'title' => $title,
+                    'body' => $body,
+                ])),
+                'android' => [
+                    'priority' => 'high',
+                    'notification' => [
+                        'channel_id' => 'high_importance_channel',
+                        'notification_priority' => 'PRIORITY_MAX',
+                        'default_sound' => true,
+                    ],
+                ],
+                'apns' => [
+                    'headers' => [
+                        'apns-priority' => '10',
+                    ],
+                    'payload' => [
+                        'aps' => [
+                            'sound' => 'default',
+                        ],
+                    ],
+                ],
             ]);
 
             $this->messaging->send($message);
