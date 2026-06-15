@@ -413,11 +413,16 @@ class InstitutionResource extends Resource
                     ->icon(fn (Institution $record) => $record->approved ? 'heroicon-m-x-circle' : 'heroicon-m-check-circle')
                     ->color(fn (Institution $record) => $record->approved ? 'danger' : 'success')
                     ->button()
+                    ->requiresConfirmation()
+                    ->modalHeading('دڵنیایت؟')
+                    ->modalDescription('دەتەوێت بارودۆخی ئەم خوێندنگایە بگۆڕیت؟')
+                    ->modalSubmitActionLabel('بەڵێ، گۆڕین')
                     ->action(function (Institution $record) {
-                        $newState = !$record->approved;
-                        $record->update(['approved' => $newState]);
+                        $record->approved = !$record->approved;
+                        $record->save();
+                        
                         \Filament\Notifications\Notification::make()
-                            ->title($newState ? 'پەسەندکرا' : 'ڕەتکرایەوە')
+                            ->title($record->approved ? 'پەسەندکرا' : 'ڕەتکرایەوە')
                             ->success()
                             ->send();
                     }),
