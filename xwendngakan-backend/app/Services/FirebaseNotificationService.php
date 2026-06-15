@@ -52,9 +52,10 @@ class FirebaseNotificationService
                     'priority' => 'high',
                     'notification' => [
                         'channel_id' => 'high_importance_channel',
-                        'notification_priority' => 'PRIORITY_MAX',
-                        'default_sound' => true,
+                        'notification_priority' => 'PRIORITY_HIGH',
+                        'sound' => 'default',
                         'default_vibrate_timings' => true,
+                        'default_light_settings' => true,
                     ],
                 ],
                 'apns' => [
@@ -152,8 +153,9 @@ class FirebaseNotificationService
                     'priority' => 'high',
                     'notification' => [
                         'channel_id' => 'high_importance_channel',
-                        'notification_priority' => 'PRIORITY_MAX',
-                        'default_sound' => true,
+                        'notification_priority' => 'PRIORITY_HIGH',
+                        'sound' => 'default',
+                        'default_vibrate_timings' => true,
                     ],
                 ],
                 'apns' => [
