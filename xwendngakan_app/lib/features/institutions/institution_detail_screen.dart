@@ -1304,14 +1304,38 @@ class _CollegesCard extends StatelessWidget {
               ),
               child: const Icon(Icons.account_balance_rounded, color: Colors.white, size: 22),
             ),
-            title: Text(
-              college['name'] ?? '',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w900,
-                fontFamily: 'Rabar',
-                color: isDark ? Colors.white : const Color(0xFF1E293B),
-              ),
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    college['name'] ?? '',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w900,
+                      fontFamily: 'Rabar',
+                      color: isDark ? Colors.white : const Color(0xFF1E293B),
+                    ),
+                  ),
+                ),
+                if (college['fee'] != null && college['fee'].toString().trim().isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      college['fee'].toString(),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Rabar',
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+              ],
             ),
             childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
             children: [

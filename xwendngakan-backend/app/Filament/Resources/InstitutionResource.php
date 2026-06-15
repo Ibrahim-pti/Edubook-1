@@ -168,7 +168,7 @@ class InstitutionResource extends Resource
                     ])->columns(2)->collapsible(),
 
                 // ─── ٢. بەشەکان ───
-                Forms\Components\Section::make('بەش و لقەکان')
+                Forms\Components\Section::make('بەشەکان و پارەدان')
                     ->description('بەشەکان و لقەکانی دامەزراوەکە')
                     ->icon('heroicon-o-building-library')
                     ->schema([
@@ -180,6 +180,12 @@ class InstitutionResource extends Resource
                                     ->required()
                                     ->maxLength(255)
                                     ->prefixIcon('heroicon-o-building-library'),
+                                Forms\Components\TextInput::make('fee')
+                                    ->label('پارەدان (کرێ)')
+                                    ->placeholder('بۆ نموونە: 1,500,000 IQD')
+                                    ->maxLength(255)
+                                    ->prefixIcon('heroicon-o-banknotes')
+                                    ->visible(fn (Forms\Get $get): bool => in_array($get('../../type'), ['priv', 'eve_uni', 'eve_inst'])),
                                 Forms\Components\Repeater::make('departments')
                                     ->label('لقەکان')
                                     ->visible(fn (Forms\Get $get): bool => $get('../../type') !== 'inst2')
