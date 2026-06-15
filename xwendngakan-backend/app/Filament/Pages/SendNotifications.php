@@ -38,6 +38,22 @@ class SendNotifications extends Page implements HasForms
                             ->schema([
                                 Forms\Components\Section::make()
                                     ->schema([
+                                        Forms\Components\Placeholder::make('broadcast_reach')
+                                            ->label('گەیشتنی ئەستۆکراو')
+                                            ->content(function (): string {
+                                                $reachable = User::where('notifications_enabled', true)
+                                                    ->whereNotNull('fcm_token')
+                                                    ->count();
+                                                $total = User::count();
+
+                                                if ($reachable === 0) {
+                                                    return "هیچ بەکارهێنەرێک تۆکنی مۆبایلی چالاک نییە (لە کۆی {$total}). پێویستە بەکارهێنەران ئاپەکە بکەنەوە و بچنە ژوورەوە تا تۆکنیان تۆمار بکرێت.";
+                                                }
+
+                                                return "ئەم بڵاوکردنەوەیە دەگاتە {$reachable} مۆبایل (لە کۆی {$total} بەکارهێنەر کە تۆکنی چالاکیان هەیە).";
+                                            })
+                                            ->columnSpanFull(),
+
                                         Forms\Components\TextInput::make('broadcast_title')
                                             ->label('ناونیشان')
                                             ->placeholder('بۆ نموونە: بەڕێوەبەری سیستەم')
@@ -86,7 +102,8 @@ class SendNotifications extends Page implements HasForms
 
                                                     if ($count === 0) {
                                                         Notification::make()
-                                                            ->title('هیچ بەکارهێنەرێک تۆکنی نەی نیە')
+                                                            ->title('هیچ بەکارهێنەرێک تۆکنی مۆبایلی چالاک نییە')
+                                                            ->body('بۆ ئەوەی بڵاوکردنەوە بگات، پێویستە بەکارهێنەران ئاپەکە لەسەر مۆبایل بکەنەوە و بچنە ژوورەوە تا تۆکنی FCM یان تۆمار بکرێت.')
                                                             ->warning()
                                                             ->send();
                                                         return;
@@ -110,11 +127,29 @@ class SendNotifications extends Page implements HasForms
                                                         $customData
                                                     );
 
-                                                    Notification::make()
-                                                        ->title("بڵاوکردنەوەی سەرکەوتوو")
-                                                        ->body("نێردرا بۆ {$result['successful']} لە {$count} بەکارهێنەر")
-                                                        ->success()
-                                                        ->send();
+                                                    $successful = $result['successful'];
+
+                                                    if ($successful === 0) {
+                                                        // All tokens failed — usually stale/expired and now auto-removed
+                                                        Notification::make()
+                                                            ->title('Push نەگەیشت')
+                                                            ->body("پەیامەکە لە داتابەیس تۆمارکرا، بەڵام هیچ کام لە {$count} تۆکنەکە کارا نەبوون (لەوانەیە کۆن/نادروست بن و سڕانەوە). داوا لە بەکارهێنەران بکە ئاپەکە بکەنەوە.")
+                                                            ->danger()
+                                                            ->persistent()
+                                                            ->send();
+                                                    } elseif ($successful < $count) {
+                                                        Notification::make()
+                                                            ->title('بڵاوکردنەوەی بەشەکی')
+                                                            ->body("نێردرا بۆ {$successful} لە {$count} مۆبایل. ئەوانی تر تۆکنی نادروستیان هەبوو و سڕانەوە.")
+                                                            ->warning()
+                                                            ->send();
+                                                    } else {
+                                                        Notification::make()
+                                                            ->title('بڵاوکردنەوەی سەرکەوتوو')
+                                                            ->body("نێردرا بۆ هەموو {$successful} مۆبایل ✅")
+                                                            ->success()
+                                                            ->send();
+                                                    }
                                                 }),
                                         ])
                                             ->columnSpanFull()
