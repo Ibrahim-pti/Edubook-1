@@ -108,10 +108,10 @@ class SendNotifications extends Page implements HasForms
                                     ->schema([
                                         Forms\Components\Select::make('single_user_id')
                                             ->label('بەکارهێنەر')
+                                            ->options(User::query()->whereNotNull('name')->pluck('name', 'id')->toArray())
                                             ->searchable()
-                                            ->getSearchResultsUsing(fn (string $search): array => User::where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%")->limit(50)->pluck('name', 'id')->toArray())
-                                            ->getOptionLabelUsing(fn ($value): ?string => User::find($value)?->name)
-                                            ->placeholder('ناوی بەکارهێنەر یان ئیمەیڵ بنووسە بۆ گەڕان')
+                                            ->preload()
+                                            ->placeholder('بەکارهێنەرێک هەڵبژێرە')
                                             ->columnSpanFull(),
 
                                         Forms\Components\TextInput::make('single_title')
