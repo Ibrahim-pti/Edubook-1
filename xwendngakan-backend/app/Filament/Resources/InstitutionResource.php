@@ -372,14 +372,9 @@ class InstitutionResource extends Resource
                     ->icon('heroicon-o-phone')
                     ->copyable()
                     ->toggleable(),
-                Tables\Columns\IconColumn::make('approved')
+                Tables\Columns\ToggleColumn::make('approved')
                     ->label('پەسەند')
-                    ->boolean()
-                    ->sortable()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('بەروار')
                     ->since()
@@ -420,11 +415,9 @@ class InstitutionResource extends Resource
                     ->icon(fn (Institution $record) => $record->approved ? 'heroicon-m-x-circle' : 'heroicon-m-check-circle')
                     ->color(fn (Institution $record) => $record->approved ? 'danger' : 'success')
                     ->button()
-                    ->requiresConfirmation()
                     ->action(function (Institution $record) {
                         $newState = !$record->approved;
-                        $record->approved = $newState;
-                        $record->save();
+                        $record->update(['approved' => $newState]);
                         \Filament\Notifications\Notification::make()
                             ->title($newState ? 'پەسەندکرا' : 'ڕەتکرایەوە')
                             ->success()
