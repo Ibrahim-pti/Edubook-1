@@ -70,9 +70,11 @@ class CvController extends Controller
             'field' => 'required|string|max:255',
             'education_level' => 'nullable|string|max:100',
             'experience' => 'nullable|string|max:2000',
+            'previous_work' => 'nullable|string|max:2000',
             'skills' => 'nullable|string|max:1000',
             'languages' => 'nullable|string|max:500',
             'notes' => 'nullable|string|max:1000',
+            'social_links' => 'nullable|string|max:500',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 

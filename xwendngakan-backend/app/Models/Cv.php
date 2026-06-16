@@ -19,9 +19,11 @@ class Cv extends Model
         'field',
         'education_level',
         'experience',
+        'previous_work',
         'skills',
         'languages',
         'notes',
+        'social_links',
         'photo',
         'is_reviewed',
     ];

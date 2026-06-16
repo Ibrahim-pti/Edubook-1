@@ -1120,6 +1120,7 @@ class _VideoCardState extends State<_VideoCard> {
   void initState() {
     super.initState();
     _videoId = YoutubePlayer.convertUrlToId(widget.videoUrl);
+    _startPlaying();
   }
 
   void _startPlaying() {
@@ -1132,10 +1133,8 @@ class _VideoCardState extends State<_VideoCard> {
         enableCaption: false,
       ),
     );
-    setState(() {
-      _controller = ctrl;
-      _playing = true;
-    });
+    _controller = ctrl;
+    _playing = true;
   }
 
   @override

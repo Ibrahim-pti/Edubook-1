@@ -599,17 +599,36 @@ class ApiService {
     }
   }
 
-  Future<ApiResult<bool>> registerTeacher(Map<String, dynamic> form) async {
+  Future<ApiResult<bool>> registerTeacher(
+    Map<String, dynamic> form, {
+    String? photoPath,
+    String? subjectPhotoPath,
+  }) async {
     try {
-      final res = await http
-          .post(
-            Uri.parse('$_base/teachers'),
-            headers: _headers(),
-            body: jsonEncode(form),
-          )
-          .timeout(AppConstants.receiveTimeout);
+      final request =
+          http.MultipartRequest('POST', Uri.parse('$_base/teachers'));
 
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final multipartHeaders = Map<String, String>.from(_headers());
+      multipartHeaders.remove('Content-Type');
+      request.headers.addAll(multipartHeaders);
+
+      form.forEach((key, value) {
+        if (value != null) request.fields[key] = value.toString();
+      });
+
+      if (photoPath != null && photoPath.isNotEmpty) {
+        request.files
+            .add(await http.MultipartFile.fromPath('photo', photoPath));
+      }
+      if (subjectPhotoPath != null && subjectPhotoPath.isNotEmpty) {
+        request.files.add(
+            await http.MultipartFile.fromPath('subject_photo', subjectPhotoPath));
+      }
+
+      final res = await request.send().timeout(AppConstants.receiveTimeout);
+      final resData = await res.stream.bytesToString();
+      final data = jsonDecode(resData) as Map<String, dynamic>;
+
       return data['success'] == true
           ? ApiResult.success(true)
           : ApiResult.failure(data['message'] ?? 'Failed');

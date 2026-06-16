@@ -85,18 +85,22 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
       return;
     }
     setState(() => _loading = true);
-    final r = await _api.registerTeacher({
-      'name': _nameCtrl.text.trim(),
-      'phone': _phoneCtrl.text.trim(),
-      'subject': _subjectCtrl.text.trim(),
-      'city': _city!,
-      'type': _type!,
-      'experience_years': _expCtrl.text.trim(),
-      'hourly_rate': _rateCtrl.text.trim(),
-      'about': _aboutCtrl.text.trim(),
-      'video_url': _videoCtrl.text.trim(),
-      'facebook_url': _facebookCtrl.text.trim(),
-    });
+    final r = await _api.registerTeacher(
+      {
+        'name': _nameCtrl.text.trim(),
+        'phone': _phoneCtrl.text.trim(),
+        'subject': _subjectCtrl.text.trim(),
+        'city': _city!,
+        'type': _type!,
+        'experience_years': _expCtrl.text.trim(),
+        'hourly_rate': _rateCtrl.text.trim(),
+        'about': _aboutCtrl.text.trim(),
+        'video_url': _videoCtrl.text.trim(),
+        'facebook_url': _facebookCtrl.text.trim(),
+      },
+      photoPath: _photo?.path,
+      subjectPhotoPath: _subjectPhoto?.path,
+    );
     setState(() => _loading = false);
     if (!mounted) return;
     if (r.success) {
