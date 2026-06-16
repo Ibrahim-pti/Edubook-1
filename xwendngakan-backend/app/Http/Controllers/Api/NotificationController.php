@@ -21,11 +21,15 @@ class NotificationController extends Controller
      */
     public function index(Request $request)
     {
-        $notifications = $request->user()->notifications;
-        
+        $notifications = $request->user()
+            ->notifications()
+            ->latest()
+            ->limit(50)
+            ->get();
+
         return response()->json([
             'success' => true,
-            'data' => $notifications
+            'data' => $notifications,
         ]);
     }
 
@@ -45,7 +49,7 @@ class NotificationController extends Controller
     /**
      * Mark specific notification as read.
      */
-    public function markAsRead(Request $request, $id)
+    public function markAsRead(Request $request, string $id)
     {
         $notification = $request->user()->notifications()->where('id', $id)->first();
         
@@ -62,7 +66,7 @@ class NotificationController extends Controller
     /**
      * Delete a notification.
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, string $id)
     {
         $request->user()->notifications()->where('id', $id)->delete();
         

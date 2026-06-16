@@ -21,7 +21,7 @@
         <!-- Sidebar -->
         <aside class="admin-sidebar" id="admin-sidebar">
             <div class="sidebar-logo">
-                <img src="/logo.png" alt="Edu Book">
+                <img src="/images/logo.svg" alt="Edu Book">
                 <div class="sidebar-logo-text">
                     <span class="logo-name">ئێدوو بووک</span>
                     <span class="logo-sub">پانێڵی ئەدمین</span>

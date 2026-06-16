@@ -66,16 +66,19 @@ class ReportController extends Controller
         }
         // 'all' returns everything
 
-        $reports = $query->get()->map(function ($report) {
+        $perPage   = min((int) $request->get('per_page', 50), 200);
+        $paginated = $query->paginate($perPage);
+
+        $reports = $paginated->getCollection()->map(function ($report) {
             return [
                 'id'             => $report->id,
                 'institution_id' => $report->institution_id,
                 'institution'    => $report->institution ? [
-                    'id'  => $report->institution->id,
-                    'nku' => $report->institution->nku,
-                    'nen' => $report->institution->nen,
-                    'nar' => $report->institution->nar,
-                    'type'=> $report->institution->type,
+                    'id'   => $report->institution->id,
+                    'nku'  => $report->institution->nku,
+                    'nen'  => $report->institution->nen,
+                    'nar'  => $report->institution->nar,
+                    'type' => $report->institution->type,
                 ] : null,
                 'user_id'        => $report->user_id,
                 'type'           => $report->type,
@@ -89,10 +92,13 @@ class ReportController extends Controller
             'success' => true,
             'data'    => $reports,
             'meta'    => [
-                'pending'   => Report::where('status', 'pending')->count(),
-                'reviewed'  => Report::where('status', 'reviewed')->count(),
-                'dismissed' => Report::where('status', 'dismissed')->count(),
-                'total'     => Report::count(),
+                'current_page' => $paginated->currentPage(),
+                'last_page'    => $paginated->lastPage(),
+                'total'        => $paginated->total(),
+                'has_more'     => $paginated->hasMorePages(),
+                'pending'      => Report::where('status', 'pending')->count(),
+                'reviewed'     => Report::where('status', 'reviewed')->count(),
+                'dismissed'    => Report::where('status', 'dismissed')->count(),
             ],
         ]);
     }

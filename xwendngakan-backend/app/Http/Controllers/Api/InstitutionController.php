@@ -64,10 +64,10 @@ class InstitutionController extends Controller
             ]);
         }
 
-        // No pagination - return all (backward compatible)
+        // No pagination — cap at 200 to prevent full-table dumps
         return response()->json([
             'success' => true,
-            'data'    => $query->get(),
+            'data'    => $query->limit(200)->get(),
         ]);
     }
 
@@ -225,17 +225,22 @@ class InstitutionController extends Controller
         } elseif ($status === 'approved') {
             $query->where('approved', true);
         }
-        // 'all' returns everything
 
         $query->latest();
 
+        $perPage    = min((int) $request->get('per_page', 50), 200);
+        $paginated  = $query->paginate($perPage);
+
         return response()->json([
             'success' => true,
-            'data'    => $query->get(),
+            'data'    => $paginated->items(),
             'meta'    => [
-                'pending'  => Institution::where('approved', false)->count(),
-                'approved' => Institution::where('approved', true)->count(),
-                'total'    => Institution::count(),
+                'current_page' => $paginated->currentPage(),
+                'last_page'    => $paginated->lastPage(),
+                'total'        => $paginated->total(),
+                'has_more'     => $paginated->hasMorePages(),
+                'pending'      => Institution::where('approved', false)->count(),
+                'approved'     => Institution::where('approved', true)->count(),
             ],
         ]);
     }

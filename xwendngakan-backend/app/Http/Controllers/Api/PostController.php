@@ -47,14 +47,23 @@ class PostController extends Controller
      */
     public function index(Request $request, int $institutionId)
     {
-        $query = Post::where('institution_id', $institutionId)
+        $perPage = min((int) $request->query('per_page', 20), 100);
+
+        $posts = Post::where('institution_id', $institutionId)
             ->where('approved', true)
             ->with(['user', 'institution'])
-            ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
 
         return response()->json([
             'success' => true,
-            'data'    => $query->get(),
+            'data'    => $posts->items(),
+            'meta'    => [
+                'current_page' => $posts->currentPage(),
+                'last_page'    => $posts->lastPage(),
+                'total'        => $posts->total(),
+                'has_more'     => $posts->hasMorePages(),
+            ],
         ]);
     }
 
@@ -194,14 +203,22 @@ class PostController extends Controller
         $query = Post::with(['user', 'institution'])
             ->orderBy('created_at', 'desc');
 
-        // Filter by approval status
         if ($request->has('approved')) {
             $query->where('approved', (bool) $request->approved);
         }
 
+        $perPage = min((int) $request->query('per_page', 30), 100);
+        $posts   = $query->paginate($perPage);
+
         return response()->json([
             'success' => true,
-            'data'    => $query->get(),
+            'data'    => $posts->items(),
+            'meta'    => [
+                'current_page' => $posts->currentPage(),
+                'last_page'    => $posts->lastPage(),
+                'total'        => $posts->total(),
+                'has_more'     => $posts->hasMorePages(),
+            ],
         ]);
     }
 
