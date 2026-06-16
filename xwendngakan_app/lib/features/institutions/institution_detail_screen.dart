@@ -84,6 +84,32 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
     }
   }
 
+  /// Converts stored rich-text/HTML into clean, readable plain text.
+  /// Block tags become line breaks, the rest are stripped, and common
+  /// HTML entities are decoded so nothing like `<p>` ever shows on screen.
+  String _cleanHtml(String input) {
+    var text = input
+        .replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n')
+        .replaceAll(RegExp(r'</(p|div|li|h[1-6])>', caseSensitive: false), '\n')
+        .replaceAll(RegExp(r'<li[^>]*>', caseSensitive: false), '• ')
+        .replaceAll(RegExp(r'<[^>]+>'), ''); // strip any remaining tags
+
+    text = text
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'");
+
+    // Collapse 3+ newlines and trim trailing spaces on each line.
+    text = text
+        .replaceAll(RegExp(r'[ \t]+\n'), '\n')
+        .replaceAll(RegExp(r'\n{3,}'), '\n\n');
+
+    return text.trim();
+  }
+
   Future<void> _launch(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -562,8 +588,9 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
 
             // Description — show the right language variant
             Builder(builder: (context) {
-              final desc = _resolveDesc(inst, lang);
-              if (desc == null || desc.isEmpty) return const SizedBox.shrink();
+              final raw = _resolveDesc(inst, lang);
+              final desc = raw == null ? '' : _cleanHtml(raw);
+              if (desc.isEmpty) return const SizedBox.shrink();
               return Column(
                 children: [
                   _AcademicSection(
@@ -998,15 +1025,42 @@ class _StatsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now().year;
-    final yearsExp =
-        inst.foundedYear != null ? '${now - inst.foundedYear!}+' : '—';
-    final studentsStr = inst.studentsCount != null
-        ? inst.studentsCount! >= 1000
-            ? '${(inst.studentsCount! / 1000).toStringAsFixed(1)}k+'
-            : '${inst.studentsCount}+'
-        : '—';
-
     final l = AppLocalizations.of(context);
+
+    // Only show stats the institution actually provided — no empty "—" cells.
+    final items = <_StatItem>[
+      if (inst.foundedYear != null)
+        _StatItem(
+            value: inst.foundedYear!.toString(),
+            label: l.foundedYearLabel,
+            icon: Icons.calendar_today_rounded,
+            color: const Color(0xFFF59E0B)),
+      if (inst.foundedYear != null)
+        _StatItem(
+            value: '${now - inst.foundedYear!}+',
+            label: l.experienceYears,
+            icon: Icons.auto_awesome_rounded,
+            color: AppColors.primary),
+      if (inst.studentsCount != null)
+        _StatItem(
+            value: inst.studentsCount! >= 1000
+                ? '${(inst.studentsCount! / 1000).toStringAsFixed(1)}k+'
+                : '${inst.studentsCount}+',
+            label: l.studentsLabel,
+            icon: Icons.groups_rounded,
+            color: const Color(0xFF10B981)),
+    ];
+
+    // Nothing to show → hide the whole card so the layout stays clean.
+    if (items.isEmpty) return const SizedBox.shrink();
+
+    // Interleave dividers between the available stat items.
+    final children = <Widget>[];
+    for (var i = 0; i < items.length; i++) {
+      if (i > 0) children.add(const _VDivider());
+      children.add(items[i]);
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkCard : Colors.white,
@@ -1023,27 +1077,7 @@ class _StatsRow extends StatelessWidget {
         ],
       ),
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
-      child: Row(
-        children: [
-          _StatItem(
-              value: inst.foundedYear?.toString() ?? '—',
-              label: l.foundedYearLabel,
-              icon: Icons.calendar_today_rounded,
-              color: const Color(0xFFF59E0B)),
-          const _VDivider(),
-          _StatItem(
-              value: yearsExp,
-              label: l.experienceYears,
-              icon: Icons.auto_awesome_rounded,
-              color: AppColors.primary),
-          const _VDivider(),
-          _StatItem(
-              value: studentsStr,
-              label: l.studentsLabel,
-              icon: Icons.groups_rounded,
-              color: const Color(0xFF10B981)),
-        ],
-      ),
+      child: Row(children: children),
     );
   }
 }
