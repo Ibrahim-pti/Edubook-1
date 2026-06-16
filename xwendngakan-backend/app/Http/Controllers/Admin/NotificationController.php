@@ -36,7 +36,7 @@ class NotificationController extends Controller
 
             Storage::disk('public')->put($filename, (string) $compressed);
 
-            $imageUrl = rtrim(config('app.url'), '/') . Storage::disk('public')->url($filename);
+            $imageUrl = url('storage/' . $filename);
         }
 
         $users  = User::where('notifications_enabled', true)->whereNotNull('fcm_token')->get();

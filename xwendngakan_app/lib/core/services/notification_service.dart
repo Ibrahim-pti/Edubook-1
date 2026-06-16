@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' as http;
 import '../../data/services/api_service.dart';
 import '../router.dart';
 
@@ -57,11 +58,8 @@ class NotificationService {
       final androidImplementation = _localNotifications
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>();
-              
-      // Request permission for Android 13+
+
       await androidImplementation?.requestNotificationsPermission();
-      
-      // Create channel
       await androidImplementation?.createNotificationChannel(_channel);
     }
 
@@ -93,13 +91,16 @@ class NotificationService {
     // Handle foreground messages — show local notification
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
 
-    // Handle when user taps on notification in background/terminated state
+    // Handle when user taps on notification in background state
     FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationTap);
 
-    // Check if app was opened from a terminated state notification
-    RemoteMessage? initialMessage = await fcm.getInitialMessage();
+    // Terminated state: appRouter is null here (router not built yet).
+    // Defer navigation until after the first frame so the router is ready.
+    final RemoteMessage? initialMessage = await fcm.getInitialMessage();
     if (initialMessage != null) {
-      _handleNotificationTap(initialMessage);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _handleNotificationTap(initialMessage);
+      });
     }
 
     _initialized = true;
@@ -107,13 +108,10 @@ class NotificationService {
   }
 
   /// Register FCM token — call this AFTER user login.
-  /// Works independently of initialize() — sends token even if
-  /// notification permission was denied (token still works for data messages).
   Future<void> registerFcmToken() async {
     try {
       final FirebaseMessaging fcm = FirebaseMessaging.instance;
 
-      // Get token regardless of notification permission status
       String? token = await fcm.getToken();
       if (token != null) {
         debugPrint('\n========== FCM TOKEN ==========');
@@ -129,7 +127,6 @@ class NotificationService {
         debugPrint('FCM token is null — Firebase may not be configured correctly');
       }
 
-      // Cancel existing subscription to avoid duplicates
       await _tokenRefreshSub?.cancel();
       _tokenRefreshSub = fcm.onTokenRefresh.listen((newToken) async {
         debugPrint('FCM Token refreshed — updating server');
@@ -140,26 +137,89 @@ class NotificationService {
     }
   }
 
-  /// Show a local notification when message arrives in foreground
+  /// Show a local notification when a message arrives in the foreground.
+  /// If the message carries an image URL, downloads and shows it as a big picture.
   void _handleForegroundMessage(RemoteMessage message) {
     debugPrint('Foreground message received: ${message.messageId}');
 
-    // Bump the in-app notification badge in real time.
     onMessageReceived?.call();
 
     final notification = message.notification;
     final data = message.data;
 
-    // Get title/body from notification payload or data payload
     final title = notification?.title ?? data['title'] ?? '';
     final body = notification?.body ?? data['body'] ?? '';
     if (title.isEmpty && body.isEmpty) return;
 
-    // FCM handles image display automatically in background/terminated state.
-    // For foreground we show a rich text notification.
+    final imageUrl = data['image_url'] as String?;
+
+    if (imageUrl != null && imageUrl.isNotEmpty && Platform.isAndroid) {
+      _showForegroundWithImage(message.hashCode, title, body, imageUrl,
+          jsonEncode(data));
+    } else {
+      _showForegroundPlain(message.hashCode, title, body, jsonEncode(data));
+    }
+  }
+
+  /// Download the image and show a big-picture notification.
+  Future<void> _showForegroundWithImage(
+    int id,
+    String title,
+    String body,
+    String imageUrl,
+    String payload,
+  ) async {
     try {
-      _localNotifications.show(
-        message.hashCode,
+      final response =
+          await http.get(Uri.parse(imageUrl)).timeout(const Duration(seconds: 8));
+
+      if (response.statusCode == 200) {
+        final bitmap = ByteArrayAndroidBitmap(response.bodyBytes);
+        await _localNotifications.show(
+          id,
+          title,
+          body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              _channel.id,
+              _channel.name,
+              channelDescription: _channel.description,
+              importance: Importance.max,
+              priority: Priority.high,
+              icon: '@mipmap/ic_launcher',
+              playSound: true,
+              enableVibration: true,
+              largeIcon: bitmap,
+              styleInformation: BigPictureStyleInformation(
+                bitmap,
+                hideExpandedLargeIcon: true,
+                contentTitle: title,
+                summaryText: body,
+              ),
+            ),
+            iOS: const DarwinNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true,
+            ),
+          ),
+          payload: payload,
+        );
+        return;
+      }
+    } catch (e) {
+      debugPrint('Could not download notification image: $e');
+    }
+    // Fall back to plain notification if image download fails
+    _showForegroundPlain(id, title, body, payload);
+  }
+
+  /// Show a plain text notification (no image).
+  Future<void> _showForegroundPlain(
+      int id, String title, String body, String payload) async {
+    try {
+      await _localNotifications.show(
+        id,
         title,
         body,
         NotificationDetails(
@@ -180,31 +240,10 @@ class NotificationService {
             presentSound: true,
           ),
         ),
-        payload: jsonEncode(message.data),
+        payload: payload,
       );
     } catch (e) {
       debugPrint('Error showing local notification: $e');
-      // Fallback without image
-      try {
-        _localNotifications.show(
-          message.hashCode,
-          title,
-          body,
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              _channel.id,
-              _channel.name,
-              channelDescription: _channel.description,
-              importance: Importance.max,
-              priority: Priority.high,
-            ),
-            iOS: const DarwinNotificationDetails(),
-          ),
-          payload: jsonEncode(message.data),
-        );
-      } catch (e2) {
-        debugPrint('Fallback local notification also failed: $e2');
-      }
     }
   }
 
@@ -228,14 +267,13 @@ class NotificationService {
   }
 
   /// Route a notification to the right screen based on its data payload.
-  /// Currently supports `type == 'post'` → opens the post detail screen.
+  /// Supports `type == 'post'` → opens the post detail screen.
   Future<void> _navigateFromData(Map<String, dynamic> data) async {
     if (data['type'] != 'post' || data['post_id'] == null) return;
 
     final result = await ApiService().getPost(data['post_id'].toString());
     if (!result.success || result.data == null) return;
 
-    // Navigate without a BuildContext (tap happens outside the widget tree).
     appRouter?.push('/news-detail', extra: result.data);
   }
 }
