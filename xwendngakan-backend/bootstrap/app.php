@@ -27,8 +27,9 @@ return Application::configure(basePath: $basePath)
 
         $middleware->redirectGuestsTo(fn () => route('portal.login'));
         $middleware->alias([
-            'approved' => \App\Http\Middleware\ApprovedUser::class,
+            'approved'       => \App\Http\Middleware\ApprovedUser::class,
             'redirect_admin' => \App\Http\Middleware\RedirectAdmin::class,
+            'no-cache'       => \App\Http\Middleware\PreventCache::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

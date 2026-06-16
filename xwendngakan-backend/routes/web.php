@@ -31,7 +31,7 @@ Route::get('/', function () {
 // =====================
 //  ADMIN PANEL ROUTES
 // =====================
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('no-cache')->group(function () {
 
     // Auth (بێ middleware)
     Route::get('/login',  [AdminAuthController::class, 'showLogin'])->name('login');
@@ -127,7 +127,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // =====================
 //  INSTITUTION PORTAL
 // =====================
-Route::prefix('portal')->name('portal.')->group(function () {
+Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function () {
 
     // ---- Public ----
     Route::get('/', function () {
