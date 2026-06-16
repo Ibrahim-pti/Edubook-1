@@ -17,9 +17,12 @@ class NotificationController extends Controller
     public function broadcast(Request $request)
     {
         $data = $request->validate([
-            'title'   => 'required|string|max:255',
-            'message' => 'required|string',
+            'title'     => 'required|string|max:255',
+            'message'   => 'required|string',
+            'image_url' => 'nullable|url|max:500',
         ]);
+
+        $imageUrl = $data['image_url'] ?? null;
 
         $users  = User::where('notifications_enabled', true)->whereNotNull('fcm_token')->get();
         $tokens = $users->pluck('fcm_token')->filter()->unique()->values()->toArray();
@@ -35,7 +38,7 @@ class NotificationController extends Controller
         }
 
         $firebase  = app(\App\Services\FirebaseNotificationService::class);
-        $result    = $firebase->sendToMultipleTokens($tokens, $data['title'], $data['message']);
+        $result    = $firebase->sendToMultipleTokens($tokens, $data['title'], $data['message'], [], $imageUrl);
         $successful = $result['successful'] ?? 0;
 
         if ($successful === 0) {

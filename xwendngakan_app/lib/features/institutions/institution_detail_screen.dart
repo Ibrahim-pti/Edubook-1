@@ -70,6 +70,20 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
     }
   }
 
+  /// Returns the best available description for the current language.
+  String? _resolveDesc(InstitutionModel inst, String lang) {
+    switch (lang) {
+      case 'kbd':
+        return inst.descKbd?.isNotEmpty == true ? inst.descKbd : inst.desc;
+      case 'en':
+        return inst.descEn?.isNotEmpty == true ? inst.descEn : inst.desc;
+      case 'ar':
+        return inst.descAr?.isNotEmpty == true ? inst.descAr : inst.desc;
+      default:
+        return inst.desc;
+    }
+  }
+
   Future<void> _launch(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -542,25 +556,31 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
             _StatsRow(isDark: isDark, inst: inst),
             const SizedBox(height: 20),
 
-            // Description
-            if (inst.desc != null && inst.desc!.isNotEmpty) ...[
-              _AcademicSection(
-                icon: Icons.info_outline_rounded,
-                title: l.about,
-                accentColor: AppColors.typeColor(inst.type),
-                isDark: isDark,
-                child: Text(
-                  inst.desc!,
-                  style: TextStyle(
-                    fontSize: 15,
-                    height: 1.9,
-                    fontFamily: 'Rabar',
-                    color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.8),
+            // Description — show the right language variant
+            Builder(builder: (context) {
+              final desc = _resolveDesc(inst, lang);
+              if (desc == null || desc.isEmpty) return const SizedBox.shrink();
+              return Column(
+                children: [
+                  _AcademicSection(
+                    icon: Icons.info_outline_rounded,
+                    title: l.about,
+                    accentColor: AppColors.typeColor(inst.type),
+                    isDark: isDark,
+                    child: Text(
+                      desc,
+                      style: TextStyle(
+                        fontSize: 15,
+                        height: 1.9,
+                        fontFamily: 'Rabar',
+                        color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.8),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
+                  const SizedBox(height: 20),
+                ],
+              );
+            }),
 
             // Fees & services (only the fields the institution actually filled)
             _buildServicesSection(inst, isDark),

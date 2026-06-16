@@ -58,8 +58,23 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">دەربارە / پێناسە</label>
+                <label class="form-label">دەربارە / پێناسە (کوردی سۆرانی)</label>
                 <textarea name="desc" class="form-control" rows="4">{{ old('desc', $institution->desc) }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">دەربارە (کوردی بادینی)</label>
+                <textarea name="desc_kbd" class="form-control" rows="4">{{ old('desc_kbd', $institution->desc_kbd) }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">دەربارە (عەرەبی)</label>
+                <textarea name="desc_ar" class="form-control" rows="4" dir="rtl">{{ old('desc_ar', $institution->desc_ar) }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">دەربارە (ئینگلیزی)</label>
+                <textarea name="desc_en" class="form-control" rows="4" dir="ltr">{{ old('desc_en', $institution->desc_en) }}</textarea>
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">

@@ -247,6 +247,7 @@ Route::prefix('portal')->name('portal.')->group(function () {
                 'desc'     => 'nullable|string',
                 'desc_en'  => 'nullable|string',
                 'desc_ar'  => 'nullable|string',
+                'desc_kbd' => 'nullable|string',
                 'web'      => 'nullable|url|max:255',
                 'clg'                    => 'nullable|array',
                 'clg.*.name'             => 'nullable|string|max:255',

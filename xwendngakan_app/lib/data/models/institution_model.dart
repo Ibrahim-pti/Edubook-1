@@ -31,6 +31,7 @@ class InstitutionModel {
   // Multilingual descriptions
   final String? descEn;
   final String? descAr;
+  final String? descKbd;
   // Academic / cost & services info
   final String? level;
   final String? fee;
@@ -78,6 +79,7 @@ class InstitutionModel {
     this.tk,
     this.descEn,
     this.descAr,
+    this.descKbd,
     this.level,
     this.fee,
     this.tuitionPlans,
@@ -166,6 +168,7 @@ class InstitutionModel {
       tk: json['tk'],
       descEn: json['desc_en'],
       descAr: json['desc_ar'],
+      descKbd: json['desc_kbd'],
       level: json['level']?.toString(),
       fee: json['fee']?.toString(),
       tuitionPlans: json['tuition_plans'] is String

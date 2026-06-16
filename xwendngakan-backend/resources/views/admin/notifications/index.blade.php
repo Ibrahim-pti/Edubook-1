@@ -25,6 +25,15 @@
             <textarea name="message" id="message" class="form-control" rows="5" placeholder="دەقی تەواوی ئاگادارییەکە لێرە بنووسە..." required></textarea>
         </div>
 
+        <div class="form-group">
+            <label class="form-label" for="image_url">وێنەی نۆتیفیکەیشن <span style="opacity:.6;font-weight:400">(ئارەزوومەندانە)</span></label>
+            <input type="url" name="image_url" id="image_url" class="form-control" placeholder="https://example.com/image.jpg" dir="ltr" style="text-align:left;">
+            <div style="font-size:.75rem;color:var(--text-muted,#6b7280);margin-top:4px;">ئەگەر URL دانا، وێنەکە لەگەڵ نۆتیفیکەیشنەکە دەنێرێت (تەنیا Android چالاکە)</div>
+            <div id="img-preview" style="margin-top:10px;display:none;">
+                <img id="img-preview-el" src="" alt="preview" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid #e5e7eb;object-fit:cover;">
+            </div>
+        </div>
+
         <div class="alert alert-warning mb-4">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <div>ئەم نۆتیفیکەیشنە دەگاتە دەستی <b>هەموو</b> ئەو بەکارهێنەرانەی مۆبایل ئەپەکەیان دابەزاندووە و نۆتیفیکەیشنیان چالاکە.</div>
@@ -41,3 +50,20 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+document.getElementById('image_url').addEventListener('input', function () {
+    const url = this.value.trim();
+    const preview = document.getElementById('img-preview');
+    const img = document.getElementById('img-preview-el');
+    if (url) {
+        img.src = url;
+        preview.style.display = 'block';
+    } else {
+        preview.style.display = 'none';
+        img.src = '';
+    }
+});
+</script>
+@endpush

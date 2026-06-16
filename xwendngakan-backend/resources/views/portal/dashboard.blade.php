@@ -1168,16 +1168,22 @@
         <div class="db-card">
           <div class="db-card-head">
             <div class="db-card-title">📝 دەربارە</div>
-            <button type="button" class="btn-tr" onclick="autoTranslate('desc', ['desc_ar', 'desc_en'], this)">
+            <button type="button" class="btn-tr" onclick="autoTranslate('desc', ['desc_kbd', 'desc_ar', 'desc_en'], this)">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
               وەرگێڕان
             </button>
           </div>
           <div class="f-group">
-            <label class="f-label">کوردی</label>
+            <label class="f-label">کوردی (سۆرانی)</label>
             <div id="editor-desc" class="quill-editor">{!! old('desc', $institution?->desc) !!}</div>
             <textarea id="desc" name="desc" style="display:none;"></textarea>
             @error('desc') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
+          </div>
+          <div class="f-group">
+            <label class="f-label">کوردی (بادینی)</label>
+            <div id="editor-desc_kbd" class="quill-editor">{!! old('desc_kbd', $institution?->desc_kbd) !!}</div>
+            <textarea id="desc_kbd" name="desc_kbd" style="display:none;"></textarea>
+            @error('desc_kbd') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
           </div>
           <div class="f-group">
             <label class="f-label">عەرەبی</label>
@@ -1507,6 +1513,7 @@ async function handleAjaxSubmit(e, btnId) {
 
     // Sync Quill Editors
     if (quillEditors['desc']) document.getElementById('desc').value = quillEditors['desc'].root.innerHTML;
+    if (quillEditors['desc_kbd']) document.getElementById('desc_kbd').value = quillEditors['desc_kbd'].root.innerHTML;
     if (quillEditors['desc_ar']) document.getElementById('desc_ar').value = quillEditors['desc_ar'].root.innerHTML;
     if (quillEditors['desc_en']) document.getElementById('desc_en').value = quillEditors['desc_en'].root.innerHTML;
     if (quillEditors['post'] && document.getElementById('post-content')) document.getElementById('post-content').value = quillEditors['post'].root.innerHTML;
@@ -1568,6 +1575,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (document.getElementById('editor-desc')) {
         quillEditors['desc'] = new Quill('#editor-desc', { theme: 'snow', modules: { toolbar: toolbarOptions }});
+        quillEditors['desc_kbd'] = new Quill('#editor-desc_kbd', { theme: 'snow', modules: { toolbar: toolbarOptions }});
         quillEditors['desc_ar'] = new Quill('#editor-desc_ar', { theme: 'snow', modules: { toolbar: toolbarOptions }});
         quillEditors['desc_en'] = new Quill('#editor-desc_en', { theme: 'snow', modules: { toolbar: toolbarOptions }});
     }
@@ -1658,9 +1666,11 @@ async function autoTranslate(sourceId, targetIds, btn) {
     }
     if (!text) { alert('تکایە سەرەتا دەقەکە بنووسە.'); return; }
     btn.classList.add('loading'); btn.disabled = true;
+    // Map target field IDs to Google Translate language codes
+    const langMap = { 'desc_kbd': 'ku', 'desc_ar': 'ar', 'desc_en': 'en', 'nar': 'ar', 'nen': 'en' };
     try {
         for (const targetId of targetIds) {
-            const lang = targetId.includes('ar') ? 'ar' : 'en';
+            const lang = langMap[targetId] ?? (targetId.includes('ar') ? 'ar' : targetId.includes('en') ? 'en' : 'ku');
             const url  = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ckb&tl=${lang}&dt=t&q=${encodeURIComponent(text)}`;
             const data = await (await fetch(url)).json();
             if (data?.[0]) {

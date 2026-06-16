@@ -163,5 +163,6 @@
             .admin-topbar { padding: 0 16px; margin: -28px -28px 24px -28px; height: 60px; }
         }
     </style>
+    @stack('scripts')
 </body>
 </html>

@@ -9,7 +9,7 @@ class Institution extends Model
 {
     protected $fillable = [
         'user_id', 'nku', 'nen', 'nar', 'type', 'country', 'city',
-        'web', 'phone', 'email', 'addr', 'desc', 'desc_en', 'desc_ar',
+        'web', 'phone', 'email', 'addr', 'desc', 'desc_en', 'desc_ar', 'desc_kbd',
         'lat', 'lng',
         'colleges', 'depts', 'tuition_plans',
         'fee', 'meal', 'uniform', 'books', 'level',

@@ -20,38 +20,47 @@ class FirebaseNotificationService
 
     /**
      * Build a CloudMessage array — FCM v1 compatible fields only.
+     *
+     * @param string|null $imageUrl Optional public image URL for rich notifications.
      */
-    private function buildMessage(array $target, string $title, string $body, array $data = []): array
+    private function buildMessage(array $target, string $title, string $body, array $data = [], ?string $imageUrl = null): array
     {
+        $notification = ['title' => $title, 'body' => $body];
+        if ($imageUrl) {
+            $notification['image'] = $imageUrl;
+        }
+
+        $dataPayload = array_map('strval', array_merge($data, [
+            'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+            'title'        => $title,
+            'body'         => $body,
+        ]));
+        if ($imageUrl) {
+            $dataPayload['image_url'] = $imageUrl;
+        }
+
+        $androidNotification = [
+            'channel_id'              => 'high_importance_channel',
+            'notification_priority'   => 'PRIORITY_HIGH',
+            'sound'                   => 'default',
+            'default_vibrate_timings' => true,
+        ];
+        if ($imageUrl) {
+            $androidNotification['image'] = $imageUrl;
+        }
+
         return array_merge($target, [
-            'notification' => [
-                'title' => $title,
-                'body'  => $body,
-            ],
-            'data' => array_map('strval', array_merge($data, [
-                'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                'title'        => $title,
-                'body'         => $body,
-            ])),
-            'android' => [
+            'notification' => $notification,
+            'data'         => $dataPayload,
+            'android'      => [
                 'priority'     => 'high',
-                'notification' => [
-                    'channel_id'              => 'high_importance_channel',
-                    'notification_priority'   => 'PRIORITY_HIGH',
-                    'sound'                   => 'default',
-                    'default_vibrate_timings' => true,
-                ],
+                'notification' => $androidNotification,
             ],
             'apns' => [
-                'headers' => [
-                    'apns-priority' => '10',
-                ],
+                'headers' => ['apns-priority' => '10'],
                 'payload' => [
                     'aps' => [
-                        'alert' => [
-                            'title' => $title,
-                            'body'  => $body,
-                        ],
+                        'alert' => ['title' => $title, 'body' => $body],
                         'sound' => 'default',
                         'badge' => 1,
                     ],
@@ -74,7 +83,8 @@ class FirebaseNotificationService
         string $token,
         string $title,
         string $body,
-        array $data = []
+        array $data = [],
+        ?string $imageUrl = null
     ): bool {
         if (!$this->messaging) {
             Log::warning('Firebase messaging is disabled (no credentials).');
@@ -83,7 +93,7 @@ class FirebaseNotificationService
 
         try {
             $message = CloudMessage::fromArray(
-                $this->buildMessage(['token' => $token], $title, $body, $data)
+                $this->buildMessage(['token' => $token], $title, $body, $data, $imageUrl)
             );
 
             $this->messaging->send($message);
@@ -120,7 +130,8 @@ class FirebaseNotificationService
         array $tokens,
         string $title,
         string $body,
-        array $data = []
+        array $data = [],
+        ?string $imageUrl = null
     ): array {
         if (!$this->messaging) {
             Log::warning('Firebase messaging is disabled (no credentials).');
@@ -142,7 +153,7 @@ class FirebaseNotificationService
             try {
                 $messages = array_map(
                     fn($t) => CloudMessage::fromArray(
-                        $this->buildMessage(['token' => $t], $title, $body, $data)
+                        $this->buildMessage(['token' => $t], $title, $body, $data, $imageUrl)
                     ),
                     $chunk
                 );
@@ -186,7 +197,7 @@ class FirebaseNotificationService
                 Log::error('Firebase Batch Send Exception: ' . $e->getMessage());
                 // Fall back to one-by-one for this chunk
                 foreach ($chunk as $token) {
-                    if ($this->sendToToken($token, $title, $body, $data)) {
+                    if ($this->sendToToken($token, $title, $body, $data, $imageUrl)) {
                         $successful++;
                     } else {
                         $failed[] = $token;
@@ -215,7 +226,8 @@ class FirebaseNotificationService
         string $topic,
         string $title,
         string $body,
-        array $data = []
+        array $data = [],
+        ?string $imageUrl = null
     ): bool {
         if (!$this->messaging) {
             Log::warning('Firebase messaging is disabled (no credentials).');
@@ -224,7 +236,7 @@ class FirebaseNotificationService
 
         try {
             $message = CloudMessage::fromArray(
-                $this->buildMessage(['topic' => $topic], $title, $body, $data)
+                $this->buildMessage(['topic' => $topic], $title, $body, $data, $imageUrl)
             );
 
             $this->messaging->send($message);

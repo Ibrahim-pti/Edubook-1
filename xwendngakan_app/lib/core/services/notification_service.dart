@@ -153,9 +153,10 @@ class NotificationService {
     // Get title/body from notification payload or data payload
     final title = notification?.title ?? data['title'] ?? '';
     final body = notification?.body ?? data['body'] ?? '';
-
     if (title.isEmpty && body.isEmpty) return;
 
+    // FCM handles image display automatically in background/terminated state.
+    // For foreground we show a rich text notification.
     try {
       _localNotifications.show(
         message.hashCode,
@@ -183,7 +184,7 @@ class NotificationService {
       );
     } catch (e) {
       debugPrint('Error showing local notification: $e');
-      // Try again without specifying icon to let it use default
+      // Fallback without image
       try {
         _localNotifications.show(
           message.hashCode,
