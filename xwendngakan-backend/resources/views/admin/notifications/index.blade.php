@@ -12,7 +12,7 @@
 </div>
 
 <div class="card" style="max-width: 600px;">
-    <form action="{{ route('admin.notifications.broadcast') }}" method="POST">
+    <form action="{{ route('admin.notifications.broadcast') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="form-group">
@@ -26,11 +26,12 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label" for="image_url">وێنەی نۆتیفیکەیشن <span style="opacity:.6;font-weight:400">(ئارەزوومەندانە)</span></label>
-            <input type="url" name="image_url" id="image_url" class="form-control" placeholder="https://example.com/image.jpg" dir="ltr" style="text-align:left;">
-            <div style="font-size:.75rem;color:var(--text-muted,#6b7280);margin-top:4px;">ئەگەر URL دانا، وێنەکە لەگەڵ نۆتیفیکەیشنەکە دەنێرێت (تەنیا Android چالاکە)</div>
+            <label class="form-label" for="image">وێنەی نۆتیفیکەیشن <span style="opacity:.6;font-weight:400">(ئارەزوومەندانە)</span></label>
+            <input type="file" name="image" id="image" class="form-control" accept="image/*">
+            <div style="font-size:.75rem;color:var(--text-muted,#6b7280);margin-top:4px;">وێنە بۆ نۆتیفیکەیشن ئەپلۆد بکە — تەنیا Android • زیاترین قەبارە: 5MB</div>
             <div id="img-preview" style="margin-top:10px;display:none;">
-                <img id="img-preview-el" src="" alt="preview" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid #e5e7eb;object-fit:cover;">
+                <img id="img-preview-el" src="" alt="preview" style="max-width:240px;max-height:140px;border-radius:8px;border:1px solid #e5e7eb;object-fit:cover;">
+                <div id="img-name" style="font-size:.75rem;color:var(--text-muted,#6b7280);margin-top:4px;"></div>
             </div>
         </div>
 
@@ -53,16 +54,23 @@
 
 @push('scripts')
 <script>
-document.getElementById('image_url').addEventListener('input', function () {
-    const url = this.value.trim();
+document.getElementById('image').addEventListener('change', function () {
+    const file = this.files[0];
     const preview = document.getElementById('img-preview');
     const img = document.getElementById('img-preview-el');
-    if (url) {
-        img.src = url;
-        preview.style.display = 'block';
+    const nameEl = document.getElementById('img-name');
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            img.src = e.target.result;
+            preview.style.display = 'block';
+            nameEl.textContent = file.name + ' — ' + (file.size / 1024).toFixed(0) + ' KB';
+        };
+        reader.readAsDataURL(file);
     } else {
         preview.style.display = 'none';
         img.src = '';
+        nameEl.textContent = '';
     }
 });
 </script>

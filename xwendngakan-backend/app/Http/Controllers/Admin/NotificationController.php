@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Notifications\AdminMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 
 class NotificationController extends Controller
 {
@@ -17,12 +19,25 @@ class NotificationController extends Controller
     public function broadcast(Request $request)
     {
         $data = $request->validate([
-            'title'     => 'required|string|max:255',
-            'message'   => 'required|string',
-            'image_url' => 'nullable|url|max:500',
+            'title'   => 'required|string|max:255',
+            'message' => 'required|string',
+            'image'   => 'nullable|file|image|max:5120',
         ]);
 
-        $imageUrl = $data['image_url'] ?? null;
+        $imageUrl = null;
+
+        if ($request->hasFile('image')) {
+            $file     = $request->file('image');
+            $filename = 'notification-images/' . uniqid() . '.webp';
+
+            $compressed = Image::read($file)
+                ->scale(width: 800)
+                ->toWebp(80);
+
+            Storage::disk('public')->put($filename, (string) $compressed);
+
+            $imageUrl = rtrim(config('app.url'), '/') . Storage::disk('public')->url($filename);
+        }
 
         $users  = User::where('notifications_enabled', true)->whereNotNull('fcm_token')->get();
         $tokens = $users->pluck('fcm_token')->filter()->unique()->values()->toArray();
