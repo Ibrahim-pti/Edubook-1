@@ -126,6 +126,32 @@ class InstitutionController extends Controller
     }
 
     /**
+     * Lightweight map pins — only institutions with coordinates.
+     * Returns minimal fields so the map loads fast.
+     */
+    public function mapPins()
+    {
+        $pins = Institution::where('approved', true)
+            ->whereNotNull('lat')
+            ->whereNotNull('lng')
+            ->select('id', 'nku', 'nen', 'nar', 'city', 'type', 'lat', 'lng', 'logo')
+            ->get()
+            ->map(fn($i) => [
+                'id'   => $i->id,
+                'nku'  => $i->nku,
+                'nen'  => $i->nen,
+                'nar'  => $i->nar,
+                'city' => $i->city,
+                'type' => $i->type,
+                'lat'  => (float) $i->lat,
+                'lng'  => (float) $i->lng,
+                'logo' => $i->logo,
+            ]);
+
+        return response()->json(['success' => true, 'data' => $pins]);
+    }
+
+    /**
      * Get a single institution.
      */
     public function show(string $id)

@@ -378,6 +378,25 @@ class ApiService {
     }
   }
 
+  /// Fetch lightweight map pins — only institutions with lat/lng set.
+  Future<ApiResult<List<Map<String, dynamic>>>> getMapPins() async {
+    try {
+      final res = await http
+          .get(Uri.parse('$_base/institutions/map-pins'), headers: _headers())
+          .timeout(AppConstants.receiveTimeout);
+      final body = jsonDecode(res.body) as Map<String, dynamic>;
+      if (res.statusCode == 200 && body['success'] == true) {
+        final list = (body['data'] as List)
+            .map((e) => e as Map<String, dynamic>)
+            .toList();
+        return ApiResult.success(list);
+      }
+      return ApiResult.failure('Failed');
+    } catch (e) {
+      return ApiResult.failure('$e');
+    }
+  }
+
   Future<ApiResult<InstitutionModel?>> getMyInstitution() async {
     try {
       final headers = await _authHeaders();

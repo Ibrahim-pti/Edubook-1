@@ -111,14 +111,21 @@
                 </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-                <div class="form-group">
-                    <label class="form-label">هێڵی پانی (Latitude)</label>
-                    <input type="text" name="lat" class="form-control" dir="ltr" value="{{ old('lat', $institution->lat) }}">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">هێڵی درێژی (Longitude)</label>
-                    <input type="text" name="lng" class="form-control" dir="ltr" value="{{ old('lng', $institution->lng) }}">
+            <div class="form-group">
+                <label class="form-label">شوێنی دامەزراوە لەسەر نەقشە</label>
+                <div style="font-size:.8rem;color:var(--text-muted,#6b7280);margin-bottom:8px;">کلیک لەسەر نەقشەکە بکە بۆ دیاریکردنی شوێن، یان ئەددەکان دەستی بنووسە</div>
+                <div id="map-picker" style="height:320px;border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:12px;"></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div>
+                        <label class="form-label" style="font-size:.8rem;">Latitude</label>
+                        <input type="text" name="lat" id="lat-input" class="form-control" dir="ltr"
+                               value="{{ old('lat', $institution->lat) }}" placeholder="36.1901">
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size:.8rem;">Longitude</label>
+                        <input type="text" name="lng" id="lng-input" class="form-control" dir="ltr"
+                               value="{{ old('lng', $institution->lng) }}" placeholder="44.0090">
+                    </div>
                 </div>
             </div>
         </div>
@@ -184,3 +191,87 @@
 </form>
 
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const LAT_INPUT = document.getElementById('lat-input');
+    const LNG_INPUT = document.getElementById('lng-input');
+    const MAP_DIV   = document.getElementById('map-picker');
+
+    // Default center: Erbil
+    const defaultLat = parseFloat(LAT_INPUT.value) || 36.1901;
+    const defaultLng = parseFloat(LNG_INPUT.value) || 44.0090;
+    const hasPin     = LAT_INPUT.value && LNG_INPUT.value;
+
+    function initMap() {
+        const center = { lat: defaultLat, lng: defaultLng };
+
+        const map = new google.maps.Map(MAP_DIV, {
+            center,
+            zoom: hasPin ? 15 : 12,
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: true,
+        });
+
+        let marker = null;
+
+        if (hasPin) {
+            marker = new google.maps.Marker({ position: center, map, draggable: true });
+            marker.addListener('dragend', e => {
+                LAT_INPUT.value = e.latLng.lat().toFixed(7);
+                LNG_INPUT.value = e.latLng.lng().toFixed(7);
+            });
+        }
+
+        map.addListener('click', e => {
+            const lat = e.latLng.lat().toFixed(7);
+            const lng = e.latLng.lng().toFixed(7);
+            LAT_INPUT.value = lat;
+            LNG_INPUT.value = lng;
+
+            if (marker) {
+                marker.setPosition(e.latLng);
+            } else {
+                marker = new google.maps.Marker({ position: e.latLng, map, draggable: true });
+                marker.addListener('dragend', ev => {
+                    LAT_INPUT.value = ev.latLng.lat().toFixed(7);
+                    LNG_INPUT.value = ev.latLng.lng().toFixed(7);
+                });
+            }
+        });
+
+        // Sync manual text input → move marker
+        [LAT_INPUT, LNG_INPUT].forEach(input => {
+            input.addEventListener('change', () => {
+                const lat = parseFloat(LAT_INPUT.value);
+                const lng = parseFloat(LNG_INPUT.value);
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    const pos = new google.maps.LatLng(lat, lng);
+                    map.panTo(pos);
+                    map.setZoom(16);
+                    if (marker) marker.setPosition(pos);
+                    else {
+                        marker = new google.maps.Marker({ position: pos, map, draggable: true });
+                        marker.addListener('dragend', ev => {
+                            LAT_INPUT.value = ev.latLng.lat().toFixed(7);
+                            LNG_INPUT.value = ev.latLng.lng().toFixed(7);
+                        });
+                    }
+                }
+            });
+        });
+    }
+
+    // Load Google Maps JS API dynamically
+    // Replace YOUR_GOOGLE_MAPS_API_KEY with your real key
+    const API_KEY = 'AIzaSyAZbZwzBVGQPPJ930JbhdwRwWH4q-yDRsA';
+    const script  = document.createElement('script');
+    script.src    = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMapPicker`;
+    script.async  = true;
+    window.initMapPicker = initMap;
+    document.head.appendChild(script);
+})();
+</script>
+@endpush

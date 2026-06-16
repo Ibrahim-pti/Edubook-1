@@ -978,7 +978,19 @@
               <input type="text" id="addr-input" name="addr" class="f-input" placeholder="ناونیشانی تەواو بنووسە یان بەستەری نەخشە دابنێ..." oninput="handleAddrInput(this.value)" value="{{ old('addr', $institution?->addr) }}">
               <p id="map-feedback" style="display: none; font-size: 0.73rem; margin-top: 4px; font-weight: bold;"></p>
               @error('addr') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
-              
+
+              <!-- Google Maps Picker -->
+              <div id="portal-map-wrapper" style="margin-top:10px;">
+                <button type="button" onclick="togglePortalMap()" id="toggle-map-btn"
+                  style="background:rgba(196,154,60,.12);color:var(--gold-lt);border:1px solid var(--border2);padding:5px 14px;border-radius:8px;font-size:.78rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;">
+                  🗺️ نەقشە بکەرەوە بۆ دیاریکردنی شوێن
+                </button>
+                <div id="portal-map-container" style="display:none;margin-top:10px;">
+                  <div id="portal-map-picker" style="height:280px;border-radius:10px;border:1px solid var(--border2);overflow:hidden;"></div>
+                  <p style="font-size:.72rem;color:var(--txt3);margin-top:5px;">📍 کلیک لەسەر نەقشەکە بکە بۆ دیاریکردنی شوێنی دامەزراوە — Marker دراگ دەکرێت</p>
+                </div>
+              </div>
+
               <!-- Hidden inputs to submit to server -->
               <input type="hidden" id="lat-input" name="lat" value="{{ old('lat', $institution?->lat) }}">
               <input type="hidden" id="lng-input" name="lng" value="{{ old('lng', $institution?->lng) }}">
@@ -1904,6 +1916,82 @@ function getCurrentLocation(btn) {
         },
         { enableHighAccuracy: false, timeout: 25000, maximumAge: 60000 }
     );
+}
+
+// ── Google Maps Portal Picker ──────────────────────────────────────────────
+let _portalMapLoaded = false;
+let _portalMapOpen   = false;
+
+function togglePortalMap() {
+    const container = document.getElementById('portal-map-container');
+    const btn       = document.getElementById('toggle-map-btn');
+    _portalMapOpen  = !_portalMapOpen;
+
+    container.style.display = _portalMapOpen ? 'block' : 'none';
+    btn.innerHTML = _portalMapOpen
+        ? '🗺️ داخستنی نەقشە'
+        : '🗺️ نەقشە بکەرەوە بۆ دیاریکردنی شوێن';
+
+    if (_portalMapOpen && !_portalMapLoaded) {
+        _portalMapLoaded = true;
+        const s   = document.createElement('script');
+        s.src     = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAZbZwzBVGQPPJ930JbhdwRwWH4q-yDRsA&callback=initPortalMap';
+        s.async   = true;
+        window.initPortalMap = _initPortalMap;
+        document.head.appendChild(s);
+    }
+}
+
+function _initPortalMap() {
+    const latVal = parseFloat(document.getElementById('lat-input').value) || 36.1901;
+    const lngVal = parseFloat(document.getElementById('lng-input').value) || 44.0090;
+    const hasPin = document.getElementById('lat-input').value !== '';
+
+    const map = new google.maps.Map(document.getElementById('portal-map-picker'), {
+        center: { lat: latVal, lng: lngVal },
+        zoom: hasPin ? 15 : 12,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+    });
+
+    let marker = null;
+
+    if (hasPin) {
+        marker = new google.maps.Marker({ position: { lat: latVal, lng: lngVal }, map, draggable: true });
+        marker.addListener('dragend', e => _updatePortalCoords(e.latLng.lat(), e.latLng.lng()));
+    }
+
+    map.addListener('click', e => {
+        const lat = e.latLng.lat();
+        const lng = e.latLng.lng();
+        _updatePortalCoords(lat, lng);
+        if (marker) {
+            marker.setPosition(e.latLng);
+        } else {
+            marker = new google.maps.Marker({ position: e.latLng, map, draggable: true });
+            marker.addListener('dragend', ev => _updatePortalCoords(ev.latLng.lat(), ev.latLng.lng()));
+        }
+    });
+}
+
+function _updatePortalCoords(lat, lng) {
+    document.getElementById('lat-input').value = lat.toFixed(7);
+    document.getElementById('lng-input').value = lng.toFixed(7);
+
+    const fb = document.getElementById('map-feedback');
+    fb.style.display = 'block';
+    fb.style.color   = '#22c55e';
+    fb.textContent   = '✓ شوێن لەسەر نەقشە دیاریکرا — کۆۆردینات خەزنکرا';
+
+    // Reverse geocode to fill address
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=ku,ar,en`)
+        .then(r => r.json())
+        .then(data => {
+            const addr = formatShortAddress(data);
+            if (addr) document.getElementById('addr-input').value = addr;
+        })
+        .catch(() => {});
 }
 </script>
 @endsection

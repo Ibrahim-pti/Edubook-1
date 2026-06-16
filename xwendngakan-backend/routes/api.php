@@ -46,6 +46,7 @@ Route::get('/events/{id}', [EventController::class, 'show']);
 
 // Public institution browsing
 Route::get('/institutions', [InstitutionController::class, 'index']);
+Route::get('/institutions/map-pins', [InstitutionController::class, 'mapPins']);
 Route::get('/institutions/{id}', [InstitutionController::class, 'show']);
 Route::get('/stats', [InstitutionController::class, 'stats']);
 
