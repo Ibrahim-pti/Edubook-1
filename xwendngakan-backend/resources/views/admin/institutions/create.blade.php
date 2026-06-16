@@ -4,6 +4,19 @@
 
 @section('content')
 
+<style>
+.inst-form-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+@media (max-width: 900px) {
+    .inst-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
 <div class="page-header">
     <div>
         <h1>زیادکردنی خوێندنگا</h1>
@@ -16,7 +29,7 @@
 <form action="{{ route('admin.institutions.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
-    <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px;">
+    <div class="inst-form-grid">
         
         <!-- Main Details -->
         <div class="card">

@@ -4,6 +4,24 @@
 
 @section('content')
 
+<style>
+.inst-form-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+@media (max-width: 900px) {
+    .inst-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 600px) {
+    .inst-form-grid > div > .card {
+        margin-bottom: 16px;
+    }
+}
+</style>
+
 <div class="page-header">
     <div>
         <h1>دەستکاریکردنی خوێندنگا</h1>
@@ -17,7 +35,7 @@
     @csrf
     @method('PUT')
 
-    <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px;">
+    <div class="inst-form-grid">
         
         <!-- Main Details -->
         <div class="card">
@@ -104,7 +122,7 @@
                 <div class="form-group">
                     <label class="form-label">کەڤەر</label>
                     <input type="file" name="cover" class="form-control image-upload-input" accept="image/*" data-preview="cover-preview">
-                    <img id="cover-preview" class="img-preview" src="{{ $institution->cover ?? '#' }}" style="display: {{ $institution->cover ? 'block' : 'none' }}; height: 100px; width: 100%;">
+                    <img id="cover-preview" class="img-preview" src="{{ $institution->img ?? '#' }}" style="display: {{ $institution->img ? 'block' : 'none' }}; height: 100px; width: 100%; object-fit: cover; border-radius: 8px; margin-top: 8px;">
                 </div>
             </div>
 

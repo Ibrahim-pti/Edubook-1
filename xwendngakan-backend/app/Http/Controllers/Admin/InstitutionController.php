@@ -73,14 +73,20 @@ class InstitutionController extends Controller
             'tk'          => 'nullable|string|max:255',
             'video'       => 'nullable|url|max:500',
             'logo'        => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
+            'cover'       => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
         ]);
 
         if ($request->hasFile('logo')) {
-            $file = $request->file('logo');
-            $path = $file->store('logos', 'public');
+            $path = $request->file('logo')->store('logos', 'public');
             $data['logo'] = '/storage/'.$path;
         }
 
+        if ($request->hasFile('cover')) {
+            $path = $request->file('cover')->store('covers', 'public');
+            $data['img'] = '/storage/'.$path;
+        }
+
+        unset($data['cover']); // field name differs from column name
         $data['approved'] = false;
         Institution::create($data);
 
@@ -90,8 +96,9 @@ class InstitutionController extends Controller
 
     public function edit(Institution $institution)
     {
-        $types = InstitutionType::active()->ordered()->get();
-        return view('admin.institutions.edit', compact('institution','types'));
+        $types  = InstitutionType::active()->ordered()->get();
+        $cities = Institution::whereNotNull('city')->distinct()->orderBy('city')->pluck('city');
+        return view('admin.institutions.edit', compact('institution', 'types', 'cities'));
     }
 
     public function update(Request $request, Institution $institution)
@@ -127,14 +134,20 @@ class InstitutionController extends Controller
             'tk'          => 'nullable|string|max:255',
             'video'       => 'nullable|url|max:500',
             'logo'        => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
+            'cover'       => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
         ]);
 
         if ($request->hasFile('logo')) {
-            $file = $request->file('logo');
-            $path = $file->store('logos', 'public');
+            $path = $request->file('logo')->store('logos', 'public');
             $data['logo'] = '/storage/'.$path;
         }
 
+        if ($request->hasFile('cover')) {
+            $path = $request->file('cover')->store('covers', 'public');
+            $data['img'] = '/storage/'.$path;
+        }
+
+        unset($data['cover']); // field name differs from column name
         $institution->update($data);
 
         return redirect()->route('admin.institutions.index')
