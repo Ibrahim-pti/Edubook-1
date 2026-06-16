@@ -59,7 +59,7 @@
 
             <div class="form-group">
                 <label class="form-label">دەربارە / پێناسە</label>
-                <textarea name="bio" class="form-control" rows="4">{{ old('bio', $institution->bio) }}</textarea>
+                <textarea name="desc" class="form-control" rows="4">{{ old('desc', $institution->desc) }}</textarea>
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
@@ -99,11 +99,11 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
                 <div class="form-group">
                     <label class="form-label">هێڵی پانی (Latitude)</label>
-                    <input type="text" name="latitude" class="form-control" dir="ltr" value="{{ old('latitude', $institution->latitude) }}">
+                    <input type="text" name="lat" class="form-control" dir="ltr" value="{{ old('lat', $institution->lat) }}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">هێڵی درێژی (Longitude)</label>
-                    <input type="text" name="longitude" class="form-control" dir="ltr" value="{{ old('longitude', $institution->longitude) }}">
+                    <input type="text" name="lng" class="form-control" dir="ltr" value="{{ old('lng', $institution->lng) }}">
                 </div>
             </div>
         </div>

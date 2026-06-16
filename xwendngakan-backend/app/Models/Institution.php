@@ -17,11 +17,12 @@ class Institution extends Model
         'fb', 'ig', 'tg', 'wa', 'tk', 'yt',
         'logo', 'img', 'video',
         'founded_year', 'students_count',
-        'approved',
+        'approved', 'is_premium', 'manager_name',
     ];
 
     protected $casts = [
         'approved'       => 'boolean',
+        'is_premium'     => 'boolean',
         'tuition_plans'  => 'array',
         'lat' => 'double',
         'lng' => 'double',

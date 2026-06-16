@@ -43,37 +43,40 @@ class InstitutionController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nku'         => 'required|string|max:255',
-            'type'        => 'required|string|max:50',
-            'country'     => 'nullable|string|max:100',
-            'city'        => 'required|string|max:100',
-            'addr'        => 'nullable|string|max:255',
-            'lat'         => 'nullable|numeric',
-            'lng'         => 'nullable|numeric',
-            'nen'         => 'nullable|string|max:255',
-            'nar'         => 'nullable|string|max:255',
-            'desc'        => 'nullable|string',
-            'desc_en'     => 'nullable|string',
-            'desc_ar'     => 'nullable|string',
-            'founded_year'=> 'nullable|integer|min:1800|max:'.date('Y'),
-            'students_count'=>'nullable|integer|min:0',
-            'level'       => 'nullable|string|max:255',
-            'fee'         => 'nullable|string|max:255',
-            'meal'        => 'nullable|string|max:255',
-            'uniform'     => 'nullable|string|max:255',
-            'books'       => 'nullable|string|max:255',
-            'phone'       => 'nullable|string|max:50',
-            'email'       => 'nullable|email|max:255',
-            'web'         => 'nullable|url|max:255',
-            'fb'          => 'nullable|string|max:255',
-            'wa'          => 'nullable|string|max:255',
-            'ig'          => 'nullable|string|max:255',
-            'tg'          => 'nullable|string|max:255',
-            'yt'          => 'nullable|string|max:255',
-            'tk'          => 'nullable|string|max:255',
-            'video'       => 'nullable|url|max:500',
-            'logo'        => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
-            'cover'       => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
+            'nku'            => 'required|string|max:255',
+            'type'           => 'required|string|max:50',
+            'country'        => 'nullable|string|max:100',
+            'city'           => 'required|string|max:100',
+            'addr'           => 'nullable|string|max:255',
+            'lat'            => 'nullable|numeric',
+            'lng'            => 'nullable|numeric',
+            'nen'            => 'nullable|string|max:255',
+            'nar'            => 'nullable|string|max:255',
+            'desc'           => 'nullable|string',
+            'desc_en'        => 'nullable|string',
+            'desc_ar'        => 'nullable|string',
+            'founded_year'   => 'nullable|integer|min:1800|max:'.date('Y'),
+            'students_count' => 'nullable|integer|min:0',
+            'level'          => 'nullable|string|max:255',
+            'fee'            => 'nullable|string|max:255',
+            'meal'           => 'nullable|string|max:255',
+            'uniform'        => 'nullable|string|max:255',
+            'books'          => 'nullable|string|max:255',
+            'phone'          => 'nullable|string|max:50',
+            'manager_name'   => 'nullable|string|max:255',
+            'email'          => 'nullable|email|max:255',
+            'web'            => 'nullable|url|max:255',
+            'fb'             => 'nullable|string|max:255',
+            'wa'             => 'nullable|string|max:255',
+            'ig'             => 'nullable|string|max:255',
+            'tg'             => 'nullable|string|max:255',
+            'yt'             => 'nullable|string|max:255',
+            'tk'             => 'nullable|string|max:255',
+            'video'          => 'nullable|url|max:500',
+            'user_id'        => 'nullable|integer|exists:users,id',
+            'is_premium'     => 'nullable|boolean',
+            'logo'           => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
+            'cover'          => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -86,8 +89,9 @@ class InstitutionController extends Controller
             $data['img'] = '/storage/'.$path;
         }
 
-        unset($data['cover']); // field name differs from column name
-        $data['approved'] = false;
+        unset($data['cover']);
+        $data['approved']   = false;
+        $data['is_premium'] = isset($data['is_premium']);
         Institution::create($data);
 
         return redirect()->route('admin.institutions.index')
@@ -104,37 +108,41 @@ class InstitutionController extends Controller
     public function update(Request $request, Institution $institution)
     {
         $data = $request->validate([
-            'nku'         => 'required|string|max:255',
-            'type'        => 'required|string|max:50',
-            'country'     => 'nullable|string|max:100',
-            'city'        => 'required|string|max:100',
-            'addr'        => 'nullable|string|max:255',
-            'lat'         => 'nullable|numeric',
-            'lng'         => 'nullable|numeric',
-            'nen'         => 'nullable|string|max:255',
-            'nar'         => 'nullable|string|max:255',
-            'desc'        => 'nullable|string',
-            'desc_en'     => 'nullable|string',
-            'desc_ar'     => 'nullable|string',
-            'founded_year'=> 'nullable|integer|min:1800|max:'.date('Y'),
-            'students_count'=>'nullable|integer|min:0',
-            'level'       => 'nullable|string|max:255',
-            'fee'         => 'nullable|string|max:255',
-            'meal'        => 'nullable|string|max:255',
-            'uniform'     => 'nullable|string|max:255',
-            'books'       => 'nullable|string|max:255',
-            'phone'       => 'nullable|string|max:50',
-            'email'       => 'nullable|email|max:255',
-            'web'         => 'nullable|url|max:255',
-            'fb'          => 'nullable|string|max:255',
-            'wa'          => 'nullable|string|max:255',
-            'ig'          => 'nullable|string|max:255',
-            'tg'          => 'nullable|string|max:255',
-            'yt'          => 'nullable|string|max:255',
-            'tk'          => 'nullable|string|max:255',
-            'video'       => 'nullable|url|max:500',
-            'logo'        => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
-            'cover'       => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
+            'nku'            => 'required|string|max:255',
+            'type'           => 'required|string|max:50',
+            'country'        => 'nullable|string|max:100',
+            'city'           => 'required|string|max:100',
+            'addr'           => 'nullable|string|max:255',
+            'lat'            => 'nullable|numeric',
+            'lng'            => 'nullable|numeric',
+            'nen'            => 'nullable|string|max:255',
+            'nar'            => 'nullable|string|max:255',
+            'desc'           => 'nullable|string',
+            'desc_en'        => 'nullable|string',
+            'desc_ar'        => 'nullable|string',
+            'founded_year'   => 'nullable|integer|min:1800|max:'.date('Y'),
+            'students_count' => 'nullable|integer|min:0',
+            'level'          => 'nullable|string|max:255',
+            'fee'            => 'nullable|string|max:255',
+            'meal'           => 'nullable|string|max:255',
+            'uniform'        => 'nullable|string|max:255',
+            'books'          => 'nullable|string|max:255',
+            'phone'          => 'nullable|string|max:50',
+            'manager_name'   => 'nullable|string|max:255',
+            'email'          => 'nullable|email|max:255',
+            'web'            => 'nullable|url|max:255',
+            'fb'             => 'nullable|string|max:255',
+            'wa'             => 'nullable|string|max:255',
+            'ig'             => 'nullable|string|max:255',
+            'tg'             => 'nullable|string|max:255',
+            'yt'             => 'nullable|string|max:255',
+            'tk'             => 'nullable|string|max:255',
+            'video'          => 'nullable|url|max:500',
+            'user_id'        => 'nullable|integer|exists:users,id',
+            'approved'       => 'nullable|boolean',
+            'is_premium'     => 'nullable|boolean',
+            'logo'           => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
+            'cover'          => 'nullable|file|mimes:jpg,jpeg,png,webp|max:20480',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -147,7 +155,11 @@ class InstitutionController extends Controller
             $data['img'] = '/storage/'.$path;
         }
 
-        unset($data['cover']); // field name differs from column name
+        // Checkboxes send nothing when unchecked — normalise to boolean
+        $data['approved']   = $request->boolean('approved');
+        $data['is_premium'] = $request->boolean('is_premium');
+
+        unset($data['cover']);
         $institution->update($data);
 
         return redirect()->route('admin.institutions.index')
