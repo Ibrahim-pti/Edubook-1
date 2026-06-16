@@ -277,14 +277,16 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // ── Video Card (Moved to top) ──
+                // ── Video Card ──
                 if (inst.video != null && inst.video!.isNotEmpty) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _VideoCard(
-                      videoUrl: inst.video!,
-                      isDark: isDark,
-                      typeColor: typeColor,
+                    child: RepaintBoundary(
+                      child: _VideoCard(
+                        videoUrl: inst.video!,
+                        isDark: isDark,
+                        typeColor: typeColor,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 28),
@@ -325,11 +327,13 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                 // ── Tab Content ──
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 400),
-                    child: KeyedSubtree(
-                      key: ValueKey(_activeTab),
-                      child: _buildTabContent(inst, isDark, lang, l),
+                  child: RepaintBoundary(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: KeyedSubtree(
+                        key: ValueKey(_activeTab),
+                        child: _buildTabContent(inst, isDark, lang, l),
+                      ),
                     ),
                   ),
                 ),
@@ -489,7 +493,7 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
 
     add(Icons.school_rounded, 'ئاستی خوێندن', inst.level);
     add(Icons.payments_rounded, 'خەرجی', inst.fee);
-    add(Icons.request_quote_rounded, 'پلانی خەرجی', inst.tuitionPlans);
+    // tuitionPlans is shown per-department in the Colleges tab — skip raw JSON here
     add(Icons.restaurant_rounded, 'خواردن', inst.meal);
     add(Icons.checkroom_rounded, 'جلوبەرگ', inst.uniform);
     add(Icons.menu_book_rounded, 'پەرتووک', inst.books);
@@ -615,6 +619,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
       case 1: // Colleges & Departments
         final colleges = _parseColleges(inst.colleges);
         final depts = _parseDepts(inst.depts);
+        // Build a dept-name → {fee,discount} lookup from tuition_plans
+        final tuitionMap = _buildTuitionMap(inst.tuitionPlans);
         if (colleges.isEmpty && depts.isEmpty) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 60),
@@ -637,33 +643,76 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                 accentColor: AppColors.typeColor(inst.type),
                 isDark: isDark,
                 child: Column(
-                  children: depts.map((dept) => Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: AppColors.typeColor(inst.type),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            dept,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'Rabar',
-                              color: isDark ? Colors.white70 : AppColors.textDark,
+                  children: depts.map((dept) {
+                    final plan  = tuitionMap[dept];
+                    final fee   = plan?['fee'] ?? '';
+                    final disc  = plan?['discount'] ?? '';
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Container(
+                              width: 8, height: 8,
+                              decoration: BoxDecoration(
+                                color: AppColors.typeColor(inst.type),
+                                shape: BoxShape.circle,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )).toList(),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  dept,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'Rabar',
+                                    color: isDark ? Colors.white70 : AppColors.textDark,
+                                  ),
+                                ),
+                                if (fee.isNotEmpty || disc.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Wrap(spacing: 6, children: [
+                                      if (fee.isNotEmpty)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary.withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            fee,
+                                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, fontFamily: 'Rabar', color: AppColors.primary),
+                                          ),
+                                        ),
+                                      if (disc.isNotEmpty)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            'داشکان: $disc',
+                                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, fontFamily: 'Rabar', color: Colors.green),
+                                          ),
+                                        ),
+                                    ]),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
             ],
@@ -718,7 +767,27 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
         return decoded.map((e) => e.toString()).toList();
       } catch (_) {}
     }
-    return trimmed.split(',').where((s) => s.trim().isNotEmpty).map((s) => s.trim()).toList();
+    return trimmed.split('\n').where((s) => s.trim().isNotEmpty).map((s) => s.trim()).toList();
+  }
+
+  /// Builds a map from dept name → {fee, discount} using the tuition_plans JSON.
+  Map<String, Map<String, String>> _buildTuitionMap(String? raw) {
+    if (raw == null || raw.isEmpty) return {};
+    final trimmed = raw.trim();
+    if (!trimmed.startsWith('[')) return {};
+    try {
+      final List<dynamic> plans = jsonDecode(trimmed);
+      return {
+        for (final p in plans)
+          if (p is Map && p['dept'] != null)
+            p['dept'].toString(): {
+              'fee': (p['fee'] ?? '').toString().trim(),
+              'discount': (p['discount'] ?? '').toString().trim(),
+            }
+      };
+    } catch (_) {
+      return {};
+    }
   }
 
   Widget _buildShimmerLoading(BuildContext context, bool isDark) {
@@ -1044,21 +1113,29 @@ class _VideoCard extends StatefulWidget {
 
 class _VideoCardState extends State<_VideoCard> {
   YoutubePlayerController? _controller;
+  String? _videoId;
+  bool _playing = false;
 
   @override
   void initState() {
     super.initState();
-    final videoId = YoutubePlayer.convertUrlToId(widget.videoUrl);
-    if (videoId != null) {
-      _controller = YoutubePlayerController(
-        initialVideoId: videoId,
-        flags: const YoutubePlayerFlags(
-          autoPlay: true,
-          mute: false,
-          enableCaption: false,
-        ),
-      );
-    }
+    _videoId = YoutubePlayer.convertUrlToId(widget.videoUrl);
+  }
+
+  void _startPlaying() {
+    if (_videoId == null) return;
+    final ctrl = YoutubePlayerController(
+      initialVideoId: _videoId!,
+      flags: const YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+        enableCaption: false,
+      ),
+    );
+    setState(() {
+      _controller = ctrl;
+      _playing = true;
+    });
   }
 
   @override
@@ -1069,24 +1146,66 @@ class _VideoCardState extends State<_VideoCard> {
 
   @override
   Widget build(BuildContext context) {
-    if (_controller == null) {
-      // Fallback if not a valid youtube url
-      return Container(
-        width: double.infinity,
-        height: 200,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          color: widget.typeColor.withValues(alpha: 0.1),
-        ),
-        child: Center(
-          child: Text(
-            'Invalid Video URL',
-            style: TextStyle(fontFamily: 'Rabar', color: widget.typeColor),
+    if (_videoId == null) return const SizedBox.shrink();
+
+    // ── Thumbnail (shown until user taps play) ──
+    if (!_playing) {
+      final thumb = 'https://img.youtube.com/vi/$_videoId/hqdefault.jpg';
+      return GestureDetector(
+        onTap: _startPlaying,
+        child: Container(
+          width: double.infinity,
+          height: 210,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                CachedNetworkImage(
+                  imageUrl: thumb,
+                  fit: BoxFit.cover,
+                  placeholder: (_, __) => Container(color: widget.typeColor.withValues(alpha: 0.15)),
+                  errorWidget: (_, __, ___) => Container(color: widget.typeColor.withValues(alpha: 0.15)),
+                ),
+                // Dark overlay
+                Container(color: Colors.black.withValues(alpha: 0.35)),
+                // Play button
+                Center(
+                  child: Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.95),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          blurRadius: 16,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.play_arrow_rounded, color: Colors.redAccent, size: 38),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
     }
 
+    // ── Player (after tap) ──
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -1362,26 +1481,84 @@ class _CollegesCard extends StatelessWidget {
               if (departments.isEmpty)
                 Text(l.noInformation, style: const TextStyle(fontSize: 13, color: AppColors.textGrey))
               else
-                ...departments.map((dept) => Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.check_circle_outline_rounded, color: AppColors.primary, size: 18),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              dept.toString(),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'Rabar',
-                                color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.8),
+                ...departments.map((dept) {
+                  // dept can be a string (legacy) or a Map with name/fee/discount
+                  final name = dept is Map ? (dept['name'] ?? '').toString() : dept.toString();
+                  final fee  = dept is Map ? (dept['fee'] ?? '').toString().trim() : '';
+                  final disc = dept is Map ? (dept['discount'] ?? '').toString().trim() : '';
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(top: 2),
+                          child: Icon(Icons.check_circle_outline_rounded, color: AppColors.primary, size: 18),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'Rabar',
+                                  color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.8),
+                                ),
                               ),
-                            ),
+                              if (fee.isNotEmpty || disc.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Wrap(
+                                    spacing: 6,
+                                    children: [
+                                      if (fee.isNotEmpty)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary.withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            fee,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w800,
+                                              fontFamily: 'Rabar',
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                        ),
+                                      if (disc.isNotEmpty)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            'داشکان: $disc',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: 'Rabar',
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
             ],
           ),
         );

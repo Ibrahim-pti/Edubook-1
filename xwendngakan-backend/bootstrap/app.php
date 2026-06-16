@@ -14,6 +14,17 @@ return Application::configure(basePath: $basePath)
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Trust Cloudflare (and any reverse proxy) to pass X-Forwarded-Proto: https
+        // Without this Laravel ignores the header and generates http:// URLs/redirects
+        $middleware->trustProxies(
+            at: '*',
+            headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR
+                   | \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST
+                   | \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT
+                   | \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO
+                   | \Illuminate\Http\Request::HEADER_X_FORWARDED_PREFIX,
+        );
+
         $middleware->redirectGuestsTo(fn () => route('portal.login'));
         $middleware->alias([
             'approved' => \App\Http\Middleware\ApprovedUser::class,

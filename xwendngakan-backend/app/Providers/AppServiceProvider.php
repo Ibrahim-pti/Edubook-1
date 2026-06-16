@@ -27,8 +27,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('app.env') === 'production') {
+        // Force HTTPS in production, or whenever the proxy says the original request was HTTPS.
+        // APP_ENV=production must be set on the server — also covers Cloudflare's forwarded header.
+        if ($this->app->environment('production')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
+            \Illuminate\Support\Facades\URL::forceRootUrl(config('app.url'));
         }
 
         // Notify users when a post is published (covers both API and admin panel)

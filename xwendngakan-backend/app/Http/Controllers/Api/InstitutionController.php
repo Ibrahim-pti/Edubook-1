@@ -130,7 +130,9 @@ class InstitutionController extends Controller
      */
     public function show(string $id)
     {
-        $institution = Institution::findOrFail($id);
+        $institution = Institution::with([
+            'posts' => fn($q) => $q->where('approved', true)->latest()->limit(50),
+        ])->findOrFail($id);
 
         return response()->json([
             'success' => true,
