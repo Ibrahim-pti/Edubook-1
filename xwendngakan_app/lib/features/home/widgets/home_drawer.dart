@@ -83,22 +83,7 @@ class HomeDrawer extends StatelessWidget {
                   },
                   isDark: isDark,
                 ),
-                _buildDrawerItem(
-                  context,
-                  icon: Icons.psychology_rounded,
-                  title: locale.locale.languageCode == 'ku'
-                      ? 'ڕێپیشاندەری زیرەک (AI)'
-                      : (locale.locale.languageCode == 'kbd' ? 'ڕێپیشاندەرێ زیرەک (AI)' : 'المستشار الذكي (AI)'),
-                  subtitle: locale.locale.languageCode == 'ku'
-                      ? 'چاتبۆت و ڕێپیشاندەری زانکۆ و خوێندن'
-                      : (locale.locale.languageCode == 'kbd' ? 'چاتبۆت بۆ زانکۆ و خویندنێ' : 'مساعد ذكي للقبول والجامعات'),
-                  color: const Color(0xFFC49A3C),
-                  onTap: () {
-                    context.pop();
-                    context.push('/ai-chat');
-                  },
-                  isDark: isDark,
-                ),
+
                 _buildDrawerItem(
                   context,
                   icon: Icons.key_rounded,

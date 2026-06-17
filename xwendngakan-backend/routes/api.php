@@ -86,8 +86,6 @@ Route::get('/institution-types', [AppDataController::class, 'institutionTypes'])
 // Unified app data — single endpoint for types + categories
 Route::get('/app-data', [AppDataController::class, 'appData']);
 
-// AI Study & Admission Assistant
-Route::post('/ai/chat', [\App\Http\Controllers\Api\AiChatController::class, 'chat']);
 
 /*
 |--------------------------------------------------------------------------

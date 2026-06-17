@@ -35,7 +35,6 @@ import '../features/pathfinder/path_finder_screen.dart';
 import '../features/lost_and_found/lost_and_found_screen.dart';
 import '../features/lost_and_found/add_item_screen.dart';
 import '../features/language/language_selection_screen.dart';
-import '../features/ai_chat/ai_chat_screen.dart';
 
 /// Root navigator key — lets services outside the widget tree (e.g. push
 /// notification taps) navigate via [GoRouter].
@@ -68,7 +67,6 @@ GoRouter createRouter(BuildContext context) {
         '/role-selection',
         '/teacher-register',
         '/cv-form',
-        '/ai-chat'
       ];
       final isPublic = publicRoutes.any((r) => loc.startsWith(r));
 
@@ -224,10 +222,6 @@ GoRouter createRouter(BuildContext context) {
       GoRoute(
         path: '/scan',
         builder: (context, state) => const QrScannerScreen(),
-      ),
-      GoRoute(
-        path: '/ai-chat',
-        builder: (context, state) => const AiChatScreen(),
       ),
 
       GoRoute(

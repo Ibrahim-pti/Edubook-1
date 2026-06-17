@@ -63,15 +63,6 @@ class ProfileScreen extends StatelessWidget {
                         label: l.map,
                         onTap: () => context.push('/map'),
                       ),
-                      _Divider(isDark: isDark),
-                      _NavTile(
-                        icon: Icons.psychology_rounded,
-                        iconBg: const Color(0xFFC49A3C),
-                        label: locale.locale.languageCode == 'ku'
-                            ? 'ڕێپیشاندەری زیرەک (AI)'
-                            : (locale.locale.languageCode == 'kbd' ? 'ڕێپیشاندەرێ زیرەک (AI)' : 'المستشار الذكي (AI)'),
-                        onTap: () => context.push('/ai-chat'),
-                      ),
                     ]),
                     const SizedBox(height: 24),
                   ],
