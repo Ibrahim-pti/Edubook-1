@@ -121,14 +121,6 @@ Route::prefix('admin')->name('admin.')->middleware('no-cache')->group(function (
         // Notifications
         Route::get('/notifications',  [NotificationController::class, 'index'])->name('notifications.index');
         Route::post('/notifications/broadcast', [NotificationController::class, 'broadcast'])->name('notifications.broadcast');
-
-        // Academic Calendar
-        Route::get('/academic-calendar',             [\App\Http\Controllers\Admin\AcademicEventController::class, 'index'])->name('academic-calendar.index');
-        Route::get('/academic-calendar/create',      [\App\Http\Controllers\Admin\AcademicEventController::class, 'create'])->name('academic-calendar.create');
-        Route::post('/academic-calendar',            [\App\Http\Controllers\Admin\AcademicEventController::class, 'store'])->name('academic-calendar.store');
-        Route::get('/academic-calendar/{event}/edit',[\App\Http\Controllers\Admin\AcademicEventController::class, 'edit'])->name('academic-calendar.edit');
-        Route::put('/academic-calendar/{event}',     [\App\Http\Controllers\Admin\AcademicEventController::class, 'update'])->name('academic-calendar.update');
-        Route::delete('/academic-calendar/{event}',  [\App\Http\Controllers\Admin\AcademicEventController::class, 'destroy'])->name('academic-calendar.destroy');
     });
 });
 

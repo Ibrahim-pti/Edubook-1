@@ -97,22 +97,6 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     _Divider(isDark: isDark),
                     _NavTile(
-                      icon: Icons.calendar_month_rounded,
-                      iconBg: AppColors.primary,
-                      label: locale.locale.languageCode == 'ku'
-                          ? 'ڕۆژژمێری ئەکادیمی'
-                          : (locale.locale.languageCode == 'ar'
-                              ? 'التقويم الأكاديمي'
-                              : 'Academic Calendar'),
-                      subtitle: locale.locale.languageCode == 'ku'
-                          ? 'پشوو و وادە گرنگەکان'
-                          : (locale.locale.languageCode == 'ar'
-                              ? 'العطل والمواعيد الهامة'
-                              : 'Holidays & deadlines'),
-                      onTap: () => context.push('/academic-calendar'),
-                    ),
-                    _Divider(isDark: isDark),
-                    _NavTile(
                       icon: Icons.privacy_tip_rounded,
                       iconBg: const Color(0xFFFF6B35),
                       label: l.privacyPolicy,
