@@ -35,6 +35,7 @@ import '../features/pathfinder/path_finder_screen.dart';
 import '../features/lost_and_found/lost_and_found_screen.dart';
 import '../features/lost_and_found/add_item_screen.dart';
 import '../features/language/language_selection_screen.dart';
+import '../features/calendar/academic_calendar_screen.dart';
 
 /// Root navigator key — lets services outside the widget tree (e.g. push
 /// notification taps) navigate via [GoRouter].
@@ -185,6 +186,10 @@ GoRouter createRouter(BuildContext context) {
       GoRoute(
         path: '/path-finder',
         builder: (context, state) => const PathFinderScreen(),
+      ),
+      GoRoute(
+        path: '/academic-calendar',
+        builder: (context, state) => const AcademicCalendarScreen(),
       ),
       GoRoute(
         path: '/lost-and-found',

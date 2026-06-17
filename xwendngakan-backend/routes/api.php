@@ -40,6 +40,9 @@ Route::get('/news/{id}', [NewsController::class, 'show']);
 // Banners (public)
 Route::get('/banners', [BannerController::class, 'index']);
 
+// Academic Calendar (public)
+Route::get('/academic-calendar', [\App\Http\Controllers\Api\AcademicEventController::class, 'index']);
+
 // Public Events
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{id}', [EventController::class, 'show']);

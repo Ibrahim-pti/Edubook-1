@@ -107,6 +107,26 @@ class HomeDrawer extends StatelessWidget {
                   },
                   isDark: isDark,
                 ),
+                _buildDrawerItem(
+                  context,
+                  icon: Icons.calendar_month_rounded,
+                  title: locale.locale.languageCode == 'ku'
+                      ? 'ڕۆژژمێری ئەکادیمی'
+                      : (locale.locale.languageCode == 'ar'
+                          ? 'التقويم الأكاديمي'
+                          : 'Academic Calendar'),
+                  subtitle: locale.locale.languageCode == 'ku'
+                      ? 'پشوو و وادە گرنگەکان'
+                      : (locale.locale.languageCode == 'ar'
+                          ? 'العطل والمواعيد الهامة'
+                          : 'Holidays & deadlines'),
+                  color: AppColors.primary,
+                  onTap: () {
+                    context.pop();
+                    context.push('/academic-calendar');
+                  },
+                  isDark: isDark,
+                ),
 
                 const Padding(padding: EdgeInsets.symmetric(horizontal: 24), child: Divider(height: 32)),
 

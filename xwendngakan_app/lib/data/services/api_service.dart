@@ -8,6 +8,7 @@ import '../models/institution_model.dart';
 import '../models/teacher_model.dart';
 import '../models/cv_model.dart';
 import '../models/user_model.dart';
+import '../models/academic_event_model.dart';
 import '../../core/constants/app_constants.dart';
 
 class ApiResult<T> {
@@ -951,6 +952,33 @@ class ApiService {
       return ApiResult.failure('Failed to check for updates');
     } catch (e) {
       return ApiResult.failure('$e');
+    }
+  }
+
+  // ==================
+  // ACADEMIC CALENDAR
+  // ==================
+
+  Future<ApiResult<List<AcademicEventModel>>> getAcademicCalendar() async {
+    try {
+      final res = await http
+          .get(
+            Uri.parse('$_base/academic-calendar'),
+            headers: _headers(),
+          )
+          .timeout(AppConstants.receiveTimeout);
+
+      final data = _safeJson(res);
+      if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
+      if (res.statusCode == 200) {
+        final list = (data['data'] as List)
+            .map((e) => AcademicEventModel.fromJson(e))
+            .toList();
+        return ApiResult.success(list);
+      }
+      return ApiResult.failure(data['message'] ?? 'Failed to get academic calendar');
+    } catch (e) {
+      return ApiResult.failure(_connectionMessage);
     }
   }
 }
