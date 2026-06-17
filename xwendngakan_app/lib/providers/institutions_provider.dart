@@ -116,7 +116,7 @@ class InstitutionsProvider extends ChangeNotifier {
       _institutionTypes = typesJson.map((e) => InstitutionTypeModel.fromJson(e)).toList();
 
       final List bannersJson = result.data!['banners'] ?? [];
-      _banners = bannersJson.map((e) => Map<String, dynamic>.from(e)).toList();
+      _banners = bannersJson.map((e) => e as Map<String, dynamic>).toList();
 
       final List citiesJson = result.data!['cities'] ?? [];
       _cities = citiesJson.map((e) => Map<String, dynamic>.from(e)).toList();

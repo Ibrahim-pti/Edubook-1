@@ -21,8 +21,7 @@
             <thead>
                 <tr>
                     <th style="width:70px">وێنە</th>
-                    <th>زانیاری</th>
-                    <th>ڕەنگەکان (Gradient)</th>
+                    <th>تاگ</th>
                     <th>ڕیزبەندی</th>
                     <th>دۆخ</th>
                     <th style="text-align:left;">کردارەکان</th>
@@ -41,20 +40,11 @@
                             @endif
                         </td>
                         <td>
-                            <div class="fw-bold">{{ $banner->title }}</div>
-                            <div class="td-muted">{{ $banner->subtitle ?? '-' }}</div>
                             @if($banner->tag)
                                 <span class="badge badge-primary mt-1" style="font-size:10px;">{{ $banner->tag }}</span>
+                            @else
+                                <span class="td-muted">-</span>
                             @endif
-                        </td>
-                        <td dir="ltr" style="text-align:right;">
-                            <div class="d-flex align-center gap-2" style="justify-content:flex-end;">
-                                <div style="width:20px; height:20px; border-radius:4px; border:1px solid var(--border); background:{{ $banner->color_start ?? '#000' }};"></div>
-                                <span class="td-muted text-xs">لە {{ $banner->color_start ?? '#000' }}</span>
-                                <br>
-                                <div style="width:20px; height:20px; border-radius:4px; border:1px solid var(--border); background:{{ $banner->color_end ?? '#000' }};"></div>
-                                <span class="td-muted text-xs">بۆ {{ $banner->color_end ?? '#000' }}</span>
-                            </div>
                         </td>
                         <td>{{ $banner->sort_order }}</td>
                         <td>

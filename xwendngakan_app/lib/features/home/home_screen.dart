@@ -1048,19 +1048,10 @@ class _AdsCarouselState extends State<AdsCarousel> {
   final PageController _pageController = PageController(viewportFraction: 0.92);
   int _currentPage = 0;
   Timer? _timer;
-  List<BannerModel>? _apiBanners;
 
   @override
   void initState() {
     super.initState();
-    _fetchBanners();
-  }
-
-  Future<void> _fetchBanners() async {
-    final result = await ApiService().getBanners();
-    if (mounted && result.success && result.data != null && result.data!.isNotEmpty) {
-      setState(() => _apiBanners = result.data);
-    }
     _startAutoPlay();
   }
 
@@ -1100,7 +1091,8 @@ class _AdsCarouselState extends State<AdsCarousel> {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
       if (!mounted || !_pageController.hasClients) return;
-      final count = _apiBanners?.length ?? 3;
+      final prov = Provider.of<InstitutionsProvider>(context, listen: false);
+      final count = prov.banners.isNotEmpty ? prov.banners.length : 3;
       int next = _currentPage + 1;
       if (next >= count) {
         next = 0;
@@ -1125,10 +1117,12 @@ class _AdsCarouselState extends State<AdsCarousel> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final prov = Provider.of<InstitutionsProvider>(context);
 
-    if (_apiBanners != null) {
-      return _buildCarousel(_apiBanners!.length, (index) {
-        final b = _apiBanners![index];
+    if (prov.banners.isNotEmpty) {
+      return _buildCarousel(prov.banners.length, (index) {
+        final bMap = prov.banners[index];
+        final b = BannerModel.fromJson(bMap);
         return _apiBannerCard(b);
       });
     }
@@ -1176,32 +1170,15 @@ class _AdsCarouselState extends State<AdsCarousel> {
   }
 
   Widget _apiBannerCard(BannerModel b) {
-    final c1 = _hexColor(b.colorStart);
-    final c2 = _hexColor(b.colorEnd);
-
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [c1, c2],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: c1.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        color: AppColors.primaryLight,
+        borderRadius: BorderRadius.circular(24),
       ),
       child: b.imageUrl != null
           ? _imageLayer(b)
-          : _gradientLayer(
-              title: b.title,
-              subtitle: b.subtitle ?? '',
-              tag: b.tag ?? '',
-              colors: [c1, c2],
-              icon: Icons.campaign_rounded,
+          : const Center(
+              child: Icon(Icons.campaign_rounded, size: 40, color: Colors.white54),
             ),
     );
   }
@@ -1213,85 +1190,8 @@ class _AdsCarouselState extends State<AdsCarousel> {
         CachedNetworkImage(
           imageUrl: b.imageUrl!,
           fit: BoxFit.cover,
-          placeholder: (_, __) => Container(color: _hexColor(b.colorStart)),
-          errorWidget: (_, __, ___) => Container(color: _hexColor(b.colorStart)),
-        ),
-        // Bottom gradient for text readability
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: 100,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Colors.black.withValues(alpha: 0.72),
-                  Colors.transparent,
-                ],
-              ),
-            ),
-          ),
-        ),
-        // Text anchored at bottom
-        Positioned(
-          bottom: 14,
-          left: 16,
-          right: 16,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (b.tag != null && b.tag!.isNotEmpty) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.22),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
-                  ),
-                  child: Text(
-                    b.tag!,
-                    style: const TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      fontFamily: 'Rabar',
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-              ],
-              Text(
-                b.title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                  fontFamily: 'Rabar',
-                  height: 1.2,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (b.subtitle != null && b.subtitle!.isNotEmpty) ...[
-                const SizedBox(height: 2),
-                Text(
-                  b.subtitle!,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white70,
-                    fontFamily: 'Rabar',
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ],
-          ),
+          placeholder: (_, __) => Container(color: AppColors.primaryLight),
+          errorWidget: (_, __, ___) => Container(color: AppColors.primaryLight),
         ),
       ],
     );
