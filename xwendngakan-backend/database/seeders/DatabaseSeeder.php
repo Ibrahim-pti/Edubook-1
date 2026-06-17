@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             FiftyInstitutionSeeder::class,
             QuickStatSeeder::class,
             SettingsSeeder::class,
+            AcademicEventSeeder::class,
         ]);
 
         // Create default admin user
