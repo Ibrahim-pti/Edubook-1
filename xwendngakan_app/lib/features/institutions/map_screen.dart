@@ -6,9 +6,13 @@ import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../data/services/api_service.dart';
 import '../../shared/widgets/common_widgets.dart';
+import '../../data/models/institution_model.dart';
+import 'package:provider/provider.dart';
+import '../../providers/locale_provider.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  final InstitutionModel? singleInstitution;
+  const MapScreen({super.key, this.singleInstitution});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -25,18 +29,49 @@ class _MapScreenState extends State<MapScreen> {
   // Selected pin for bottom sheet
   Map<String, dynamic>? _selected;
 
-  static const CameraPosition _initialPosition = CameraPosition(
-    target: LatLng(36.1901, 44.0090), // Erbil center
-    zoom: 11.5,
-  );
+  late CameraPosition _initialPosition;
 
   @override
   void initState() {
     super.initState();
+    if (widget.singleInstitution != null && widget.singleInstitution!.lat != null && widget.singleInstitution!.lng != null) {
+      _initialPosition = CameraPosition(
+        target: LatLng(widget.singleInstitution!.lat!, widget.singleInstitution!.lng!),
+        zoom: 15.0,
+      );
+    } else {
+      _initialPosition = const CameraPosition(
+        target: LatLng(36.1901, 44.0090), // Erbil center
+        zoom: 11.5,
+      );
+    }
     _loadPins();
   }
 
   Future<void> _loadPins() async {
+    if (widget.singleInstitution != null) {
+      final inst = widget.singleInstitution!;
+      if (inst.lat != null && inst.lng != null) {
+        final pin = {
+          'id': inst.id,
+          'lat': inst.lat,
+          'lng': inst.lng,
+          'type': inst.type,
+          'nku': inst.nku,
+          'nen': inst.nen,
+          'city': inst.city,
+          'logo': inst.logo,
+        };
+        _pins = [pin];
+        _buildMarkers();
+        setState(() {
+          _loading = false;
+          _selected = pin;
+        });
+        return;
+      }
+    }
+
     setState(() { _loading = true; _error = null; });
     final result = await ApiService().getMapPins();
     if (!mounted) return;
@@ -90,10 +125,14 @@ class _MapScreenState extends State<MapScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
 
+    final locale = Provider.of<LocaleProvider>(context).locale.languageCode;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          l10n.institutionMap,
+          widget.singleInstitution != null 
+              ? widget.singleInstitution!.name(locale)
+              : l10n.institutionMap,
           style: const TextStyle(fontFamily: 'Rabar', fontWeight: FontWeight.w800),
         ),
         centerTitle: true,

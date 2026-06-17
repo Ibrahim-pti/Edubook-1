@@ -420,7 +420,7 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
       add(Icons.phone_in_talk_rounded, l.contact, const Color(0xFF10B981), () => _launch('tel:${inst.phone!}'));
     }
     
-    add(Icons.map_rounded, l.map, const Color(0xFFEC4899), () => context.push('/map'));
+    add(Icons.map_rounded, l.map, const Color(0xFFEC4899), () => context.push('/map', extra: inst));
     
     if (inst.web != null && inst.web!.isNotEmpty) {
       add(Icons.language_rounded, 'Website', const Color(0xFF6366F1), () => _launch(inst.web!));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:xwendngakan_app/data/models/institution_model.dart';
 import '../providers/auth_provider.dart';
 import '../features/auth/role_selection_screen.dart';
 import '../features/splash/splash_screen.dart';
@@ -34,12 +35,10 @@ import '../features/pathfinder/path_finder_screen.dart';
 import '../features/lost_and_found/lost_and_found_screen.dart';
 import '../features/lost_and_found/add_item_screen.dart';
 import '../features/language/language_selection_screen.dart';
- 
 
 /// Root navigator key — lets services outside the widget tree (e.g. push
 /// notification taps) navigate via [GoRouter].
-final GlobalKey<NavigatorState> rootNavigatorKey =
-    GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 /// The app's [GoRouter] instance, exposed so services (e.g. push notification
 /// handlers) can navigate without a [BuildContext].
@@ -58,7 +57,17 @@ GoRouter createRouter(BuildContext context) {
 
       if (isInitial) return null;
 
-      final publicRoutes = ['/splash', '/language-select', '/onboarding', '/login', '/register', '/forgot-password', '/role-selection', '/teacher-register', '/cv-form'];
+      final publicRoutes = [
+        '/splash',
+        '/language-select',
+        '/onboarding',
+        '/login',
+        '/register',
+        '/forgot-password',
+        '/role-selection',
+        '/teacher-register',
+        '/cv-form'
+      ];
       final isPublic = publicRoutes.any((r) => loc.startsWith(r));
 
       if (!isAuth && !isPublic) return '/login';
@@ -187,7 +196,10 @@ GoRouter createRouter(BuildContext context) {
       ),
       GoRoute(
         path: '/map',
-        builder: (context, state) => const MapScreen(),
+        builder: (context, state) {
+          final inst = state.extra as InstitutionModel?;
+          return MapScreen(singleInstitution: inst);
+        },
       ),
       GoRoute(
         path: '/teachers/:id',
@@ -211,7 +223,6 @@ GoRouter createRouter(BuildContext context) {
         path: '/scan',
         builder: (context, state) => const QrScannerScreen(),
       ),
-
 
       GoRoute(
         path: '/news-detail',

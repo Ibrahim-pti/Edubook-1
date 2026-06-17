@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
 import '../../data/models/institution_model.dart';
 import '../../data/models/teacher_model.dart';
 import '../../data/models/cv_model.dart';
+import '../../providers/institutions_provider.dart';
 
 /// =====================
 /// INSTITUTION CARD
@@ -30,11 +32,28 @@ class InstitutionCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final typeColor = AppColors.typeColor(institution.type);
     final institutionName = institution.name(lang);
-    final typeLabel = AppConstants.institutionTypes[institution.type]?[lang] ??
-        institution.type ??
-        '';
-    final emoji =
-        AppConstants.institutionTypes[institution.type]?['emoji'] ?? '🏫';
+    final rawType = institution.type ?? '';
+
+    final prov = Provider.of<InstitutionsProvider>(context, listen: false);
+
+    String typeLabel = rawType.replaceAll('_', ' ');
+    String emoji = '🏫';
+
+    try {
+      final typeModel =
+          prov.institutionTypes.firstWhere((t) => t.key == rawType);
+      typeLabel = lang == 'ku'
+          ? typeModel.name
+          : (lang == 'ar'
+              ? (typeModel.nameAr ?? typeModel.name)
+              : (typeModel.nameEn ?? typeModel.name));
+      if (typeModel.emoji != null && typeModel.emoji!.isNotEmpty) {
+        emoji = typeModel.emoji!;
+      }
+    } catch (_) {
+      typeLabel = AppConstants.institutionTypes[rawType]?[lang] ?? typeLabel;
+      emoji = AppConstants.institutionTypes[rawType]?['emoji'] ?? emoji;
+    }
 
     final hasPhone = institution.phone != null && institution.phone!.isNotEmpty;
     final hasWeb = institution.web != null && institution.web!.isNotEmpty;
@@ -144,7 +163,8 @@ class InstitutionCard extends StatelessWidget {
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: isFavorite
-                                  ? const Color(0xFFFF4757).withValues(alpha: 0.5)
+                                  ? const Color(0xFFFF4757)
+                                      .withValues(alpha: 0.5)
                                   : Colors.white.withValues(alpha: 0.2),
                             ),
                           ),
@@ -248,7 +268,10 @@ class InstitutionCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [typeColor, typeColor.withValues(alpha: 0.78)],
+                          colors: [
+                            typeColor,
+                            typeColor.withValues(alpha: 0.78)
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
@@ -347,8 +370,20 @@ class FeaturedInstitutionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final typeColor = AppColors.typeColor(institution.type);
     final institutionName = institution.name(lang);
-    final emoji =
-        AppConstants.institutionTypes[institution.type]?['emoji'] ?? '🏫';
+    final rawType = institution.type ?? '';
+
+    final prov = Provider.of<InstitutionsProvider>(context, listen: false);
+
+    String emoji = '🏫';
+    try {
+      final typeModel =
+          prov.institutionTypes.firstWhere((t) => t.key == rawType);
+      if (typeModel.emoji != null && typeModel.emoji!.isNotEmpty) {
+        emoji = typeModel.emoji!;
+      }
+    } catch (_) {
+      emoji = AppConstants.institutionTypes[rawType]?['emoji'] ?? emoji;
+    }
 
     return GestureDetector(
       onTap: onTap,
@@ -517,7 +552,9 @@ class TeacherCard extends StatelessWidget {
                       height: 60,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFF1F5F9),
+                        color: isDark
+                            ? const Color(0xFF2C2C2C)
+                            : const Color(0xFFF1F5F9),
                       ),
                       child: Stack(
                         fit: StackFit.expand,
@@ -854,7 +891,8 @@ class CvCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF1F5F9),
+                color:
+                    isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF1F5F9),
                 shape: BoxShape.circle,
               ),
               child: Icon(
