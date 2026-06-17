@@ -1603,7 +1603,7 @@ class _PostCard extends StatelessWidget {
                         color: AppColors.primary.withValues(alpha: 0.7),
                       ),
                       const SizedBox(width: 4),
-                      Text(
+                      const Text(
                         'کردنەوەی زیاتر',
                         style: TextStyle(
                           fontSize: 12,

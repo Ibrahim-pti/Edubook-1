@@ -236,10 +236,6 @@ GoRouter createRouter(BuildContext context) {
           return const SizedBox.shrink();
         },
       ),
-      GoRoute(
-        path: '/path-finder',
-        builder: (context, state) => const PathFinderScreen(),
-      ),
     ],
   );
 }

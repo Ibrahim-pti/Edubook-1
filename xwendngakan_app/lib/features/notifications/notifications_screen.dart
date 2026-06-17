@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_constants.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../data/services/api_service.dart';
 import '../../providers/auth_provider.dart';
@@ -414,7 +413,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                                 color: AppColors.primary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Row(
+                              child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
@@ -426,7 +425,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                                       color: AppColors.primary,
                                     ),
                                   ),
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4),
                                   Icon(
                                     Icons.arrow_forward_ios_rounded,
                                     size: 10,
