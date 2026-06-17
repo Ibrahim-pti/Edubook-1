@@ -66,7 +66,12 @@
                     <tr>
                         <td>
                             @if($teacher->photo)
-                                <img src="{{ $teacher->photo }}" class="avatar" alt="Photo">
+                                @php
+                                    $photoUrl = Str::startsWith($teacher->photo, ['http://', 'https://', '/']) 
+                                        ? (Str::startsWith($teacher->photo, '/') && !Str::startsWith($teacher->photo, '/storage/') ? '/storage' . $teacher->photo : $teacher->photo) 
+                                        : asset('storage/' . $teacher->photo);
+                                @endphp
+                                <img src="{{ $photoUrl }}" class="avatar" alt="Photo" style="object-fit: cover;">
                             @else
                                 <div class="avatar-placeholder">{{ mb_substr($teacher->name, 0, 1) }}</div>
                             @endif

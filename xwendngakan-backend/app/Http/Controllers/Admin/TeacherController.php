@@ -44,6 +44,7 @@ class TeacherController extends Controller
             'hourly_rate'      => 'nullable|numeric|min:0',
             'about'            => 'nullable|string|max:2000',
             'video_url'        => 'nullable|url|max:255',
+            'facebook_url'     => 'nullable|url|max:255',
             'is_approved'      => 'boolean',
             'photo'            => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
         ]);

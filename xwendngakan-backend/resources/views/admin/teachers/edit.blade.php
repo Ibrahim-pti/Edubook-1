@@ -63,6 +63,30 @@
             <div class="form-hint">بە کۆما (,) جیایان بکەرەوە</div>
         </div>
 
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+                <label class="form-label">ئەزموون (ساڵ)</label>
+                <input type="number" name="experience_years" class="form-control" value="{{ old('experience_years', $teacher->experience_years) }}" min="0" max="60">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">کرێی کاتژمێری (IQD)</label>
+                <input type="number" name="hourly_rate" class="form-control" value="{{ old('hourly_rate', $teacher->hourly_rate) }}" min="0">
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+                <label class="form-label">لینکی ڤیدیۆ (YouTube)</label>
+                <input type="url" name="video_url" class="form-control" value="{{ old('video_url', $teacher->video_url) }}" dir="ltr">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">لینکی فەیسبوک</label>
+                <input type="url" name="facebook_url" class="form-control" value="{{ old('facebook_url', $teacher->facebook_url) }}" dir="ltr">
+            </div>
+        </div>
+
         <div class="form-group">
             <label class="form-label">دەربارە / پێناسە</label>
             <textarea name="bio" class="form-control" rows="4">{{ old('bio', $teacher->bio) }}</textarea>
@@ -72,7 +96,15 @@
             <label class="form-label">وێنەی پرۆفایل</label>
             <input type="file" name="photo" class="form-control image-upload-input" accept="image/*" data-preview="photo-preview">
             
-            <img id="photo-preview" class="img-preview" src="{{ $teacher->photo ?? '#' }}" style="display: {{ $teacher->photo ? 'block' : 'none' }}; max-width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border:2px solid var(--border); background:var(--bg-base);">
+            @php
+                $previewUrl = '#';
+                if($teacher->photo) {
+                    $previewUrl = Str::startsWith($teacher->photo, ['http://', 'https://', '/']) 
+                        ? (Str::startsWith($teacher->photo, '/') && !Str::startsWith($teacher->photo, '/storage/') ? '/storage' . $teacher->photo : $teacher->photo) 
+                        : asset('storage/' . $teacher->photo);
+                }
+            @endphp
+            <img id="photo-preview" class="img-preview" src="{{ $previewUrl }}" style="display: {{ $teacher->photo ? 'block' : 'none' }}; max-width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border:2px solid var(--border); background:var(--bg-base);">
         </div>
 
         <div class="form-group form-check mb-4 mt-4">
