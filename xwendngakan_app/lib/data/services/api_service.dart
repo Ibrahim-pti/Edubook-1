@@ -953,4 +953,33 @@ class ApiService {
       return ApiResult.failure('$e');
     }
   }
+
+  // ==================
+  // AI CHAT
+  // ==================
+
+  Future<ApiResult<String>> sendAiChat(
+      String message, List<Map<String, String>> history) async {
+    try {
+      final res = await http
+          .post(
+            Uri.parse('$_base/ai/chat'),
+            headers: _headers(),
+            body: jsonEncode({
+              'message': message,
+              'history': history,
+            }),
+          )
+          .timeout(const Duration(seconds: 45)); // Longer timeout for AI response
+
+      final data = _safeJson(res);
+      if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
+      if (res.statusCode == 200 && data['success'] == true) {
+        return ApiResult.success(data['reply'] as String? ?? '');
+      }
+      return ApiResult.failure(data['message'] ?? 'Failed to get response');
+    } catch (e) {
+      return ApiResult.failure('$e');
+    }
+  }
 }

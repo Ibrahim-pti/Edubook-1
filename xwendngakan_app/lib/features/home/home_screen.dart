@@ -287,7 +287,27 @@ class _HomeScreenState extends State<HomeScreen> {
               const SliverToBoxAdapter(child: SizedBox(height: 100)),
             ],
           ),
-        ));
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => context.push('/ai-chat'),
+          backgroundColor: AppColors.primary,
+          elevation: 6,
+          shape: const CircleBorder(),
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: AppColors.primaryGradient,
+            ),
+            child: const Icon(
+              Icons.psychology_rounded,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+        ),
+    );
   }
 
   Widget _buildHeader(BuildContext context, AppLocalizations l,
