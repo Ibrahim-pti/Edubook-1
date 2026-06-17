@@ -47,6 +47,7 @@ class InstitutionModel {
   final String? kgHours;
   final int? foundedYear;
   final int? studentsCount;
+  final int views;
   final bool approved;
   final List<PostModel> posts;
   final String? createdAt;
@@ -93,6 +94,7 @@ class InstitutionModel {
     this.kgHours,
     this.foundedYear,
     this.studentsCount,
+    this.views = 0,
     this.approved = false,
     this.createdAt,
     this.posts = const [],
@@ -188,6 +190,7 @@ class InstitutionModel {
       studentsCount: json['students_count'] != null
           ? (json['students_count'] as num).toInt()
           : null,
+      views: json['views'] != null ? (json['views'] as num).toInt() : 0,
       approved: json['approved'] ?? false,
       createdAt: json['created_at'],
       posts: json['posts'] != null
@@ -221,6 +224,7 @@ class InstitutionModel {
         'img': img,
         'founded_year': foundedYear,
         'students_count': studentsCount,
+        'views': views,
         'approved': approved,
         'posts': posts.map((v) => v.toJson()).toList(),
       };

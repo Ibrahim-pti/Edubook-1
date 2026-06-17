@@ -160,6 +160,10 @@ class InstitutionController extends Controller
             'posts' => fn($q) => $q->where('approved', true)->latest()->limit(50),
         ])->findOrFail($id);
 
+        // Count this visit (without bumping updated_at or firing model events)
+        $institution->timestamps = false;
+        $institution->incrementQuietly('views');
+
         return response()->json([
             'success' => true,
             'data'    => $institution,

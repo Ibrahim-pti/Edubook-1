@@ -1035,6 +1035,13 @@ class _StatsRow extends StatelessWidget {
             label: l.studentsLabel,
             icon: Icons.groups_rounded,
             color: const Color(0xFF10B981)),
+      _StatItem(
+          value: inst.views >= 1000
+              ? '${(inst.views / 1000).toStringAsFixed(1)}k'
+              : '${inst.views}',
+          label: l.visitorsLabel,
+          icon: Icons.visibility_rounded,
+          color: const Color(0xFF6366F1)),
     ];
 
     // Nothing to show → hide the whole card so the layout stays clean.

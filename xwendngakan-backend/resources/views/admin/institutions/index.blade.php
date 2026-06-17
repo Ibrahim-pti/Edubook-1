@@ -247,6 +247,7 @@
                     <th>جۆر</th>
                     <th>شار</th>
                     <th>تەلەفۆن</th>
+                    <th>سەردانیکەران</th>
                     <th>دۆخ</th>
                     <th style="text-align:left;">کردارەکان</th>
                 </tr>
@@ -273,6 +274,9 @@
                         </td>
                         <td>{{ $inst->city }}</td>
                         <td dir="ltr" style="text-align:right;">{{ $inst->phone ?? '-' }}</td>
+                        <td>
+                            <span class="badge badge-gray">👁 {{ number_format($inst->views ?? 0) }}</span>
+                        </td>
                         <td>
                             @if($inst->approved)
                                 <span class="badge badge-success"><svg viewBox="0 0 20 20" fill="currentColor" style="width:12px;height:12px;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> پەسەندکراو</span>
@@ -306,7 +310,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" style="text-align:center; padding:40px; color:var(--text-muted);">
+                        <td colspan="8" style="text-align:center; padding:40px; color:var(--text-muted);">
                             <svg style="width:48px;height:48px;margin:0 auto 12px;opacity:0.5;display:block;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
                             <p>هیچ خوێندنگایەک نەدۆزرایەوە.</p>
                         </td>

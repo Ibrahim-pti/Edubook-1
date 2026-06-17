@@ -1858,6 +1858,14 @@ class AppLocalizations {
         'tr': 'Öğrenciler'
       });
 
+  String get visitorsLabel => _t({
+        'ku': 'سەردانی',
+        'kbd': 'سەردانی',
+        'ar': 'الزيارات',
+        'en': 'Visits',
+        'tr': 'Ziyaret'
+      });
+
   // =====================
   // MISSING COMMON STRINGS
   // =====================

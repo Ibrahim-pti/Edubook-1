@@ -16,7 +16,7 @@ class Institution extends Model
         'kg_fee', 'kg_meal', 'kg_uniform', 'kg_age', 'kg_hours',
         'fb', 'ig', 'tg', 'wa', 'tk', 'yt',
         'logo', 'img', 'video',
-        'founded_year', 'students_count',
+        'founded_year', 'students_count', 'views',
         'approved', 'is_premium', 'manager_name',
     ];
 
@@ -28,6 +28,7 @@ class Institution extends Model
         'lng' => 'double',
         'founded_year' => 'integer',
         'students_count' => 'integer',
+        'views' => 'integer',
     ];
 
     // Map snake_case DB columns to camelCase for Flutter JSON
