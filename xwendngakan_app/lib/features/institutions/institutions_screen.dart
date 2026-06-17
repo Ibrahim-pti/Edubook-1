@@ -63,12 +63,6 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
     final lang = locale.locale.languageCode;
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/map'),
-        backgroundColor: AppColors.primary,
-        icon: const Icon(Icons.map_rounded, color: Colors.white),
-        label: Text(l.map, style: const TextStyle(color: Colors.white, fontFamily: 'Rabar', fontWeight: FontWeight.bold)),
-      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -148,7 +142,7 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
                               crossAxisCount: 2,
                               mainAxisSpacing: 16,
                               crossAxisSpacing: 16,
-                              childAspectRatio: 0.76,
+                              childAspectRatio: 0.72,
                             ),
                             itemCount: prov.institutions.length + (prov.hasMore ? 1 : 0),
                             itemBuilder: (_, i) {
@@ -317,7 +311,7 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
         crossAxisCount: 2,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
-        childAspectRatio: 0.76,
+        childAspectRatio: 0.72,
       ),
       itemCount: 6,
       itemBuilder: (_, __) => const ShimmerBox(

@@ -139,7 +139,7 @@ class MainShell extends StatelessWidget {
                         child: Icon(
                           isActive ? item.activeIcon : item.icon,
                           color: Colors.white,
-                          size: 24,
+                          size: 22,
                         ),
                       ),
                     );

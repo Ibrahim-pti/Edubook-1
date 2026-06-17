@@ -21,7 +21,8 @@ class ProfileScreen extends StatelessWidget {
     final isDark = theme.isDark;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor:
+          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -55,6 +56,13 @@ class ProfileScreen extends StatelessWidget {
                         label: l.notifications,
                         onTap: () => context.push('/notifications'),
                       ),
+                      _Divider(isDark: isDark),
+                      _NavTile(
+                        icon: Icons.map_rounded,
+                        iconBg: const Color(0xFFEC4899),
+                        label: l.map,
+                        onTap: () => context.push('/map'),
+                      ),
                     ]),
                     const SizedBox(height: 24),
                   ],
@@ -62,8 +70,12 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   _SettingsGroup(isDark: isDark, children: [
                     _SwitchTile(
-                      icon: isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                      iconBg: isDark ? const Color(0xFF7F77DD) : const Color(0xFF534AB7),
+                      icon: isDark
+                          ? Icons.light_mode_rounded
+                          : Icons.dark_mode_rounded,
+                      iconBg: isDark
+                          ? const Color(0xFF7F77DD)
+                          : const Color(0xFF534AB7),
                       label: l.darkMode,
                       value: isDark,
                       onChanged: (_) => theme.toggle(),
@@ -117,7 +129,8 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  void _showLanguagePicker(BuildContext context, LocaleProvider locale, AppLocalizations l) {
+  void _showLanguagePicker(
+      BuildContext context, LocaleProvider locale, AppLocalizations l) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -142,10 +155,15 @@ class _ProfileHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initials = auth.isAuthenticated && (auth.user?.name.isNotEmpty == true)
-        ? auth.user!.name.trim().split(' ').take(2)
-            .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '').join()
-        : null;
+    final initials =
+        auth.isAuthenticated && (auth.user?.name.isNotEmpty == true)
+            ? auth.user!.name
+                .trim()
+                .split(' ')
+                .take(2)
+                .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '')
+                .join()
+            : null;
 
     return Container(
       width: double.infinity,
@@ -229,7 +247,8 @@ class _ProfileHero extends StatelessWidget {
                       GestureDetector(
                         onTap: () => context.push('/login'),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 8),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
@@ -273,7 +292,8 @@ class _Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: size, height: size,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -298,7 +318,8 @@ class _Avatar extends StatelessWidget {
                 ),
               ),
             )
-          : const Icon(Icons.person_rounded, size: 32, color: Color(0xFFF59E0B)),
+          : const Icon(Icons.person_rounded,
+              size: 32, color: Color(0xFFF59E0B)),
     );
   }
 }
@@ -311,17 +332,17 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(left: 4),
-    child: Text(
-      label,
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w800,
-        color: Colors.grey.shade500,
-        fontFamily: 'Rabar',
-      ),
-    ),
-  );
+        padding: const EdgeInsets.only(left: 4),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            color: Colors.grey.shade500,
+            fontFamily: 'Rabar',
+          ),
+        ),
+      );
 }
 
 class _SettingsGroup extends StatelessWidget {
@@ -331,23 +352,23 @@ class _SettingsGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    decoration: BoxDecoration(
-      color: isDark ? const Color(0xFF1E293B) : Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(
-        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-        width: 1,
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-          blurRadius: 15,
-          offset: const Offset(0, 4),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+              blurRadius: 15,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-      ],
-    ),
-    child: Column(children: children),
-  );
+        child: Column(children: children),
+      );
 }
 
 class _Divider extends StatelessWidget {
@@ -356,13 +377,13 @@ class _Divider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(left: 64),
-    child: Divider(
-      height: 0.5,
-      thickness: 0.5,
-      color: isDark ? Colors.white12 : Colors.black.withValues(alpha: 0.05),
-    ),
-  );
+        padding: const EdgeInsets.only(left: 64),
+        child: Divider(
+          height: 0.5,
+          thickness: 0.5,
+          color: isDark ? Colors.white12 : Colors.black.withValues(alpha: 0.05),
+        ),
+      );
 }
 
 class _IconBadge extends StatelessWidget {
@@ -372,10 +393,12 @@ class _IconBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    width: 36, height: 36,
-    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(10)),
-    child: Icon(icon, color: Colors.white, size: 19),
-  );
+        width: 36,
+        height: 36,
+        decoration:
+            BoxDecoration(color: bg, borderRadius: BorderRadius.circular(10)),
+        child: Icon(icon, color: Colors.white, size: 19),
+      );
 }
 
 class _NavTile extends StatelessWidget {
@@ -384,7 +407,12 @@ class _NavTile extends StatelessWidget {
   final String label;
   final String? subtitle;
   final VoidCallback? onTap;
-  const _NavTile({required this.icon, required this.iconBg, required this.label, this.subtitle, this.onTap});
+  const _NavTile(
+      {required this.icon,
+      required this.iconBg,
+      required this.label,
+      this.subtitle,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -428,7 +456,8 @@ class _NavTile extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right_rounded, size: 20, color: isDark ? Colors.white30 : Colors.black26),
+              Icon(Icons.chevron_right_rounded,
+                  size: 20, color: isDark ? Colors.white30 : Colors.black26),
             ],
           ),
         ),
@@ -443,7 +472,12 @@ class _SwitchTile extends StatelessWidget {
   final String label;
   final bool value;
   final ValueChanged<bool> onChanged;
-  const _SwitchTile({required this.icon, required this.iconBg, required this.label, required this.value, required this.onChanged});
+  const _SwitchTile(
+      {required this.icon,
+      required this.iconBg,
+      required this.label,
+      required this.value,
+      required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -465,7 +499,9 @@ class _SwitchTile extends StatelessWidget {
               ),
             ),
           ),
-          Transform.scale(scale: 0.85, child: Switch.adaptive(value: value, onChanged: onChanged)),
+          Transform.scale(
+              scale: 0.85,
+              child: Switch.adaptive(value: value, onChanged: onChanged)),
         ],
       ),
     );
@@ -476,7 +512,8 @@ class _LogoutTile extends StatelessWidget {
   final bool isDark;
   final AppLocalizations l;
   final AuthProvider auth;
-  const _LogoutTile({required this.isDark, required this.l, required this.auth});
+  const _LogoutTile(
+      {required this.isDark, required this.l, required this.auth});
 
   @override
   Widget build(BuildContext context) {
@@ -484,11 +521,19 @@ class _LogoutTile extends StatelessWidget {
       onTap: () => showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(l.logout, style: const TextStyle(fontFamily: 'Rabar', fontWeight: FontWeight.w800)),
-          content: Text(l.logoutConfirm, style: const TextStyle(fontFamily: 'Rabar', fontWeight: FontWeight.w500)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Text(l.logout,
+              style: const TextStyle(
+                  fontFamily: 'Rabar', fontWeight: FontWeight.w800)),
+          content: Text(l.logoutConfirm,
+              style: const TextStyle(
+                  fontFamily: 'Rabar', fontWeight: FontWeight.w500)),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel, style: const TextStyle(fontWeight: FontWeight.w700))),
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(l.cancel,
+                    style: const TextStyle(fontWeight: FontWeight.w700))),
             TextButton(
               onPressed: () {
                 context.pop();
@@ -496,7 +541,9 @@ class _LogoutTile extends StatelessWidget {
                   auth.logout();
                 });
               },
-              child: Text(l.logout, style: const TextStyle(color: Color(0xFFFF4757), fontWeight: FontWeight.w800)),
+              child: Text(l.logout,
+                  style: const TextStyle(
+                      color: Color(0xFFFF4757), fontWeight: FontWeight.w800)),
             ),
           ],
         ),
@@ -509,12 +556,14 @@ class _LogoutTile extends StatelessWidget {
             const Color(0xFFFF6B81).withValues(alpha: isDark ? 0.12 : 0.06),
           ]),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFFF4757).withValues(alpha: 0.35)),
+          border: Border.all(
+              color: const Color(0xFFFF4757).withValues(alpha: 0.35)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.exit_to_app_rounded, color: Color(0xFFFF4757), size: 20),
+            const Icon(Icons.exit_to_app_rounded,
+                color: Color(0xFFFF4757), size: 20),
             const SizedBox(width: 10),
             Text(
               l.logout,
@@ -550,7 +599,8 @@ class _LoginPrompt extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Icon(Icons.lock_outline_rounded, color: AppColors.primary, size: 36),
+          const Icon(Icons.lock_outline_rounded,
+              color: AppColors.primary, size: 36),
           const SizedBox(height: 12),
           Text(
             l.login,
@@ -621,7 +671,9 @@ class _LanguageSheet extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E1E2E).withValues(alpha: 0.95) : Colors.white.withValues(alpha: 0.97),
+            color: isDark
+                ? const Color(0xFF1E1E2E).withValues(alpha: 0.95)
+                : Colors.white.withValues(alpha: 0.97),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           ),
           child: Column(
@@ -641,7 +693,8 @@ class _LanguageSheet extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
                   children: [
-                    const _IconBadge(icon: Icons.language_rounded, bg: Color(0xFF1D9E75)),
+                    const _IconBadge(
+                        icon: Icons.language_rounded, bg: Color(0xFF1D9E75)),
                     const SizedBox(width: 12),
                     Text(
                       l.language,
@@ -681,14 +734,21 @@ class _LangTile extends StatelessWidget {
   final String flag, name;
   final bool selected, isDark;
   final VoidCallback onTap;
-  const _LangTile({required this.flag, required this.name, required this.selected, required this.isDark, required this.onTap});
+  const _LangTile(
+      {required this.flag,
+      required this.name,
+      required this.selected,
+      required this.isDark,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
       child: Material(
-        color: selected ? AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.08) : Colors.transparent,
+        color: selected
+            ? AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.08)
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(14),
         child: InkWell(
           onTap: onTap,
@@ -716,8 +776,10 @@ class _LangTile extends StatelessWidget {
                   Container(
                     width: 22,
                     height: 22,
-                    decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-                    child: const Icon(Icons.check_rounded, color: Colors.white, size: 14),
+                    decoration: const BoxDecoration(
+                        color: AppColors.primary, shape: BoxShape.circle),
+                    child: const Icon(Icons.check_rounded,
+                        color: Colors.white, size: 14),
                   ),
               ],
             ),
@@ -758,9 +820,11 @@ class KurdishFlag extends StatelessWidget {
           children: [
             Column(
               children: [
-                Expanded(child: Container(color: const Color(0xFFE53935))), // Red
-                Expanded(child: Container(color: Colors.white)),            // White
-                Expanded(child: Container(color: const Color(0xFF43A047))), // Green
+                Expanded(
+                    child: Container(color: const Color(0xFFE53935))), // Red
+                Expanded(child: Container(color: Colors.white)), // White
+                Expanded(
+                    child: Container(color: const Color(0xFF43A047))), // Green
               ],
             ),
             Center(
