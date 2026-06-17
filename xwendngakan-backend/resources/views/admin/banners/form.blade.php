@@ -20,18 +20,6 @@
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
             <div class="form-group">
-                <label class="form-label">سەردێڕ <span class="required">*</span></label>
-                <input type="text" name="title" class="form-control" value="{{ old('title', $banner?->title) }}" required>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">ژێر-سەردێڕ</label>
-                <input type="text" name="subtitle" class="form-control" value="{{ old('subtitle', $banner?->subtitle) }}">
-            </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-            <div class="form-group">
                 <label class="form-label">لینک</label>
                 <input type="url" name="url" class="form-control" dir="ltr" value="{{ old('url', $banner?->url) }}">
             </div>
@@ -42,16 +30,7 @@
             </div>
         </div>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
-            <div class="form-group">
-                <label class="form-label">ڕەنگی دەستپێک (Gradient Start)</label>
-                <input type="color" name="color_start" class="form-control" style="height:44px; padding:4px;" value="{{ old('color_start', $banner?->color_start ?? '#2563eb') }}">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">ڕەنگی کۆتایی (Gradient End)</label>
-                <input type="color" name="color_end" class="form-control" style="height:44px; padding:4px;" value="{{ old('color_end', $banner?->color_end ?? '#4f46e5') }}">
-            </div>
+        <div style="display:grid; grid-template-columns:1fr; gap:16px;">
 
             <div class="form-group">
                 <label class="form-label">ڕیزبەندی</label>

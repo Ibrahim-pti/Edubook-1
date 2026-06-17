@@ -22,11 +22,8 @@ class BannerController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'       => 'required|string|max:120',
-            'subtitle'    => 'nullable|string|max:200',
+            'url'         => 'nullable|url|max:255',
             'tag'         => 'nullable|string|max:40',
-            'color_start' => 'nullable|string|max:20',
-            'color_end'   => 'nullable|string|max:20',
             'sort_order'  => 'nullable|integer',
             'is_active'   => 'boolean',
             'image'       => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
@@ -35,6 +32,7 @@ class BannerController extends Controller
             $path = $request->file('image')->store('banners', 'public');
             $data['image'] = '/storage/'.$path;
         }
+        $data['title'] = 'Banner ' . time(); // Auto-generate title since it's removed from form
         $data['is_active'] = $request->boolean('is_active');
         Banner::create($data);
         return redirect()->route('admin.banners.index')->with('success', 'بانەرەکە زیادکرا.');
@@ -48,11 +46,8 @@ class BannerController extends Controller
     public function update(Request $request, Banner $banner)
     {
         $data = $request->validate([
-            'title'       => 'required|string|max:120',
-            'subtitle'    => 'nullable|string|max:200',
+            'url'         => 'nullable|url|max:255',
             'tag'         => 'nullable|string|max:40',
-            'color_start' => 'nullable|string|max:20',
-            'color_end'   => 'nullable|string|max:20',
             'sort_order'  => 'nullable|integer',
             'is_active'   => 'boolean',
             'image'       => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
