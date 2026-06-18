@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/app_constants.dart';
 import '../core/services/notification_service.dart';
@@ -63,25 +64,17 @@ class AuthProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
 
-    final result = await _api.login(email, password);
-
-    if (result.success && result.data != null) {
-      final inner = (result.data!['data'] ?? result.data!) as Map<String, dynamic>;
-      _token = inner['token'] as String?;
-      _user = UserModel.fromJson(inner['user'] as Map<String, dynamic>);
-
-      await _saveToken(_token!);
-      _status = AuthStatus.authenticated;
-      notifyListeners();
-
-      // Register FCM token after successful login
-      await NotificationService().registerFcmToken();
-
-      return true;
-    } else {
-      _error = result.error;
-      _status = AuthStatus.unauthenticated;
-      notifyListeners();
+    try {
+      final cred = await fb.FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      );
+      return await _exchangeFirebaseToken(cred.user, null);
+    } on fb.FirebaseAuthException catch (e) {
+      _failAuth(_mapFirebaseError(e));
+      return false;
+    } catch (_) {
+      _failAuth('کێشەیەک ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە.');
       return false;
     }
   }
@@ -91,10 +84,58 @@ class AuthProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
 
-    final result = await _api.register(name, email, password);
+    try {
+      final cred = await fb.FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      );
+      await cred.user?.updateDisplayName(name);
+      // Best-effort email verification — don't block sign-up if it fails.
+      try {
+        await cred.user?.sendEmailVerification();
+      } catch (_) {}
+      return await _exchangeFirebaseToken(cred.user, name);
+    } on fb.FirebaseAuthException catch (e) {
+      _failAuth(_mapFirebaseError(e));
+      return false;
+    } catch (_) {
+      _failAuth('کێشەیەک ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە.');
+      return false;
+    }
+  }
+
+  /// Sends a Firebase password-reset email (contains a reset link).
+  Future<bool> sendPasswordReset(String email) async {
+    _error = null;
+    try {
+      await fb.FirebaseAuth.instance
+          .sendPasswordResetEmail(email: email.trim());
+      return true;
+    } on fb.FirebaseAuthException catch (e) {
+      _error = _mapFirebaseError(e);
+      notifyListeners();
+      return false;
+    } catch (_) {
+      _error = 'کێشەیەک ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە.';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Exchanges a Firebase user's ID token for a Sanctum token from our backend.
+  Future<bool> _exchangeFirebaseToken(fb.User? fbUser, String? name) async {
+    final idToken = await fbUser?.getIdToken();
+    if (fbUser == null || idToken == null) {
+      _failAuth('چوونەژوورەوە سەرنەکەوت. تکایە دووبارە هەوڵ بدەرەوە.');
+      return false;
+    }
+
+    final result =
+        await _api.firebaseLogin(idToken, name: name ?? fbUser.displayName);
 
     if (result.success && result.data != null) {
-      final inner = (result.data!['data'] ?? result.data!) as Map<String, dynamic>;
+      final inner =
+          (result.data!['data'] ?? result.data!) as Map<String, dynamic>;
       _token = inner['token'] as String?;
       _user = UserModel.fromJson(inner['user'] as Map<String, dynamic>);
 
@@ -102,20 +143,51 @@ class AuthProvider extends ChangeNotifier {
       _status = AuthStatus.authenticated;
       notifyListeners();
 
-      // Register FCM token after successful registration
+      // Register FCM token after a successful sign-in.
       await NotificationService().registerFcmToken();
-
       return true;
-    } else {
-      _error = result.error;
-      _status = AuthStatus.unauthenticated;
-      notifyListeners();
-      return false;
+    }
+
+    _failAuth(result.error);
+    return false;
+  }
+
+  void _failAuth(String? message) {
+    _error = message;
+    _status = AuthStatus.unauthenticated;
+    notifyListeners();
+  }
+
+  /// Maps Firebase auth error codes to friendly Kurdish messages.
+  String _mapFirebaseError(fb.FirebaseAuthException e) {
+    switch (e.code) {
+      case 'invalid-email':
+        return 'ئیمەیڵەکە نادروستە.';
+      case 'user-disabled':
+        return 'ئەم هەژمارە ڕاگیراوە.';
+      case 'user-not-found':
+        return 'هیچ هەژمارێک بەم ئیمەیڵە نییە.';
+      case 'wrong-password':
+      case 'invalid-credential':
+        return 'ئیمەیڵ یان وشەی نهێنی هەڵەیە.';
+      case 'email-already-in-use':
+        return 'ئەم ئیمەیڵە پێشتر بەکارهاتووە.';
+      case 'weak-password':
+        return 'وشەی نهێنی لاوازە (لانیکەم ٦ پیت).';
+      case 'network-request-failed':
+        return 'پەیوەندی بە ئینتەرنێتەوە نییە.';
+      case 'too-many-requests':
+        return 'هەوڵی زۆر درا. تکایە دواتر هەوڵ بدەرەوە.';
+      default:
+        return e.message ?? 'کێشەیەک لە چوونەژوورەوە ڕوویدا.';
     }
   }
 
   Future<void> logout() async {
     await _api.logout();
+    try {
+      await fb.FirebaseAuth.instance.signOut();
+    } catch (_) {}
     await _clearToken();
     _user = null;
     _token = null;

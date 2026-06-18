@@ -144,6 +144,32 @@ class ApiService {
     }
   }
 
+  /// Exchanges a verified Firebase ID token for a Sanctum token from our API.
+  Future<ApiResult<Map<String, dynamic>>> firebaseLogin(String idToken,
+      {String? name}) async {
+    try {
+      final res = await http
+          .post(
+            Uri.parse('$_base/auth/firebase'),
+            headers: _headers(),
+            body: jsonEncode({
+              'id_token': idToken,
+              if (name != null && name.isNotEmpty) 'name': name,
+            }),
+          )
+          .timeout(AppConstants.connectTimeout);
+
+      final data = _safeJson(res);
+      if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
+      if (res.statusCode == 200 && data['success'] == true) {
+        return ApiResult.success(data);
+      }
+      return ApiResult.failure(data['message'] ?? 'چوونەژوورەوە سەرنەکەوت');
+    } catch (e) {
+      return ApiResult.failure(_connectionMessage);
+    }
+  }
+
   Future<ApiResult<bool>> logout() async {
     try {
       final headers = await _authHeaders();

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/localization/app_localizations.dart';
-import '../../data/services/api_service.dart';
+import '../../providers/auth_provider.dart';
 import '../../shared/widgets/common_widgets.dart';
 
-enum _ForgotStep { email, otp, newPassword, done }
+enum _ForgotStep { email, done }
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -17,61 +17,31 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final _api = ApiService();
   _ForgotStep _step = _ForgotStep.email;
   final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
-  final List<TextEditingController> _otpCtrl =
-      List.generate(6, (_) => TextEditingController());
   bool _loading = false;
   String? _error;
 
-  String get _otp => _otpCtrl.map((c) => c.text).join();
-
-  Future<void> _sendOtp() async {
-    if (_emailCtrl.text.isEmpty) return;
+  Future<void> _sendResetLink() async {
+    if (_emailCtrl.text.trim().isEmpty) return;
     setState(() { _loading = true; _error = null; });
-    final r = await _api.forgotPassword(_emailCtrl.text.trim());
-    setState(() { _loading = false; });
-    if (r.success) {
-      setState(() => _step = _ForgotStep.otp);
-    } else {
-      setState(() => _error = r.error);
-    }
-  }
-
-  Future<void> _verifyOtp() async {
-    if (_otp.length < 6) return;
-    setState(() { _loading = true; _error = null; });
-    final r = await _api.verifyResetCode(_emailCtrl.text.trim(), _otp);
-    setState(() { _loading = false; });
-    if (r.success) {
-      setState(() => _step = _ForgotStep.newPassword);
-    } else {
-      setState(() => _error = r.error);
-    }
-  }
-
-  Future<void> _resetPassword() async {
-    if (_passCtrl.text.length < 6) return;
-    setState(() { _loading = true; _error = null; });
-    final r = await _api.resetPassword(
-        _emailCtrl.text.trim(), _otp, _passCtrl.text);
-    setState(() { _loading = false; });
-    if (r.success) {
-      setState(() => _step = _ForgotStep.done);
-    } else {
-      setState(() => _error = r.error);
-    }
+    final ok = await context
+        .read<AuthProvider>()
+        .sendPasswordReset(_emailCtrl.text.trim());
+    if (!mounted) return;
+    setState(() {
+      _loading = false;
+      if (ok) {
+        _step = _ForgotStep.done;
+      } else {
+        _error = context.read<AuthProvider>().error;
+      }
+    });
   }
 
   @override
   void dispose() {
     _emailCtrl.dispose();
-    _passCtrl.dispose();
-    for (final c in _otpCtrl) {
-      c.dispose();
-    }
     super.dispose();
   }
 

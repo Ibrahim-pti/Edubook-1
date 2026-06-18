@@ -25,6 +25,9 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Firebase Authentication — exchange a Firebase ID token for a Sanctum token
+Route::post('/auth/firebase', [AuthController::class, 'firebaseLogin']);
+
 // Password Reset (public)
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/verify-reset-code', [AuthController::class, 'verifyResetCode']);

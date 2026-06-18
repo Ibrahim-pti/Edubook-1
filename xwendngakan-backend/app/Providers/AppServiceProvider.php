@@ -66,5 +66,10 @@ class AppServiceProvider extends ServiceProvider
             $firebase = $app['firebase'];
             return $firebase ? $firebase->createMessaging() : null;
         });
+
+        $this->app->singleton('firebase.auth', function ($app) {
+            $firebase = $app['firebase'];
+            return $firebase ? $firebase->createAuth() : null;
+        });
     }
 }

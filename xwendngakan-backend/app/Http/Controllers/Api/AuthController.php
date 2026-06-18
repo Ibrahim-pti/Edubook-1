@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Kreait\Firebase\Contract\Auth as FirebaseAuth;
 
 class AuthController extends Controller
 {
@@ -60,6 +61,78 @@ class AuthController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['ئیمەیڵ یان وشەی نهێنی هەڵەیە.'],
+            ]);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'بە سەرکەوتوویی چوویتە ژوورەوە!',
+            'data'    => [
+                'user'  => $user,
+                'token' => $token,
+            ],
+        ]);
+    }
+
+    /**
+     * Sign in (or register) using a verified Firebase ID token.
+     *
+     * The mobile app authenticates the user with Firebase Authentication
+     * (email/password) and sends us the resulting ID token. We verify it,
+     * find-or-create the matching local user, and hand back a Sanctum token
+     * so the rest of the API keeps working unchanged.
+     */
+    public function firebaseLogin(Request $request)
+    {
+        $request->validate([
+            'id_token' => 'required|string',
+            'name'     => 'nullable|string|max:255',
+        ]);
+
+        /** @var FirebaseAuth|null $firebaseAuth */
+        $firebaseAuth = app('firebase.auth');
+
+        if (!$firebaseAuth) {
+            return response()->json([
+                'success' => false,
+                'message' => 'خزمەتگوزاری Firebase لە سێرڤەر ڕێک نەخراوە.',
+            ], 503);
+        }
+
+        try {
+            $verified = $firebaseAuth->verifyIdToken($request->id_token);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'تۆکنی Firebase نادروستە یان بەسەرچووە.',
+            ], 401);
+        }
+
+        $claims = $verified->claims();
+        $email  = $claims->get('email');
+
+        if (!$email) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ئەم هەژمارەی Firebase ئیمەیڵی نییە.',
+            ], 422);
+        }
+
+        $name = $request->name
+            ?: ($claims->get('name') ?: Str::before($email, '@'));
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name'        => $name,
+                'email'       => $email,
+                // Random password: auth happens via Firebase, this is never used.
+                'password'    => Str::random(40),
+                'is_approved' => true,
+                'user_type'   => 'mobile',
             ]);
         }
 

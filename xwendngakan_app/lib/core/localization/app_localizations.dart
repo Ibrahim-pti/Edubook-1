@@ -398,6 +398,25 @@ class AppLocalizations {
         'en': 'Resend Code',
         'tr': 'Kodu Yeniden Gönder'
       });
+  String get sendResetLink => _t({
+        'ku': 'لینکی گۆڕینی وشەی نهێنی بنێرە',
+        'kbd': 'لینکا گهۆڕینا نهێنیێ بنێرە',
+        'ar': 'إرسال رابط إعادة التعيين',
+        'en': 'Send Reset Link',
+        'tr': 'Sıfırlama Bağlantısı Gönder'
+      });
+  String get resetLinkSent => _t({
+        'ku':
+            'لینکی گۆڕینی وشەی نهێنیمان بۆ ئیمەیڵەکەت نارد. تکایە ئیمەیڵەکەت بپشکنە و کلیک لە لینکەکە بکە.',
+        'kbd':
+            'لینکا گهۆڕینا نهێنیێ بۆ ئیمەیلا تە هاتە شاندن. تکایە ئیمەیلا خۆ ببینە و کلیک ل لینکێ بکە.',
+        'ar':
+            'أرسلنا رابط إعادة تعيين كلمة المرور إلى بريدك. يرجى فتح البريد والنقر على الرابط.',
+        'en':
+            'We sent a password reset link to your email. Please check your inbox and tap the link.',
+        'tr':
+            'Şifre sıfırlama bağlantısını e-postana gönderdik. Lütfen gelen kutunu kontrol et ve bağlantıya dokun.'
+      });
   String get resetPassword => _t({
         'ku': 'وشەی نهێنی نوێ بکەرەوە',
         'kbd': 'پەیڤا نهێنی نوێ بکە',
