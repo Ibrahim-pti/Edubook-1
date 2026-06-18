@@ -21,9 +21,25 @@ class Banner extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if ($this->image) {
-            return asset('storage/' . $this->image);
+        if (!$this->image) {
+            return null;
         }
-        return null;
+
+        $path = $this->image;
+
+        // Already an absolute URL.
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        // The admin panel stores the path with a leading "/storage/" already
+        // (e.g. "/storage/banners/x.png"). Prefix only the host in that case —
+        // otherwise we'd get a broken "/storage//storage/..." double prefix.
+        if (str_starts_with($path, '/storage/') || str_starts_with($path, 'storage/')) {
+            return url('/' . ltrim($path, '/'));
+        }
+
+        // Bare relative path like "banners/x.png".
+        return asset('storage/' . $path);
     }
 }
