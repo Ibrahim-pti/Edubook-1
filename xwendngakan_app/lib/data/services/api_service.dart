@@ -202,7 +202,9 @@ class ApiService {
     }
   }
 
-  Future<ApiResult<bool>> verifyResetCode(String email, String code) async {
+  /// Verifies the 6-digit OTP and returns the one-time `reset_token`
+  /// the server hands back, which must be used for the actual reset.
+  Future<ApiResult<String>> verifyResetCode(String email, String code) async {
     try {
       final res = await http
           .post(
@@ -214,16 +216,23 @@ class ApiService {
 
       final data = _safeJson(res);
       if (data == null) return ApiResult.failure(_serverMessage(res.statusCode));
-      return data['success'] == true
-          ? ApiResult.success(true)
-          : ApiResult.failure(data['message']);
+      if (data['success'] == true) {
+        final token = data['data']?['reset_token'] as String?;
+        if (token == null || token.isEmpty) {
+          return ApiResult.failure('تۆکنی گۆڕین وەرنەگیرا.');
+        }
+        return ApiResult.success(token);
+      }
+      return ApiResult.failure(data['message']);
     } catch (e) {
       return ApiResult.failure('$e');
     }
   }
 
+  /// Resets the password using the `reset_token` from [verifyResetCode]
+  /// (NOT the 6-digit code — the server expects the token here).
   Future<ApiResult<bool>> resetPassword(
-      String email, String code, String password) async {
+      String email, String resetToken, String password) async {
     try {
       final res = await http
           .post(
@@ -231,7 +240,7 @@ class ApiService {
             headers: _headers(),
             body: jsonEncode({
               'email': email,
-              'code': code,
+              'reset_token': resetToken,
               'password': password,
               'password_confirmation': password,
             }),

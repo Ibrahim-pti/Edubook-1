@@ -29,7 +29,6 @@ class InstitutionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final typeColor = AppColors.typeColor(institution.type);
     final institutionName = institution.name(lang);
     final rawType = institution.type ?? '';
@@ -64,243 +63,246 @@ class InstitutionCard extends StatelessWidget {
       institution.wa
     ].any((s) => s != null && s.isNotEmpty);
 
+    // Immersive full-image card: the whole tile is the photo, with a
+    // frosted-glass info panel floating at the bottom.
+    final hasContact = hasPhone || hasWeb || hasSocial;
+
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-              color: isDark
-                  ? Colors.black.withValues(alpha: 0.4)
-                  : typeColor.withValues(alpha: 0.15),
-              blurRadius: 20,
-              offset: const Offset(0, 7),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(26),
+        child: Stack(
+          fit: StackFit.expand,
           children: [
-            // ── Image section ──
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(22)),
-              child: SizedBox(
-                height: 130,
-                width: double.infinity,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    // Background image or gradient
-                    institution.imgUrl.isNotEmpty
-                        ? CachedNetworkImage(
-                            imageUrl: institution.imgUrl,
-                            fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) => _InstCardFallback(
-                                typeColor: typeColor, emoji: emoji),
-                          )
-                        : _InstCardFallback(typeColor: typeColor, emoji: emoji),
-                    // Dark gradient at bottom
-                    Positioned.fill(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            stops: const [0.3, 1.0],
-                            colors: [
-                              Colors.transparent,
-                              Colors.black.withValues(alpha: 0.72),
-                            ],
-                          ),
+            // ── Full-bleed background image ──
+            institution.imgUrl.isNotEmpty
+                ? CachedNetworkImage(
+                    imageUrl: institution.imgUrl,
+                    fit: BoxFit.cover,
+                    errorWidget: (_, __, ___) =>
+                        _InstCardFallback(typeColor: typeColor, emoji: emoji),
+                  )
+                : _InstCardFallback(typeColor: typeColor, emoji: emoji),
+
+            // ── Cinematic dark gradient for legibility ──
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.0, 0.4, 1.0],
+                    colors: [
+                      Colors.black.withValues(alpha: 0.45),
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.88),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // ── Top bar: favorite + type chip ──
+            Positioned(
+              top: 10,
+              left: 10,
+              right: 10,
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: onFavorite,
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: isFavorite
+                            ? const Color(0xFFFF4757).withValues(alpha: 0.95)
+                            : Colors.black.withValues(alpha: 0.45),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.30),
                         ),
                       ),
-                    ),
-                    // Type badge — top left
-                    Positioned(
-                      top: 9,
-                      left: 9,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: typeColor,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: typeColor.withValues(alpha: 0.5),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          '$emoji $typeLabel',
-                          style: const TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            fontFamily: 'Rabar',
-                          ),
-                        ),
+                      child: Icon(
+                        isFavorite
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        color: Colors.white,
+                        size: 16,
                       ),
                     ),
-                    // Favorite — top right
-                    Positioned(
-                      top: 7,
-                      right: 7,
-                      child: GestureDetector(
-                        onTap: onFavorite,
-                        child: Container(
-                          width: 30,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: isFavorite
-                                ? const Color(0xFFFF4757).withValues(alpha: 0.2)
-                                : Colors.black.withValues(alpha: 0.35),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: isFavorite
-                                  ? const Color(0xFFFF4757)
-                                      .withValues(alpha: 0.5)
-                                  : Colors.white.withValues(alpha: 0.2),
-                            ),
-                          ),
-                          child: Icon(
-                            isFavorite
-                                ? Icons.favorite_rounded
-                                : Icons.favorite_border_rounded,
-                            color: isFavorite
-                                ? const Color(0xFFFF4757)
-                                : Colors.white,
-                            size: 15,
-                          ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: typeColor.withValues(alpha: 0.95),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.30),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: typeColor.withValues(alpha: 0.45),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
                         ),
+                      ],
+                    ),
+                    child: Text(
+                      '$emoji $typeLabel',
+                      style: const TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        fontFamily: 'Rabar',
                       ),
                     ),
-                    // Name overlay — bottom
-                    Positioned(
-                      left: 10,
-                      right: 10,
-                      bottom: 8,
-                      child: Text(
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Views — floating top-corner pill below favorite ──
+            Positioned(
+              top: 48,
+              left: 10,
+              child: _ViewsBadge(views: institution.views),
+            ),
+
+            // ── Bottom frosted-glass info panel ──
+            Positioned(
+              left: 8,
+              right: 8,
+              bottom: 8,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(11, 10, 11, 11),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.18),
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white.withValues(alpha: 0.06),
+                      Colors.black.withValues(alpha: 0.30),
+                    ],
+                  ),
+                ),
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Name
+                      Text(
                         institutionName,
+                        textAlign: TextAlign.right,
                         style: const TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w900,
                           color: Colors.white,
                           fontFamily: 'Rabar',
-                          height: 1.3,
+                          height: 1.2,
                           shadows: [
-                            Shadow(blurRadius: 8, color: Colors.black87),
+                            Shadow(blurRadius: 6, color: Colors.black54),
                           ],
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
 
-            // ── Info section ──
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(11, 9, 11, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // City
-                    if (institution.city != null &&
-                        institution.city!.isNotEmpty)
-                      Row(children: [
-                        Icon(Icons.location_on_rounded,
-                            size: 11, color: typeColor),
-                        const SizedBox(width: 3),
-                        Expanded(
-                          child: Text(
-                            institution.city!,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color:
-                                  isDark ? Colors.white60 : AppColors.textGrey,
-                              fontFamily: 'Rabar',
-                              fontWeight: FontWeight.w500,
+                      // City
+                      if (institution.city != null &&
+                          institution.city!.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Row(children: [
+                          const Icon(Icons.location_on_rounded,
+                              size: 12, color: Colors.white70),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              institution.city!,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Colors.white70,
+                                fontFamily: 'Rabar',
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ]),
+                        ]),
+                      ],
 
-                    const SizedBox(height: 6),
+                      const SizedBox(height: 9),
 
-                    // Info badges row: phone / web / social
-                    Row(children: [
-                      if (hasPhone)
-                        _InfoBadge(
-                          icon: Icons.phone_rounded,
-                          color: AppColors.success,
-                          isDark: isDark,
-                        ),
-                      if (hasWeb)
-                        _InfoBadge(
-                          icon: Icons.language_rounded,
-                          color: AppColors.primary,
-                          isDark: isDark,
-                        ),
-                      if (hasSocial)
-                        _InfoBadge(
-                          icon: Icons.share_rounded,
-                          color: const Color(0xFFE05C8A),
-                          isDark: isDark,
-                        ),
-                    ]),
-
-                    const Spacer(),
-
-                    // CTA button
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            typeColor,
-                            typeColor.withValues(alpha: 0.78)
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: typeColor.withValues(alpha: 0.35),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      // Footer: contact badges + circular CTA
+                      Row(
                         children: [
-                          Text(
-                            'زانیاری زیاتر',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
+                          if (hasPhone)
+                            const _InfoBadge(
+                              icon: Icons.phone_rounded,
+                              color: AppColors.success,
+                            ),
+                          if (hasWeb)
+                            const _InfoBadge(
+                              icon: Icons.language_rounded,
+                              color: AppColors.accentGold,
+                            ),
+                          if (hasSocial)
+                            const _InfoBadge(
+                              icon: Icons.share_rounded,
+                              color: Color(0xFFE05C8A),
+                            ),
+                          if (!hasContact)
+                            const Text(
+                              'بینینی پرۆفایل',
+                              style: TextStyle(
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white70,
+                                fontFamily: 'Rabar',
+                              ),
+                            ),
+                          const Spacer(),
+                          Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topRight,
+                                end: Alignment.bottomLeft,
+                                colors: [
+                                  typeColor,
+                                  typeColor.withValues(alpha: 0.70),
+                                ],
+                              ),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: typeColor.withValues(alpha: 0.50),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.arrow_back_rounded,
+                              size: 17,
                               color: Colors.white,
-                              fontFamily: 'Rabar',
                             ),
                           ),
-                          SizedBox(width: 4),
-                          Icon(Icons.arrow_forward_rounded,
-                              size: 11, color: Colors.white),
                         ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -334,9 +336,7 @@ class _InstCardFallback extends StatelessWidget {
 class _InfoBadge extends StatelessWidget {
   final IconData icon;
   final Color color;
-  final bool isDark;
-  const _InfoBadge(
-      {required this.icon, required this.color, required this.isDark});
+  const _InfoBadge({required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -344,11 +344,64 @@ class _InfoBadge extends StatelessWidget {
         width: 24,
         height: 24,
         decoration: BoxDecoration(
-          color: color.withValues(alpha: isDark ? 0.2 : 0.1),
+          color: color.withValues(alpha: 0.16),
           borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color.withValues(alpha: 0.30)),
         ),
         child: Icon(icon, size: 12, color: color),
       );
+}
+
+/// Frosted "views" pill shown on the institution image.
+class _ViewsBadge extends StatelessWidget {
+  final int views;
+  const _ViewsBadge({required this.views});
+
+  /// Converts western digits to Arabic-Indic and abbreviates thousands.
+  static String _format(int n) {
+    String s;
+    if (n >= 1000000) {
+      s = '${(n / 1000000).toStringAsFixed(n % 1000000 == 0 ? 0 : 1)}M';
+    } else if (n >= 1000) {
+      s = '${(n / 1000).toStringAsFixed(n % 1000 == 0 ? 0 : 1)}k';
+    } else {
+      s = '$n';
+    }
+    const western = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const eastern = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    for (var i = 0; i < western.length; i++) {
+      s = s.replaceAll(western[i], eastern[i]);
+    }
+    return s;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.42),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.visibility_rounded, size: 12, color: Colors.white),
+          const SizedBox(width: 4),
+          Text(
+            _format(views),
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+              fontFamily: 'Rabar',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// =====================

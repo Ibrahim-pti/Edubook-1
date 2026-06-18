@@ -81,14 +81,46 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: isDark ? AppColors.darkBg : AppColors.lightBg,
       body: Stack(
         children: [
+          // Gold curved header with decorative circles (matches login)
           Container(
-            height: 240,
+            height: 280,
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF00D4FF), Color(0xFF4F6EF7)],
+              gradient: AppColors.primaryGradient,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(44),
+                bottomRight: Radius.circular(44),
               ),
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  top: -40,
+                  right: -40,
+                  child: Container(
+                    width: 180,
+                    height: 180,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.12),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  left: -30,
+                  child: Container(
+                    width: 110,
+                    height: 110,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.08),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           SafeArea(
@@ -203,7 +235,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           const SizedBox(height: 20),
           GradientButton(
             text: l.sendOtp,
-            gradient: AppColors.cyanGradient,
             onPressed: _sendOtp,
             isLoading: _loading,
           ),
@@ -229,7 +260,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           const SizedBox(height: 20),
           GradientButton(
             text: l.done,
-            gradient: AppColors.cyanGradient,
             onPressed: _verifyOtp,
             isLoading: _loading,
           ),
@@ -251,7 +281,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           const SizedBox(height: 20),
           GradientButton(
             text: l.resetPassword,
-            gradient: AppColors.cyanGradient,
             onPressed: _resetPassword,
             isLoading: _loading,
           ),

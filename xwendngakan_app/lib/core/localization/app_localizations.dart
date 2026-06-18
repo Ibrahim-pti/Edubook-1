@@ -491,8 +491,8 @@ class AppLocalizations {
   // INSTITUTIONS
   // =====================
   String get institutions => _t({
-        'ku': 'خوێندنگاکان',
-        'kbd': 'خویندنگەهـ',
+        'ku': 'دامەزراوەکان',
+        'kbd': 'دامەزراوەکان',
         'ar': 'المؤسسات',
         'en': 'Institutions',
         'tr': 'Kurumlar'
