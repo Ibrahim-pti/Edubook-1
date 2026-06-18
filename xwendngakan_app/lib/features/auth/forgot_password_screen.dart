@@ -160,12 +160,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     if (_step == _ForgotStep.done) {
       return Column(
         children: [
-          const Text('✅', style: TextStyle(fontSize: 56)),
+          const Text('📩', style: TextStyle(fontSize: 56)),
           const SizedBox(height: 16),
-          Text(l.resetPassword,
-              style: Theme.of(context).textTheme.headlineSmall),
+          Text(l.sendResetLink,
+              style: Theme.of(context).textTheme.headlineSmall,
+              textAlign: TextAlign.center),
           const SizedBox(height: 8),
-          Text(l.passwordResetSuccess,
+          Text(l.resetLinkSent,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center),
           const SizedBox(height: 24),
@@ -191,115 +192,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
             child: Text(_error!, style: const TextStyle(color: AppColors.error, fontSize: 13)),
           ),
-        if (_step == _ForgotStep.email) ...[
-          Text(l.email, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _emailCtrl,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              hintText: 'email@example.com',
-              prefixIcon: Icon(Icons.email_outlined),
-            ),
+        Text(l.email, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _emailCtrl,
+          keyboardType: TextInputType.emailAddress,
+          decoration: const InputDecoration(
+            hintText: 'email@example.com',
+            prefixIcon: Icon(Icons.email_outlined),
           ),
-          const SizedBox(height: 20),
-          GradientButton(
-            text: l.sendOtp,
-            onPressed: _sendOtp,
-            isLoading: _loading,
-          ),
-        ] else if (_step == _ForgotStep.otp) ...[
-          Text(l.enterOtp, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 4),
-          Text(_emailCtrl.text, style: Theme.of(context).textTheme.bodySmall
-              ?.copyWith(color: AppColors.primary)),
-          const SizedBox(height: 20),
-          // OTP boxes
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(6, (i) => _OtpBox(
-              controller: _otpCtrl[i],
-              onFilled: (val) {
-                if (val.isNotEmpty && i < 5) {
-                  FocusScope.of(context).nextFocus();
-                }
-                setState(() {});
-              },
-            )),
-          ),
-          const SizedBox(height: 20),
-          GradientButton(
-            text: l.done,
-            onPressed: _verifyOtp,
-            isLoading: _loading,
-          ),
-          TextButton(
-            onPressed: _sendOtp,
-            child: Text(l.resendOtp),
-          ),
-        ] else if (_step == _ForgotStep.newPassword) ...[
-          Text(l.resetPassword, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _passCtrl,
-            obscureText: true,
-            decoration: InputDecoration(
-              hintText: l.password,
-              prefixIcon: const Icon(Icons.lock_outline),
-            ),
-          ),
-          const SizedBox(height: 20),
-          GradientButton(
-            text: l.resetPassword,
-            onPressed: _resetPassword,
-            isLoading: _loading,
-          ),
-        ],
+        ),
+        const SizedBox(height: 20),
+        GradientButton(
+          text: l.sendResetLink,
+          onPressed: _sendResetLink,
+          isLoading: _loading,
+        ),
       ],
-    );
-  }
-}
-
-class _OtpBox extends StatelessWidget {
-  final TextEditingController controller;
-  final ValueChanged<String> onFilled;
-
-  const _OtpBox({required this.controller, required this.onFilled});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      width: 44,
-      height: 52,
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCardElevated : AppColors.lightCardElevated,
-        borderRadius: BorderRadius.circular(AppConstants.radiusMd),
-        border: Border.all(
-          color: controller.text.isNotEmpty
-              ? AppColors.primary
-              : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-          width: controller.text.isNotEmpty ? 1.5 : 0.8,
-        ),
-      ),
-      child: TextField(
-        controller: controller,
-        textAlign: TextAlign.center,
-        maxLength: 1,
-        keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        onChanged: onFilled,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: isDark ? AppColors.textWhite : AppColors.textDark,
-        ),
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          counterText: '',
-          contentPadding: EdgeInsets.zero,
-        ),
-      ),
     );
   }
 }
