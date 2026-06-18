@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\InstitutionType;
+use App\Models\Banner;
 use Illuminate\Http\JsonResponse;
 
 class AppDataController extends Controller
@@ -78,12 +79,27 @@ class AppDataController extends Controller
             ['name' => 'دوزەخوڕماتو',   'governorate' => 'سەلاحەدین',  'country' => 'عێراق'],
         ];
 
+        $banners = Banner::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('created_at')
+            ->get()
+            ->map(fn ($b) => [
+                'id'          => $b->id,
+                'title'       => $b->title,
+                'subtitle'    => $b->subtitle,
+                'tag'         => $b->tag,
+                'image_url'   => $b->image_url,
+                'color_start' => $b->color_start,
+                'color_end'   => $b->color_end,
+            ]);
+
         return response()->json([
             'success' => true,
             'data'    => [
                 'types'     => $types,
                 'countries' => $countries,
                 'cities'    => $cities,
+                'banners'   => $banners,
             ],
         ]);
     }
