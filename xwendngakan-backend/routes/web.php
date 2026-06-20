@@ -28,6 +28,9 @@ Route::get('/', function () {
     return redirect()->route('portal.home');
 })->name('home');
 
+// Public privacy policy page (required for Google Play / App Store listings)
+Route::get('/privacy', fn () => view('privacy'))->name('privacy');
+
 // =====================
 //  ADMIN PANEL ROUTES
 // =====================
