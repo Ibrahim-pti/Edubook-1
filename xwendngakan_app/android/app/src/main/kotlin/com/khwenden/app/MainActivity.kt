@@ -1,4 +1,4 @@
-package com.edubook.app
+package com.khwenden.app
 
 import io.flutter.embedding.android.FlutterActivity
 
