@@ -70,7 +70,7 @@ class InstitutionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(20),
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -91,36 +91,39 @@ class InstitutionCard extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    stops: const [0.0, 0.4, 1.0],
+                    stops: const [0.0, 0.3, 0.6, 1.0],
                     colors: [
-                      Colors.black.withValues(alpha: 0.45),
+                      Colors.black.withValues(alpha: 0.4),
                       Colors.transparent,
-                      Colors.black.withValues(alpha: 0.88),
+                      Colors.black.withValues(alpha: 0.2),
+                      Colors.black.withValues(alpha: 0.95),
                     ],
                   ),
                 ),
               ),
             ),
 
-            // ── Top bar: favorite + type chip ──
+            // ── Top bar: Views & Favorite ──
             Positioned(
               top: 10,
               left: 10,
               right: 10,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  _ViewsBadge(views: institution.views),
                   GestureDetector(
                     onTap: onFavorite,
                     child: Container(
-                      width: 32,
-                      height: 32,
+                      width: 26,
+                      height: 26,
                       decoration: BoxDecoration(
                         color: isFavorite
                             ? const Color(0xFFFF4757).withValues(alpha: 0.95)
-                            : Colors.black.withValues(alpha: 0.45),
+                            : Colors.black.withValues(alpha: 0.3),
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.30),
+                          color: Colors.white.withValues(alpha: 0.2),
                         ),
                       ),
                       child: Icon(
@@ -128,35 +131,7 @@ class InstitutionCard extends StatelessWidget {
                             ? Icons.favorite_rounded
                             : Icons.favorite_border_rounded,
                         color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: typeColor.withValues(alpha: 0.95),
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.30),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: typeColor.withValues(alpha: 0.45),
-                          blurRadius: 10,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      '$emoji $typeLabel',
-                      style: const TextStyle(
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        fontFamily: 'Rabar',
+                        size: 13,
                       ),
                     ),
                   ),
@@ -164,145 +139,86 @@ class InstitutionCard extends StatelessWidget {
               ),
             ),
 
-            // ── Views — floating top-corner pill below favorite ──
+            // ── Bottom Info Overlay ──
             Positioned(
-              top: 48,
-              left: 10,
-              child: _ViewsBadge(views: institution.views),
-            ),
-
-            // ── Bottom frosted-glass info panel ──
-            Positioned(
-              left: 8,
-              right: 8,
-              bottom: 8,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(11, 10, 11, 11),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.18),
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.white.withValues(alpha: 0.06),
-                      Colors.black.withValues(alpha: 0.30),
-                    ],
-                  ),
-                ),
-                child: Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Name
-                      Text(
-                        institutionName,
-                        textAlign: TextAlign.right,
+              left: 12,
+              right: 12,
+              bottom: 12,
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Type Chip
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: typeColor.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        '$emoji $typeLabel',
                         style: const TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w900,
+                          fontSize: 9.0,
+                          fontWeight: FontWeight.w800,
                           color: Colors.white,
                           fontFamily: 'Rabar',
-                          height: 1.2,
-                          shadows: [
-                            Shadow(blurRadius: 6, color: Colors.black54),
-                          ],
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
-
-                      // City
-                      if (institution.city != null &&
-                          institution.city!.isNotEmpty) ...[
-                        const SizedBox(height: 4),
-                        Row(children: [
-                          const Icon(Icons.location_on_rounded,
-                              size: 12, color: Colors.white70),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              institution.city!,
-                              style: const TextStyle(
-                                fontSize: 11,
-                                color: Colors.white70,
-                                fontFamily: 'Rabar',
-                                fontWeight: FontWeight.w600,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ]),
-                      ],
-
-                      const SizedBox(height: 9),
-
-                      // Footer: contact badges + circular CTA
+                    ),
+                    const SizedBox(height: 6),
+                    // Name
+                    Text(
+                      institutionName,
+                      style: const TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        fontFamily: 'Rabar',
+                        height: 1.2,
+                        shadows: [
+                          Shadow(blurRadius: 4, color: Colors.black87),
+                        ],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    // City & Contact Info row
+                    if ((institution.city != null && institution.city!.isNotEmpty) || hasContact) ...[
+                      const SizedBox(height: 6),
                       Row(
                         children: [
-                          if (hasPhone)
-                            const _InfoBadge(
-                              icon: Icons.phone_rounded,
-                              color: AppColors.success,
-                            ),
-                          if (hasWeb)
-                            const _InfoBadge(
-                              icon: Icons.language_rounded,
-                              color: AppColors.accentGold,
-                            ),
-                          if (hasSocial)
-                            const _InfoBadge(
-                              icon: Icons.share_rounded,
-                              color: Color(0xFFE05C8A),
-                            ),
-                          if (!hasContact)
-                            const Text(
-                              'بینینی پرۆفایل',
-                              style: TextStyle(
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white70,
-                                fontFamily: 'Rabar',
-                              ),
-                            ),
-                          const Spacer(),
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topRight,
-                                end: Alignment.bottomLeft,
-                                colors: [
-                                  typeColor,
-                                  typeColor.withValues(alpha: 0.70),
-                                ],
-                              ),
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: typeColor.withValues(alpha: 0.50),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
+                          if (institution.city != null && institution.city!.isNotEmpty) ...[
+                            const Icon(Icons.location_on_rounded, size: 10, color: Colors.white70),
+                            const SizedBox(width: 3),
+                            Expanded(
+                              child: Text(
+                                institution.city!,
+                                style: const TextStyle(
+                                  fontSize: 10.5,
+                                  color: Colors.white70,
+                                  fontFamily: 'Rabar',
+                                  fontWeight: FontWeight.w600,
                                 ),
-                              ],
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                            child: const Icon(
-                              Icons.arrow_back_rounded,
-                              size: 17,
-                              color: Colors.white,
-                            ),
-                          ),
+                          ],
+                          if (hasContact) ...[
+                            if (hasPhone)
+                              const _InfoBadge(icon: Icons.phone_rounded, color: AppColors.success),
+                            if (hasWeb)
+                              const _InfoBadge(icon: Icons.language_rounded, color: AppColors.accentGold),
+                            if (hasSocial)
+                              const _InfoBadge(icon: Icons.share_rounded, color: Color(0xFFE05C8A)),
+                          ]
                         ],
                       ),
                     ],
-                  ),
+                  ],
                 ),
               ),
             ),

@@ -69,7 +69,7 @@ class SavedScreen extends StatelessWidget {
                     crossAxisCount: 2,
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 16,
-                    childAspectRatio: 0.76,
+                    childAspectRatio: 1.05,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (_, i) {
