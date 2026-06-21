@@ -1,4 +1,5 @@
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/html_utils.dart';
 
 class NewsModel {
   final int id;
@@ -29,7 +30,7 @@ class NewsModel {
     return NewsModel(
       id: json['id'] as int,
       title: json['title'] as String,
-      content: json['content'] as String,
+      content: HtmlUtils.toPlainText(json['content'] as String?),
       imageUrl: json['image_url'] as String?,
       createdAt: json['created_at'] as String,
     );

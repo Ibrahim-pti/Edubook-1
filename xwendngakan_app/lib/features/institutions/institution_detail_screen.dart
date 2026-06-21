@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_localizations.dart';
+import '../../core/utils/html_utils.dart';
 import '../../data/models/institution_model.dart';
 import '../../data/models/post_model.dart';
 import '../../data/services/api_service.dart';
@@ -85,28 +86,7 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
   /// Converts stored rich-text/HTML into clean, readable plain text.
   /// Block tags become line breaks, the rest are stripped, and common
   /// HTML entities are decoded so nothing like `<p>` ever shows on screen.
-  String _cleanHtml(String input) {
-    var text = input
-        .replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n')
-        .replaceAll(RegExp(r'</(p|div|li|h[1-6])>', caseSensitive: false), '\n')
-        .replaceAll(RegExp(r'<li[^>]*>', caseSensitive: false), '• ')
-        .replaceAll(RegExp(r'<[^>]+>'), ''); // strip any remaining tags
-
-    text = text
-        .replaceAll('&nbsp;', ' ')
-        .replaceAll('&amp;', '&')
-        .replaceAll('&lt;', '<')
-        .replaceAll('&gt;', '>')
-        .replaceAll('&quot;', '"')
-        .replaceAll('&#39;', "'");
-
-    // Collapse 3+ newlines and trim trailing spaces on each line.
-    text = text
-        .replaceAll(RegExp(r'[ \t]+\n'), '\n')
-        .replaceAll(RegExp(r'\n{3,}'), '\n\n');
-
-    return text.trim();
-  }
+  String _cleanHtml(String input) => HtmlUtils.toPlainText(input);
 
   Future<void> _launch(String url) async {
     final uri = Uri.parse(url);

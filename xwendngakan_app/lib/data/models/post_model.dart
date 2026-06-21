@@ -1,4 +1,5 @@
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/html_utils.dart';
 
 class PostModel {
   final int id;
@@ -52,7 +53,7 @@ class PostModel {
       id: json['id'] ?? 0,
       institutionId: json['institution_id'] ?? 0,
       title: json['title'],
-      content: json['content'] ?? '',
+      content: HtmlUtils.toPlainText(json['content']),
       image: json['image'],
       authorName: json['author_name'],
       createdAt: json['created_at'],
