@@ -237,6 +237,7 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
                 ->first();
             $data = $request->validate([
                 'nku'      => 'required|string|max:255',
+                'nkbd'     => 'nullable|string|max:255',
                 'nar'      => 'nullable|string|max:255',
                 'nen'      => 'nullable|string|max:255',
                 'type'     => 'required|string',

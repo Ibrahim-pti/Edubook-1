@@ -902,16 +902,21 @@
         <div class="db-card">
           <div class="db-card-head">
             <div class="db-card-title">📋 ناوی دامەزراوە</div>
-            <button type="button" class="btn-tr" onclick="autoTranslate('nku', ['nar', 'nen'], this)">
+            <button type="button" class="btn-tr" onclick="autoTranslate('nku', ['nkbd', 'nar', 'nen'], this)">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
               وەرگێڕان
             </button>
           </div>
           <div class="f-row">
             <div class="f-group">
-              <label class="f-label">کوردی <span class="f-req">*</span></label>
+              <label class="f-label">کوردی (سۆرانی) <span class="f-req">*</span></label>
               <input type="text" id="nku" name="nku" class="f-input" placeholder="ناوی کوردی..." value="{{ old('nku', $institution?->nku) }}" required>
               @error('nku') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
+            </div>
+            <div class="f-group">
+              <label class="f-label">کوردی (بادینی)</label>
+              <input type="text" id="nkbd" name="nkbd" class="f-input" placeholder="ناوی بادینی..." value="{{ old('nkbd', $institution?->nkbd) }}">
+              @error('nkbd') <div style="color:#ef4444; font-size:.75rem; margin-top:4px;">{{ $message }}</div> @enderror
             </div>
             <div class="f-group">
               <label class="f-label">عەرەبی</label>
@@ -1679,7 +1684,7 @@ async function autoTranslate(sourceId, targetIds, btn) {
     if (!text) { alert('تکایە سەرەتا دەقەکە بنووسە.'); return; }
     btn.classList.add('loading'); btn.disabled = true;
     // Map target field IDs to Google Translate language codes
-    const langMap = { 'desc_kbd': 'ku', 'desc_ar': 'ar', 'desc_en': 'en', 'nar': 'ar', 'nen': 'en' };
+    const langMap = { 'desc_kbd': 'ku', 'desc_ar': 'ar', 'desc_en': 'en', 'nkbd': 'ku', 'nar': 'ar', 'nen': 'en' };
     try {
         for (const targetId of targetIds) {
             const lang = langMap[targetId] ?? (targetId.includes('ar') ? 'ar' : targetId.includes('en') ? 'en' : 'ku');
