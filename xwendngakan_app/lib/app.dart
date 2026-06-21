@@ -91,7 +91,7 @@ class _MaterialAppShellState extends State<_MaterialAppShell> {
 
   @override
   Widget build(BuildContext context) {
-    // Lazily create the router once; never recreate it on locale/theme change.
+    // Lazil create the router once; never recreate it on locale/theme change.
     _router ??= createRouter(context);
 
     return Consumer2<ThemeProvider, LocaleProvider>(
