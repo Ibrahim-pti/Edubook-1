@@ -162,6 +162,32 @@ class AuthController extends Controller
     }
 
     /**
+     * Permanently delete the authenticated user's account and all related data.
+     * Required by App Store Guideline 5.1.1(v) for apps that support account creation.
+     */
+    public function deleteAccount(Request $request)
+    {
+        $user = $request->user();
+
+        DB::transaction(function () use ($user) {
+            // Revoke all API tokens
+            $user->tokens()->delete();
+
+            // Remove related data
+            $user->favorites()->delete();
+            $user->reports()->delete();
+
+            // Finally delete the user record itself
+            $user->delete();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'هەژمارەکەت و هەموو زانیارییەکانت بە سەرکەوتوویی سڕانەوە.',
+        ]);
+    }
+
+    /**
      * Get current user.
      */
     public function user(Request $request)

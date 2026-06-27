@@ -195,6 +195,34 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Permanently deletes the user's account (server + Firebase) and signs out.
+  /// Returns true on success.
+  Future<bool> deleteAccount() async {
+    final result = await _api.deleteAccount();
+    if (!result.success) {
+      _error = result.error;
+      notifyListeners();
+      return false;
+    }
+
+    // Remove the Firebase Auth user, then sign out locally.
+    try {
+      await fb.FirebaseAuth.instance.currentUser?.delete();
+    } catch (_) {
+      // If deletion needs recent login, fall back to sign-out.
+      try {
+        await fb.FirebaseAuth.instance.signOut();
+      } catch (_) {}
+    }
+
+    await _clearToken();
+    _user = null;
+    _token = null;
+    _status = AuthStatus.unauthenticated;
+    notifyListeners();
+    return true;
+  }
+
   Future<void> _saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(AppConstants.tokenKey, token);

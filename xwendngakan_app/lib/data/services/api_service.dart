@@ -185,6 +185,29 @@ class ApiService {
     }
   }
 
+  /// Permanently deletes the authenticated user's account on the server.
+  Future<ApiResult<bool>> deleteAccount() async {
+    try {
+      final headers = await _authHeaders();
+      final res = await http
+          .delete(
+            Uri.parse('$_base/account'),
+            headers: headers,
+          )
+          .timeout(AppConstants.connectTimeout);
+      if (res.statusCode == 200) {
+        return ApiResult.success(true);
+      }
+      final data = _safeJson(res);
+      return ApiResult.failure(
+        data?['message'] ?? _serverMessage(res.statusCode),
+        statusCode: res.statusCode,
+      );
+    } catch (e) {
+      return ApiResult.failure(_connectionMessage);
+    }
+  }
+
   Future<ApiResult<UserModel>> getUser() async {
     try {
       final headers = await _authHeaders();

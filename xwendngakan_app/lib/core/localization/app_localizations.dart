@@ -298,6 +298,55 @@ class AppLocalizations {
         'en': 'Logout',
         'tr': 'Çıkış'
       });
+  String get account => _t({
+        'ku': 'هەژمار',
+        'kbd': 'هەژمار',
+        'ar': 'الحساب',
+        'en': 'Account',
+        'tr': 'Hesap'
+      });
+  String get deleteAccount => _t({
+        'ku': 'سڕینەوەی هەژمار',
+        'kbd': 'سڕینەوەی هەژمار',
+        'ar': 'حذف الحساب',
+        'en': 'Delete Account',
+        'tr': 'Hesabı Sil'
+      });
+  String get deleteAccountSubtitle => _t({
+        'ku': 'سڕینەوەی هەمیشەیی هەژمار و هەموو زانیارییەکانت',
+        'kbd': 'سڕینەوەی هەمیشەیی هەژمار و هەموو زانیارییەکانت',
+        'ar': 'حذف حسابك وجميع بياناتك نهائيًا',
+        'en': 'Permanently delete your account and all your data',
+        'tr': 'Hesabınızı ve tüm verilerinizi kalıcı olarak silin'
+      });
+  String get deleteAccountConfirmTitle => _t({
+        'ku': 'دڵنیایت؟',
+        'kbd': 'دڵنیایت؟',
+        'ar': 'هل أنت متأكد؟',
+        'en': 'Are you sure?',
+        'tr': 'Emin misiniz?'
+      });
+  String get deleteAccountConfirmBody => _t({
+        'ku': 'ئەم کردارە هەژمارەکەت و هەموو زانیارییەکانت بۆ هەمیشە دەسڕێتەوە. ناگەڕێتەوە.',
+        'kbd': 'ئەم کردارە هەژمارەکەت و هەموو زانیارییەکانت بۆ هەمیشە دەسڕێتەوە. ناگەڕێتەوە.',
+        'ar': 'سيؤدي هذا الإجراء إلى حذف حسابك وجميع بياناتك نهائيًا. لا يمكن التراجع عنه.',
+        'en': 'This will permanently delete your account and all your data. This cannot be undone.',
+        'tr': 'Bu işlem hesabınızı ve tüm verilerinizi kalıcı olarak siler. Geri alınamaz.'
+      });
+  String get deleteAccountSuccess => _t({
+        'ku': 'هەژمارەکەت بە سەرکەوتوویی سڕایەوە.',
+        'kbd': 'هەژمارەکەت بە سەرکەوتوویی سڕایەوە.',
+        'ar': 'تم حذف حسابك بنجاح.',
+        'en': 'Your account has been deleted.',
+        'tr': 'Hesabınız silindi.'
+      });
+  String get deleteAccountError => _t({
+        'ku': 'سڕینەوەی هەژمار سەرکەوتوو نەبوو. دووبارە هەوڵبدەرەوە.',
+        'kbd': 'سڕینەوەی هەژمار سەرکەوتوو نەبوو. دووبارە هەوڵبدەرەوە.',
+        'ar': 'فشل حذف الحساب. حاول مرة أخرى.',
+        'en': 'Failed to delete account. Please try again.',
+        'tr': 'Hesap silinemedi. Lütfen tekrar deneyin.'
+      });
   String get email => _t({
         'ku': 'ئیمەیڵ',
         'kbd': 'ئیمەیل',

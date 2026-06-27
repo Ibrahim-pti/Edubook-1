@@ -98,6 +98,7 @@ Route::get('/app-data', [AppDataController::class, 'appData']);
 Route::middleware('auth:sanctum')->group(function () {
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::delete('/account', [AuthController::class, 'deleteAccount']);
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/fcm-token', [AuthController::class, 'updateFcmToken']);
     Route::post('/toggle-notifications', [AuthController::class, 'toggleNotifications']);
