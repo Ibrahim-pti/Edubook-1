@@ -57,20 +57,18 @@ GoRouter createRouter(BuildContext context) {
 
       if (isInitial) return null;
 
-      final publicRoutes = [
-        '/splash',
-        '/language-select',
-        '/onboarding',
-        '/login',
-        '/register',
-        '/forgot-password',
-        '/role-selection',
-        '/teacher-register',
-        '/cv-form',
+      // Only account-based features require login. Everything else (news,
+      // events, institutions, teachers, CV bank…) is browsable as a guest.
+      // Required by App Store Guideline 5.1.1 — apps may not gate non-account
+      // content behind mandatory registration.
+      final protectedRoutes = [
+        '/profile',
+        '/saved',
+        '/notifications',
       ];
-      final isPublic = publicRoutes.any((r) => loc.startsWith(r));
+      final needsAuth = protectedRoutes.any((r) => loc.startsWith(r));
 
-      if (!isAuth && !isPublic) return '/login';
+      if (!isAuth && needsAuth) return '/login';
       if (isAuth && (loc == '/login' || loc == '/register')) return '/home';
 
       return null;

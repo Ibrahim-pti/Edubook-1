@@ -31,6 +31,8 @@ Route::get('/', function () {
 // Public privacy policy page (required for Google Play / App Store listings)
 Route::get('/privacy', fn () => view('privacy'))->name('privacy');
 Route::get('/delete-account', fn () => view('account-deletion'))->name('account-deletion');
+// Public support page (required for App Store / Google Play listings)
+Route::get('/support', fn () => view('support'))->name('support');
 
 // =====================
 //  ADMIN PANEL ROUTES

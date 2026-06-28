@@ -147,9 +147,9 @@ class _SplashScreenState extends State<SplashScreen>
       // (If the auth check is still pending but a token exists, trust it.)
       context.go('/home');
     } else {
-      // Returning users who already chose a role skip the role picker.
-      final roleSelected = prefs.getBool(AppConstants.roleSelectedKey) ?? false;
-      context.go(roleSelected ? '/login' : '/role-selection');
+      // Guests land on Home and can browse freely (news, events, institutions,
+      // teachers). Login is only required for account-based features.
+      context.go('/home');
     }
   }
 
