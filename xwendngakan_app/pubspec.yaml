@@ -1,7 +1,7 @@
 name: xwendngakan_app
 description: "edu book - Xwendngakan"
 publish_to: 'none'
-version: 1.0.4+10
+version: 1.0.4+11
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -66,6 +66,13 @@ dev_dependencies:
   flutter_lints: ^3.0.0
   flutter_launcher_icons: ^0.14.2
   flutter_native_splash: ^2.4.7
+
+# Pin path_provider_foundation to the last release before it switched to the
+# `objective_c` FFI package. objective_c 9.3.0 ships a framework whose arm64
+# slice references the simulator platform, which the App Store rejects
+# (validation error 91169 — "unsupported platform in the arm64 slice").
+dependency_overrides:
+  path_provider_foundation: 2.4.1
 
 flutter_launcher_icons:
   android: true
