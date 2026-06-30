@@ -449,10 +449,14 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen>
                                         } else if (_selectedRole == 'teacher') {
                                           context.push('/teacher-register');
                                         } else {
+                                          // Browsing institutions is not an
+                                          // account-based feature, so guests go
+                                          // straight to Home without a login
+                                          // wall (App Store Guideline 5.1.1).
                                           Provider.of<AuthProvider>(context,
                                                   listen: false)
                                               .setSelectedRole(_selectedRole!);
-                                          context.go('/login');
+                                          context.go('/home');
                                         }
                                       }
                                     : null,

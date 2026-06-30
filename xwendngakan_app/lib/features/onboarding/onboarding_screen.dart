@@ -66,7 +66,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(AppConstants.onboardingKey, true);
     if (!mounted) return;
-    context.go('/role-selection');
+    // Land guests on Home so they can freely browse non-account features
+    // (news, events, institutions, teachers). Login is requested only when a
+    // user picks an account-based action. Required by App Store Guideline
+    // 5.1.1 — non-account content may not sit behind mandatory registration.
+    context.go('/home');
   }
 
   void _onPageChanged(int page) {

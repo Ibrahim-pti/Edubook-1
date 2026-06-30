@@ -61,8 +61,12 @@ GoRouter createRouter(BuildContext context) {
       // events, institutions, teachers, CV bank…) is browsable as a guest.
       // Required by App Store Guideline 5.1.1 — apps may not gate non-account
       // content behind mandatory registration.
+      // NOTE: /profile is intentionally NOT protected — it renders a guest
+      // state with an inline "login" button, so guests can open the tab
+      // without being bounced to a login wall. Only routes that show
+      // user-specific data (saved favorites, personal notifications) require
+      // authentication.
       final protectedRoutes = [
-        '/profile',
         '/saved',
         '/notifications',
       ];

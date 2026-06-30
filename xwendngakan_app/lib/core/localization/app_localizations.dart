@@ -1784,6 +1784,13 @@ class AppLocalizations {
         'en': 'Guest',
         'tr': 'Misafir'
       });
+  String get loginToAccessAccount => _t({
+        'ku': 'بۆ بەکارهێنانی هەژمارەکەت سەرەتا بچۆ ژوورەوە',
+        'kbd': 'بۆ بکارئینانا هەژمارا خۆ، سەرەتا بچووە ژوور',
+        'ar': 'سجّل الدخول أولاً للوصول إلى حسابك',
+        'en': 'Log in first to access your account',
+        'tr': 'Hesabınıza erişmek için önce giriş yapın'
+      });
   String get teacherRegisterSuccess => _t({
         'ku': 'داواکاریت بە سەرکەوتوویی نێردرا، بچاوە ڕاگەیەنراوەکانت',
         'kbd': 'داخوازییا تە ب سەرکەفتی هاتە شاندن، ل هیڤییا بەرسڤێ بە',

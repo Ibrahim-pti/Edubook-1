@@ -20,6 +20,23 @@ class ProfileScreen extends StatelessWidget {
     final locale = Provider.of<LocaleProvider>(context);
     final isDark = theme.isDark;
 
+    // Guests get a Profile tab that shows nothing but a login prompt — no
+    // settings or account tiles until they sign in.
+    if (!auth.isAuthenticated) {
+      return Scaffold(
+        backgroundColor:
+            isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: _LoginPrompt(l: l),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor:
           isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
@@ -39,33 +56,31 @@ class ProfileScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (auth.isAuthenticated) ...[
-                    _SectionLabel(label: l.myAccount),
-                    const SizedBox(height: 8),
-                    _SettingsGroup(isDark: isDark, children: [
-                      _NavTile(
-                        icon: Icons.bookmark_rounded,
-                        iconBg: const Color(0xFF4A90D9),
-                        label: l.saved,
-                        onTap: () => context.push('/saved'),
-                      ),
-                      _Divider(isDark: isDark),
-                      _NavTile(
-                        icon: Icons.notifications_rounded,
-                        iconBg: const Color(0xFFE05C8A),
-                        label: l.notifications,
-                        onTap: () => context.push('/notifications'),
-                      ),
-                      _Divider(isDark: isDark),
-                      _NavTile(
-                        icon: Icons.map_rounded,
-                        iconBg: const Color(0xFFEC4899),
-                        label: l.map,
-                        onTap: () => context.push('/map'),
-                      ),
-                    ]),
-                    const SizedBox(height: 24),
-                  ],
+                  _SectionLabel(label: l.myAccount),
+                  const SizedBox(height: 8),
+                  _SettingsGroup(isDark: isDark, children: [
+                    _NavTile(
+                      icon: Icons.bookmark_rounded,
+                      iconBg: const Color(0xFF4A90D9),
+                      label: l.saved,
+                      onTap: () => context.push('/saved'),
+                    ),
+                    _Divider(isDark: isDark),
+                    _NavTile(
+                      icon: Icons.notifications_rounded,
+                      iconBg: const Color(0xFFE05C8A),
+                      label: l.notifications,
+                      onTap: () => context.push('/notifications'),
+                    ),
+                    _Divider(isDark: isDark),
+                    _NavTile(
+                      icon: Icons.map_rounded,
+                      iconBg: const Color(0xFFEC4899),
+                      label: l.map,
+                      onTap: () => context.push('/map'),
+                    ),
+                  ]),
+                  const SizedBox(height: 24),
                   _SectionLabel(label: l.settings),
                   const SizedBox(height: 8),
                   _SettingsGroup(isDark: isDark, children: [
@@ -104,11 +119,9 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ]),
                   const SizedBox(height: 56),
-                  if (auth.isAuthenticated) ...[
-                    _LogoutTile(isDark: isDark, l: l, auth: auth),
-                  ] else ...[
-                    _LoginPrompt(l: l),
-                  ],
+                  _LogoutTile(isDark: isDark, l: l, auth: auth),
+                  const SizedBox(height: 16),
+                  _DeleteAccountTile(l: l),
                   const SizedBox(height: 24),
                   Center(
                     child: Text(
@@ -520,7 +533,7 @@ class _LogoutTile extends StatelessWidget {
     return GestureDetector(
       onTap: () => showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        builder: (dialogCtx) => AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Text(l.logout,
@@ -531,12 +544,12 @@ class _LogoutTile extends StatelessWidget {
                   fontFamily: 'Rabar', fontWeight: FontWeight.w500)),
           actions: [
             TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(dialogCtx),
                 child: Text(l.cancel,
                     style: const TextStyle(fontWeight: FontWeight.w700))),
             TextButton(
               onPressed: () {
-                context.pop();
+                Navigator.pop(dialogCtx);
                 Future.delayed(const Duration(milliseconds: 300), () {
                   auth.logout();
                 });
@@ -581,6 +594,91 @@ class _LogoutTile extends StatelessWidget {
   }
 }
 
+class _DeleteAccountTile extends StatelessWidget {
+  final AppLocalizations l;
+  const _DeleteAccountTile({required this.l});
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(l.deleteAccountConfirmTitle,
+            style: const TextStyle(
+                fontFamily: 'Rabar', fontWeight: FontWeight.w800)),
+        content: Text(l.deleteAccountConfirmBody,
+            style: const TextStyle(
+                fontFamily: 'Rabar', fontWeight: FontWeight.w500)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.cancel,
+                style: const TextStyle(fontWeight: FontWeight.w700)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.deleteAccount,
+                style: const TextStyle(
+                    color: AppColors.error, fontWeight: FontWeight.w800)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    // Blocking loader while the account is removed (server + Firebase).
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final ok = await auth.deleteAccount();
+
+    if (!context.mounted) return;
+    // The loader was pushed onto the root navigator, so dismiss it there —
+    // the nearest navigator here is the ShellRoute's nested one.
+    Navigator.of(context, rootNavigator: true).pop(); // dismiss loader
+
+    final messenger = ScaffoldMessenger.of(context);
+    if (ok) {
+      messenger.showSnackBar(SnackBar(
+        content: Text(l.deleteAccountSuccess,
+            style: const TextStyle(fontFamily: 'Rabar')),
+      ));
+      context.go('/home');
+    } else {
+      messenger.showSnackBar(SnackBar(
+        content: Text(l.deleteAccountError,
+            style: const TextStyle(fontFamily: 'Rabar')),
+        backgroundColor: AppColors.error,
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: TextButton.icon(
+        onPressed: () => _confirmDelete(context),
+        icon: const Icon(Icons.delete_forever_rounded,
+            color: AppColors.error, size: 20),
+        label: Text(
+          l.deleteAccount,
+          style: const TextStyle(
+            color: AppColors.error,
+            fontWeight: FontWeight.w700,
+            fontSize: 14,
+            fontFamily: 'Rabar',
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _LoginPrompt extends StatelessWidget {
   final AppLocalizations l;
   const _LoginPrompt({required this.l});
@@ -613,7 +711,7 @@ class _LoginPrompt extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            l.noAccount,
+            l.loginToAccessAccount,
             style: const TextStyle(
               fontSize: 13,
               color: AppColors.textGrey,

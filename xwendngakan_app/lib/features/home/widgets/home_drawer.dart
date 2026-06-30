@@ -78,7 +78,7 @@ class HomeDrawer extends StatelessWidget {
                   subtitle: l.drawerPathFinderSub,
                   color: const Color(0xFF6366F1),
                   onTap: () {
-                    context.pop();
+                    Navigator.of(context).pop();
                     context.push('/path-finder');
                   },
                   isDark: isDark,
@@ -91,7 +91,7 @@ class HomeDrawer extends StatelessWidget {
                   subtitle: l.drawerLostFoundSub,
                   color: const Color(0xFFFF4757),
                   onTap: () {
-                    context.pop();
+                    Navigator.of(context).pop();
                     context.push('/lost-and-found');
                   },
                   isDark: isDark,
@@ -103,7 +103,7 @@ class HomeDrawer extends StatelessWidget {
                   subtitle: l.drawerCvSub,
                   color: const Color(0xFF2ED573),
                   onTap: () {
-                    context.pop();
+                    Navigator.of(context).pop();
                     context.push('/cvs');
                   },
                   isDark: isDark,
@@ -163,7 +163,7 @@ class HomeDrawer extends StatelessWidget {
                   title: l.drawerLogout,
                   color: Colors.red,
                   onTap: () {
-                    context.pop();
+                    Navigator.of(context).pop();
                     auth.logout();
                   },
                   isDark: isDark,
