@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             InstitutionSeeder::class,
             AllInstitutionsSeeder::class,
             FiftyInstitutionSeeder::class,
+            PaytakhtInstituteSeeder::class,
             QuickStatSeeder::class,
             SettingsSeeder::class,
         ]);
