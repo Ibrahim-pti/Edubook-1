@@ -1,5 +1,5 @@
 @extends('portal.layout')
-@section('title', 'داشبۆرد — EduBook')
+@section('title', 'داشبۆرد — Khwenden')
 @section('styles')
 <style>
 /* ════════════════════════════════════════════════

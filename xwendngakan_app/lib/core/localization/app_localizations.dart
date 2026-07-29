@@ -41,9 +41,9 @@ class AppLocalizations {
   String get appTagline => _t({
         'ku': ' پلاتفۆرمی پەروەردەیی',
         'kbd': 'پلاتفۆرمێ پەروەردەیا ',
-        'ar': 'منصة التعليم الحديثة',
-        'en': 'Modern Educational Platform',
-        'tr': 'Modern Eğitim Platformu'
+        'ar': 'منصة تعليمية',
+        'en': 'Educational Platform',
+        'tr': 'Eğitim Platformu'
       });
   String get loading => _t({
         'ku': 'چاوەڕوان بە...',

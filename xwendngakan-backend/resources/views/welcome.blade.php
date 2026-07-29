@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>edu book - پلاتفۆرمی پەروەردەیی مۆدێرن</title>
+    <title>Khwenden - پلاتفۆرمی پەروەردەیی</title>
     <link rel="icon" href="{{ asset('images/app_logo.png') }}?v={{ time() }}" type="image/png">
     <link rel="apple-touch-icon" href="{{ asset('images/app_logo.png') }}?v={{ time() }}">
     <!-- Fonts -->
@@ -156,7 +156,7 @@
             <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location.href='/'">
                 <img src="{{ asset('images/app_logo.png') }}?v={{ time() }}" class="w-16 h-16 object-contain group-hover:scale-110 transition-transform drop-shadow-md">
                 <div class="flex flex-col">
-                    <span class="text-xl font-black tracking-tight text-slate-900 leading-none">edu book</span>
+                    <span class="text-xl font-black tracking-tight text-slate-900 leading-none">Khwenden</span>
                     <span class="text-[10px] uppercase tracking-[0.2em] font-bold text-brand-600 mt-1 opacity-70 italic">پەروەردەیەکی جیاواز</span>
                 </div>
             </div>
@@ -205,7 +205,7 @@
         <div class="bg-white w-full max-w-[440px] rounded-[2.5rem] overflow-hidden shadow-2xl relative" @click.away="showLogin = false">
             <div class="bg-brand-600 p-10 text-white text-center relative overflow-hidden">
                 <h3 class="text-3xl font-black mb-2 relative z-10">بەخێربێیتەوە</h3>
-                <p class="text-brand-100 text-sm font-medium relative z-10">بۆ چوونە ناو edu book هەژمارەکەت بنووسە</p>
+                <p class="text-brand-100 text-sm font-medium relative z-10">بۆ چوونە ناو Khwenden هەژمارەکەت بنووسە</p>
                 <button @click="showLogin = false" class="absolute top-6 left-6 p-2 text-white/50 hover:text-white transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
@@ -271,7 +271,7 @@
                     <div class="relative z-10 animate-float">
                         <div class="relative max-w-md mx-auto">
                             <div class="absolute inset-0 bg-brand-500/20 rounded-[4rem] blur-[80px] -rotate-6"></div>
-                            <img src="/images/app_home.png" alt="edu book App" class="relative w-full h-auto drop-shadow-[0_35px_35px_rgba(0,0,0,0.15)]">
+                            <img src="/images/app_home.png" alt="Khwenden App" class="relative w-full h-auto drop-shadow-[0_35px_35px_rgba(0,0,0,0.15)]">
                         </div>
                     </div>
                 </div>
@@ -283,7 +283,7 @@
     <section id="about" class="py-32 bg-white relative">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center max-w-3xl mx-auto mb-24 reveal-on-scroll">
-                <h2 class="text-4xl font-black text-slate-900 mb-6">بۆچی edu book؟</h2>
+                <h2 class="text-4xl font-black text-slate-900 mb-6">بۆچی Khwenden؟</h2>
                 <div class="w-20 h-2 bg-brand-500 mx-auto rounded-full mb-8"></div>
                 <p class="text-lg text-slate-500 font-medium">ئێمە ژینگەیەکی دیجیتاڵی مۆدێرنمان دروستکردووە کە پردی پەیوەندییە لە نێوان ناوەندە پەروەردەییەکان و خێزانەکاندا.</p>
             </div>
@@ -313,7 +313,7 @@
     <section id="features" class="py-32 bg-slate-50 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-24 reveal-on-scroll">
-                <h2 class="text-4xl font-black text-slate-900 italic">ئەپی edu book</h2>
+                <h2 class="text-4xl font-black text-slate-900 italic">ئەپی Khwenden</h2>
                 <p class="text-slate-400 font-medium italic mt-4">ئەزموونێکی جیاواز و مۆدێرن بۆ گەڕان و دۆزینەوە</p>
                 <div class="w-24 h-2 bg-brand-500 mx-auto rounded-full mt-6"></div>
             </div>
@@ -372,7 +372,7 @@
             <div class="p-16 bg-slate-900 rounded-[4rem] text-white flex flex-col md:flex-row items-center justify-between gap-12 shadow-2xl relative overflow-hidden reveal-on-scroll">
                 <div class="space-y-4 text-center md:text-right relative z-10">
                     <h3 class="text-4xl font-black italic leading-tight">ئامادەی بۆ ئەزموونێکی نوێ؟</h3>
-                    <p class="text-slate-400 text-lg font-medium italic">ببەرە بەشێک لە پلاتفۆرمی edu book و دەستپێبکە.</p>
+                    <p class="text-slate-400 text-lg font-medium italic">ببەرە بەشێک لە پلاتفۆرمی Khwenden و دەستپێبکە.</p>
                 </div>
                 <button @click="showLogin = true" class="btn-premium px-12 py-5 bg-brand-600 text-white rounded-[2rem] font-black text-xl shadow-2xl hover:scale-[1.05] transition-all">دەستپێبکە ئێستا</button>
             </div>
@@ -425,7 +425,7 @@
                 <div class="flex items-center gap-4 group">
                     <img src="{{ asset('images/app_logo.png') }}?v={{ time() }}" class="w-14 h-14 object-contain drop-shadow-md">
                     <div class="flex flex-col">
-                        <span class="text-xl font-black text-slate-900 tracking-tight">edu book</span>
+                        <span class="text-xl font-black text-slate-900 tracking-tight">Khwenden</span>
                         <span class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-0.5 italic">Education Platform</span>
                     </div>
                 </div>

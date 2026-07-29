@@ -1,5 +1,5 @@
 @extends('portal.layout')
-@section('title', 'EduBook — پلاتفۆرمی پەروەردەیی کوردستان')
+@section('title', 'Khwenden — پلاتفۆرمی پەروەردەیی کوردستان')
 
 @section('styles')
 <style>
@@ -179,11 +179,11 @@ body {
     <div class="container">
         <div class="badge reveal">تایبەت بە ناوەندەکانی خوێندن</div>
         <h1 class="hero-title reveal delay-1">
-            پێشەنگ بە لە<br>
-            ناساندنی دامەزراوەکەت
+            دامەزراوەکەت بناسێنە<br>
+            بە خوێندکاران
         </h1>
         <p class="hero-desc reveal delay-2">
-            پلاتفۆرمی EduBook ژینگەیەکی دیجیتاڵییە؛ زانکۆ، پەیمانگا و قوتابخانەکان ڕاستەوخۆ دەبەستێتەوە بە خوێندکارانەوە.
+            پلاتفۆرمی Khwenden ژینگەیەکی دیجیتاڵییە؛ زانکۆ، پەیمانگا و قوتابخانەکان ڕاستەوخۆ دەبەستێتەوە بە خوێندکارانەوە.
         </p>
         <div class="reveal delay-3" style="display:flex; gap:1rem; justify-content:center;">
             <a href="{{ route('portal.register') }}" class="btn-flat btn-primary-flat">ئێستا خۆت تۆمار بکە</a>
@@ -213,7 +213,7 @@ body {
                 <div class="goal-icon">🎯</div>
                 <h3 class="goal-title">ئامانجی سەرەکی</h3>
                 <p class="goal-desc">
-                    ئامانجمان ئەوەیە هەموو دامەزراوە پەروەردەییەکانی کوردستان لە یەک ئەپلیکەیشنی مۆبایلدا کۆبکەینەوە. کاتێک تۆ لێرە خۆت تۆمار دەکەیت، ڕاستەوخۆ دەگەیەتە سەدان هەزار خوێندکار کە ڕۆژانە ئەپلیکەیشنی EduBook بەکاردەهێنن، و هەواڵەکانت دەبینن.
+                    ئامانجمان ئەوەیە هەموو دامەزراوە پەروەردەییەکانی کوردستان لە یەک ئەپلیکەیشنی مۆبایلدا کۆبکەینەوە. کاتێک تۆ لێرە خۆت تۆمار دەکەیت، دامەزراوەکەت لە ئەپلیکەیشنی Khwenden دەردەکەوێت و خوێندکاران دەتوانن پرۆفایل و هەواڵەکانت ببینن.
                 </p>
             </div>
         </div>
@@ -321,7 +321,7 @@ body {
             <div class="app-text reveal delay-1">
                 <div class="sec-subtitle" style="margin-bottom: 1rem;">ئەنجامەکان</div>
                 <h2>نیشاندان لە ناو ئەپلیکەیشنی خوێندکاران</h2>
-                <p>کاتێک تۆ زانیارییەکانت لێرە (لە پۆرتاڵ) داخڵ دەکەیت و پەسەند دەکرێیت، دامەزراوەکەت ڕاستەوخۆ دەگوازرێتەوە ناو ئەپلیکەیشنی مۆبایلی EduBook.</p>
+                <p>کاتێک تۆ زانیارییەکانت لێرە (لە پۆرتاڵ) داخڵ دەکەیت و پەسەند دەکرێیت، دامەزراوەکەت ڕاستەوخۆ دەگوازرێتەوە ناو ئەپلیکەیشنی مۆبایلی Khwenden.</p>
                 <p>خوێندکاران لە ناو ئەپلیکەیشنەکە بەم شێوەیە دەتبینن:</p>
                 <ul class="app-features">
                     <li>پڕۆفایلێکی تایبەت بە خۆت بە لۆگۆکەتەوە دەردەکەوێت.</li>
@@ -381,7 +381,7 @@ body {
 
 {{-- ═══════ FOOTER ═══════ --}}
 <footer style="text-align:center; padding:3rem 1.5rem; background:var(--bg-card); border-top:1px solid var(--border-strong);">
-    <p style="color:var(--txt2); font-size:1.1rem;">© {{ date('Y') }} <strong style="color:var(--gold-solid)">EduBook</strong>. هەموو مافەکان پارێزراون.</p>
+    <p style="color:var(--txt2); font-size:1.1rem;">© {{ date('Y') }} <strong style="color:var(--gold-solid)">Khwenden</strong>. هەموو مافەکان پارێزراون.</p>
 </footer>
 
 @endsection

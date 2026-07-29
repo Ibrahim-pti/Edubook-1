@@ -1,5 +1,5 @@
 @extends('portal.layout')
-@section('title', 'تۆمارکردن — EduBook')
+@section('title', 'تۆمارکردن — Khwenden')
 @section('styles')
 <style>
 .auth-page {
