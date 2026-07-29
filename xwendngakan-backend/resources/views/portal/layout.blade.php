@@ -150,7 +150,7 @@
             <div class="nav-logo" style="width: 38px; height: 38px; background:transparent; border:none; box-shadow:none;">
                 <img src="{{ asset('images/app_logo.png') }}?v={{ time() }}" alt="Khwenden" style="width:100%; height:100%; object-fit:contain; transform: scale(1.15);">
             </div>
-            <div class="nav-brand-text"><span>Edu</span>Book</div>
+            <div class="nav-brand-text">Khwen<span>den</span></div>
         </a>
         <div class="nav-links">
             @auth
