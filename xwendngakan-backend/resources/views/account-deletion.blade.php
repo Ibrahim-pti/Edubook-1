@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edubook - Account Deletion Policy</title>
+    <title>Khwenden - Account Deletion Policy</title>
     <style>
         :root {
             --primary: #4F46E5;
@@ -140,13 +140,13 @@
 
 <div class="container">
     <div class="header">
-        <h1>Edubook</h1>
+        <h1>Khwenden</h1>
         <p>Account and Data Deletion Policy</p>
     </div>
 
     <div class="content">
         <div class="section">
-            <p>At <strong>Edubook</strong>, we respect your privacy and believe you should have full control over your personal data. This document outlines the steps to request the deletion of your account and the associated data.</p>
+            <p>At <strong>Khwenden</strong>, we respect your privacy and believe you should have full control over your personal data. This document outlines the steps to request the deletion of your account and the associated data.</p>
         </div>
 
         <div class="section">
@@ -154,9 +154,9 @@
             <p>You can easily request the complete deletion of your account and data through the following methods:</p>
             
             <div class="steps-card">
-                <h3>Option 1: Inside the Edubook App</h3>
+                <h3>Option 1: Inside the Khwenden App</h3>
                 <ol style="color: var(--text-muted);">
-                    <li>Open the <strong>Edubook</strong> app.</li>
+                    <li>Open the <strong>Khwenden</strong> app.</li>
                     <li>Navigate to the <strong>Profile / Settings</strong> section.</li>
                     <li>Select <strong>Delete Account</strong>.</li>
                     <li>Confirm your decision to permanently delete your account and data.</li>
@@ -166,9 +166,9 @@
             <div class="steps-card">
                 <h3>Option 2: Via Email Request</h3>
                 <ol style="color: var(--text-muted);">
-                    <li>Send an email to our support team at <strong>support@edubook.com</strong> <em>(Please replace with your actual support email if different)</em>.</li>
+                    <li>Send an email to our support team at <strong>support@khwenden.com</strong>.</li>
                     <li>Use the subject line: <strong>"Account Deletion Request"</strong>.</li>
-                    <li>Include the email address associated with your Edubook account so we can verify and process your request.</li>
+                    <li>Include the email address associated with your Khwenden account so we can verify and process your request.</li>
                 </ol>
             </div>
         </div>
@@ -206,7 +206,7 @@
     </div>
 
     <div class="footer">
-        &copy; <script>document.write(new Date().getFullYear())</script> Edubook. All rights reserved.
+        &copy; <script>document.write(new Date().getFullYear())</script> Khwenden. All rights reserved.
     </div>
 </div>
 
