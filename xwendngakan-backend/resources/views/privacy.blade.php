@@ -95,7 +95,7 @@
       <h2>پەیوەندی</h2>
       <p>بۆ هەر پرسیارێک دەربارەی ئەم سیاسەتە:</p>
       <ul>
-        <li>ئیمەیڵ: <a href="mailto:support@khwenden.com">support@khwenden.com</a></li>
+        <li>ئیمەیڵ: <a href="mailto:ibrahim.ahmed@pti.edu.krd">ibrahim.ahmed@pti.edu.krd</a></li>
         <li>ماڵپەڕ: <a href="https://khwenden.com">khwenden.com</a></li>
       </ul>
     </div>

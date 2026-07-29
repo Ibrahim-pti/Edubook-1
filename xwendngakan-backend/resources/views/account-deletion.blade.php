@@ -166,7 +166,7 @@
             <div class="steps-card">
                 <h3>Option 2: Via Email Request</h3>
                 <ol style="color: var(--text-muted);">
-                    <li>Send an email to our support team at <strong>support@khwenden.com</strong>.</li>
+                    <li>Send an email to our support team at <strong>ibrahim.ahmed@pti.edu.krd</strong>.</li>
                     <li>Use the subject line: <strong>"Account Deletion Request"</strong>.</li>
                     <li>Include the email address associated with your Khwenden account so we can verify and process your request.</li>
                 </ol>

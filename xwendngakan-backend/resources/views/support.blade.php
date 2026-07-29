@@ -43,7 +43,7 @@
       <h2>پەیوەندیمان پێوە بکە</h2>
       <p>ئەگەر هەر پرسیار، کێشە یان پێشنیارێکت هەیە دەربارەی ئەپەکە، خۆشحاڵ دەبین یارمەتیت بدەین. لە ڕێگەی ئەم ڕێگایانەوە پەیوەندیمان پێوە بکە:</p>
       <ul class="contact">
-        <li>ئیمەیڵ: <a href="mailto:support@khwenden.com">support@khwenden.com</a></li>
+        <li>ئیمەیڵ: <a href="mailto:ibrahim.ahmed@pti.edu.krd">ibrahim.ahmed@pti.edu.krd</a></li>
         <li>وێبسایت: <a href="https://khwenden.com">https://khwenden.com</a></li>
       </ul>
       <p class="muted">بە ئاسایی لە ماوەی ٢٤–٤٨ کاتژمێردا وەڵامت دەدەینەوە.</p>
@@ -63,7 +63,7 @@
       <h2 style="text-align:right">Support (English)</h2>
       <p>For any questions, issues, or feedback about the Khwenden app, contact us:</p>
       <ul class="contact">
-        <li>Email: <a href="mailto:support@khwenden.com">support@khwenden.com</a></li>
+        <li>Email: <a href="mailto:ibrahim.ahmed@pti.edu.krd">ibrahim.ahmed@pti.edu.krd</a></li>
         <li>Website: <a href="https://khwenden.com">https://khwenden.com</a></li>
       </ul>
       <p class="muted">We usually respond within 24–48 hours.</p>
