@@ -16,7 +16,6 @@ import '../../providers/notifications_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../data/models/institution_type_model.dart';
 import '../../data/models/banner_model.dart';
-import '../../data/services/api_service.dart';
 import '../../shared/widgets/cards.dart';
 import '../../shared/widgets/common_widgets.dart';
 
