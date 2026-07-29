@@ -322,7 +322,7 @@ class _SplashScreenState extends State<SplashScreen>
                                 ],
                               ).createShader(bounds),
                               child: const Text(
-                                'EduBook',
+                                'Khwenden',
                                 style: TextStyle(
                                   fontSize: 34,
                                   fontWeight: FontWeight.w800,

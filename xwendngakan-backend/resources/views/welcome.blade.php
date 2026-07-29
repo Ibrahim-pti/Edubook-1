@@ -245,7 +245,7 @@
                             <span class="text-transparent bg-clip-text bg-gradient-to-l from-brand-600 to-brand-400">لە یەک شوێندا</span>
                         </h1>
                         <p class="text-xl text-slate-500 leading-relaxed max-w-xl font-medium">
-                            پلاتفۆرمی edu book گەورەترین و پێشکەوتووترین ناوەندی دۆزینەوەی قوتابخانە و ناوەندە پەروەردەییەکانە لە هەرێمی کوردستان.
+                            پلاتفۆرمی Khwenden ڕێگەت پێدەدات بگەڕێیت بەدوای قوتابخانە و ناوەندە پەروەردەییەکاندا لە هەرێمی کوردستان.
                         </p>
                     </div>
 

@@ -374,11 +374,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 children: const [
                                   TextSpan(
-                                    text: 'edu ',
+                                    text: 'Khwen',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   TextSpan(
-                                    text: 'book',
+                                    text: 'den',
                                     style: TextStyle(color: Color(0xFFFFD54F)),
                                   ),
                                 ],

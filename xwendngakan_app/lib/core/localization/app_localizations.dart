@@ -32,11 +32,11 @@ class AppLocalizations {
   // APP GENERAL
   // =====================
   String get appName => _t({
-        'ku': 'edu book',
-        'kbd': 'edu book',
-        'ar': 'edu book',
-        'en': 'edu book',
-        'tr': 'edu book'
+        'ku': 'Khwenden',
+        'kbd': 'Khwenden',
+        'ar': 'Khwenden',
+        'en': 'Khwenden',
+        'tr': 'Khwenden'
       });
   String get appTagline => _t({
         'ku': ' پلاتفۆرمی پەروەردەیی',
@@ -201,11 +201,11 @@ class AppLocalizations {
   // ONBOARDING
   // =====================
   String get onboardingTitle1 => _t({
-        'ku': 'edu book بدۆزەرەوە',
-        'kbd': 'edu book بدۆزەرەوە',
-        'ar': 'اكتشف edu book',
-        'en': 'Discover edu book',
-        'tr': 'edu book\'u Keşfet'
+        'ku': 'Khwenden بدۆزەرەوە',
+        'kbd': 'Khwenden بدۆزەرەوە',
+        'ar': 'اكتشف Khwenden',
+        'en': 'Discover Khwenden',
+        'tr': 'Khwenden\'i Keşfet'
       });
   String get onboardingDesc1 => _t({
         'ku': 'زانکۆ، قوتابخانە، و سەنتەرە پەروەردەییەکان بە ئاسانی بدۆزەرەوە',
@@ -1854,10 +1854,10 @@ class AppLocalizations {
       });
   String get fastestResponse => _t({
         'ku': ' رێگە بۆ وەلام دانەوە',
-        'kbd': 'خێراترین ڕێیە بۆ بەرسڤدانێ',
-        'ar': 'أسرع طريقة للرد',
-        'en': 'Fastest way to get a response',
-        'tr': 'Yanıt almanın en hızlı yolu'
+        'kbd': 'ڕێیەک بۆ بەرسڤدانێ',
+        'ar': 'طريقة للتواصل والرد',
+        'en': 'Way to get a response',
+        'tr': 'Yanıt almanın bir yolu'
       });
   String get directContact => _t({
         'ku': 'پەیوەندی ڕاستەوخۆ',
@@ -2036,12 +2036,11 @@ class AppLocalizations {
         'tr': 'Güncelleme Gerekiyor'
       });
   String get updateDesc => _t({
-        'ku':
-            'تکایە دوایین وەشانی ئەپەکە دابەزێنە بۆ ئەوەی باشترین ئەزموونت هەبێت.',
+        'ku': 'تکایە دوایین وەشانی ئەپەکە دابەزێنە بۆ بەردەوامبوون.',
         'kbd': 'تکایە دوایین وەشانی ئەپ دابەزێنە.',
-        'ar': 'يرجى تنزيل أحدث إصدار للحصول على أفضل تجربة.',
-        'en': 'Please download the latest version for the best experience.',
-        'tr': 'En iyi deneyim için lütfen son sürümü indirin.'
+        'ar': 'يرجى تنزيل أحدث إصدار للمتابعة.',
+        'en': 'Please download the latest version to continue.',
+        'tr': 'Devam etmek için lütfen son sürümü indirin.'
       });
   String get later => _t({
         'ku': 'پاشان',
@@ -2764,11 +2763,11 @@ class AppLocalizations {
   // TEACHERS SCREEN
   // =====================
   String get teachersSubtitle => _t({
-        'ku': 'باشترین مامۆستایانی پەسەندکراو',
-        'kbd': 'باشترین مامۆستەیێن پەسەندکراو',
-        'ar': 'أفضل المعلمين المعتمدين',
-        'en': 'Best approved teachers',
-        'tr': 'En iyi onaylı öğretmenler'
+        'ku': 'مامۆستا پەسەندکراوەکان',
+        'kbd': 'مامۆستەیێن پەسەندکری',
+        'ar': 'المعلمون المعتمدون',
+        'en': 'Approved teachers',
+        'tr': 'Onaylı öğretmenler'
       });
   String get searchTeacherHint => _t({
         'ku': 'گەڕان بەدوای مامۆستا...',

@@ -97,7 +97,7 @@ class _MaterialAppShellState extends State<_MaterialAppShell> {
     return Consumer2<ThemeProvider, LocaleProvider>(
       builder: (context, theme, locale, _) {
         return MaterialApp.router(
-          title: 'edu book',
+          title: 'Khwenden',
           debugShowCheckedModeBanner: false,
           themeMode: theme.themeMode,
           theme: AppTheme.light,
