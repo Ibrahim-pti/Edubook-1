@@ -1374,6 +1374,9 @@ class _CollegesCard extends StatelessWidget {
             ],
           ),
           child: ExpansionTile(
+            // Open by default — the departments are the point of this card, so
+            // don't make people tap to reveal them.
+            initiallyExpanded: true,
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
             collapsedShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
             tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

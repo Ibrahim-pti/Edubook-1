@@ -1,7 +1,8 @@
 # چۆن ئەپدەیتی ئەپ بنێرم بۆ App Store (ڕێنمایی هەمیشەیی)
 
 > هەر جارێک دەتەوێت گۆڕانکاری/ئەپدەیت بنێریت، ئەم هەنگاوانە بکە بە ڕیزبەندی.
-> ئەپ: EduBook / Khwenden-Book · Bundle ID: `com.pti.edubook`
+> ئەپ: **خوێندن / Khwenden** · Bundle ID: `com.pti.edubook`
+> (Bundle ID هەرگیز مەگۆڕە — ناوی پیشاندان `CFBundleDisplayName`ـە، نەک ئەمە)
 
 ---
 
