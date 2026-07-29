@@ -2594,11 +2594,11 @@ class AppLocalizations {
         'tr': 'Diploma Merkezi'
       });
   String get adDiplomaSubtitle => _t({
-        'ku': 'بەهێزترین کۆرسی زمانی ئینگلیزی',
-        'kbd': 'بەهێزترین کۆرسێ زمانێ ئینگلیزی',
-        'ar': 'أقوى دورة لغة إنجليزية',
-        'en': 'Most powerful English course',
-        'tr': 'En güçlü İngilizce kursu'
+        'ku': 'کۆرسی زمانی ئینگلیزی',
+        'kbd': 'کۆرسێ زمانێ ئینگلیزی',
+        'ar': 'دورة لغة إنجليزية',
+        'en': 'English language course',
+        'tr': 'İngilizce dil kursu'
       });
   String get adDiplomaTag => _t({
         'ku': '🔥 تایبەت بەم هەفتەیە',
