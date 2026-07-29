@@ -1055,37 +1055,13 @@ class _AdsCarouselState extends State<AdsCarousel> {
     _startAutoPlay();
   }
 
-  List<Map<String, dynamic>> _staticAds(AppLocalizations l) => [
-        {
-          'title': l.adDiplomaTitle,
-          'subtitle': l.adDiplomaSubtitle,
-          'tag': l.adDiplomaTag,
-          'colors': [const Color(0xFFD4A017), const Color(0xFFE8B84B)],
-          'icon': Icons.school_rounded,
-        },
-        {
-          'title': l.adComputerTitle,
-          'subtitle': l.adComputerSubtitle,
-          'tag': l.adComputerTag,
-          'colors': [AppColors.primary, AppColors.primaryLight],
-          'icon': Icons.computer_rounded,
-        },
-        {
-          'title': l.adAmericanTitle,
-          'subtitle': l.adAmericanSubtitle,
-          'tag': l.adAmericanTag,
-          'colors': [const Color(0xFF1D9E75), const Color(0xFF28B485)],
-          'icon': Icons.account_balance_rounded,
-        },
-      ];
-
-  Color _hexColor(String hex) {
-    final cleaned = hex.replaceAll('#', '').trim();
-    if (cleaned.length == 6) {
-      return Color(int.parse('FF$cleaned', radix: 16));
-    }
-    return AppColors.primary;
-  }
+  /// Shown until the API returns banners. Bundled 1344×480 images (2.8:1) so
+  /// they fill the carousel without cropping.
+  static const _bundledBanners = [
+    'assets/images/banners/banner1_institutions.png',
+    'assets/images/banners/banner2_teachers.png',
+    'assets/images/banners/banner3_cv.png',
+  ];
 
   void _startAutoPlay() {
     _timer?.cancel();
@@ -1116,7 +1092,6 @@ class _AdsCarouselState extends State<AdsCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
     final prov = Provider.of<InstitutionsProvider>(context);
 
     if (prov.banners.isNotEmpty) {
@@ -1127,10 +1102,17 @@ class _AdsCarouselState extends State<AdsCarousel> {
       });
     }
 
-    final static_ = _staticAds(l);
-    return _buildCarousel(static_.length, (index) {
-      return _staticBannerCard(static_[index]);
+    return _buildCarousel(_bundledBanners.length, (index) {
+      return _bundledBannerCard(_bundledBanners[index]);
     });
+  }
+
+  Widget _bundledBannerCard(String asset) {
+    return Image.asset(
+      asset,
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => Container(color: AppColors.primaryLight),
+    );
   }
 
   Widget _buildCarousel(int count, Widget Function(int) builder) {
@@ -1196,114 +1178,6 @@ class _AdsCarouselState extends State<AdsCarousel> {
           errorWidget: (_, __, ___) => Container(color: AppColors.primaryLight),
         ),
       ],
-    );
-  }
-
-  Widget _gradientLayer({
-    required String title,
-    required String subtitle,
-    required String tag,
-    required List<Color> colors,
-    required IconData icon,
-  }) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        // Watermark icon in background
-        Positioned(
-          right: -10,
-          bottom: -10,
-          child: Icon(
-            icon,
-            size: 110,
-            color: Colors.white.withValues(alpha: 0.12),
-          ),
-        ),
-        // Text content
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (tag.isNotEmpty) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.22),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.35)),
-                  ),
-                  child: Text(
-                    tag,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      fontFamily: 'Rabar',
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-              ],
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 19,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                  fontFamily: 'Rabar',
-                  height: 1.2,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (subtitle.isNotEmpty) ...[
-                const SizedBox(height: 5),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white.withValues(alpha: 0.8),
-                    fontFamily: 'Rabar',
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _staticBannerCard(Map<String, dynamic> ad) {
-    final colors = (ad['colors'] as List).cast<Color>();
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: colors,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: colors[0].withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: _gradientLayer(
-        title: ad['title'] as String,
-        subtitle: ad['subtitle'] as String,
-        tag: ad['tag'] as String,
-        colors: colors,
-        icon: ad['icon'] as IconData,
-      ),
     );
   }
 }
