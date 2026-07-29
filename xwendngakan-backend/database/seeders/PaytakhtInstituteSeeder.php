@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Institution;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Paytakht Technical Institute — Private (Erbil).
@@ -18,8 +19,12 @@ use Illuminate\Database\Seeder;
  */
 class PaytakhtInstituteSeeder extends Seeder
 {
+    private const LOGO = 'institutions/paytakht-logo.png';
+
     public function run(): void
     {
+        $this->publishLogo();
+
         $departments = [
             ['ku' => 'دەرمانسازی',            'en' => 'Pharmacy'],
             ['ku' => 'شیکاری نەخۆشییەکان',    'en' => 'Medical Laboratory Analysis'],
@@ -74,7 +79,7 @@ class PaytakhtInstituteSeeder extends Seeder
                 'colleges' => $colleges,
                 'level'    => 'دوو ساڵ',
 
-                'logo' => '/storage/institutions/paytakht-logo.png',
+                'logo' => '/storage/' . self::LOGO,
 
                 'founded_year'   => 2015,
                 'students_count' => 1703,
@@ -85,5 +90,23 @@ class PaytakhtInstituteSeeder extends Seeder
         );
 
         $this->command->info('✓ پەیمانگەی تەکنیکی پایتەخت زیادکرا/نوێکرایەوە.');
+    }
+
+    /**
+     * Copy the bundled logo into the public disk.
+     *
+     * The deploy rsync excludes storage/, so the file ships inside the repo
+     * here and is published on every deploy instead.
+     */
+    private function publishLogo(): void
+    {
+        $source = __DIR__ . '/assets/paytakht-logo.png';
+
+        if (! is_file($source)) {
+            $this->command->warn('⚠ فایلی لۆگۆ نەدۆزرایەوە: ' . $source);
+            return;
+        }
+
+        Storage::disk('public')->put(self::LOGO, file_get_contents($source));
     }
 }
