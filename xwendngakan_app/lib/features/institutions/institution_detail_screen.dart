@@ -627,7 +627,7 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (colleges.isNotEmpty)
-              _CollegesCard(colleges: colleges, isDark: isDark, l: l),
+              _CollegesCard(colleges: colleges, isDark: isDark),
             if (depts.isNotEmpty) ...[
               if (colleges.isNotEmpty) const SizedBox(height: 20),
               _AcademicSection(
@@ -1348,15 +1348,55 @@ class _ContactTile extends StatelessWidget {
 class _CollegesCard extends StatelessWidget {
   final List<Map<String, dynamic>> colleges;
   final bool isDark;
-  final AppLocalizations l;
-  const _CollegesCard(
-      {required this.colleges, required this.isDark, required this.l});
+  const _CollegesCard({required this.colleges, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: colleges.map((college) {
         final departments = college['departments'] as List<dynamic>? ?? [];
+        final leadingIcon = Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            gradient: AppColors.primaryGradient,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: const Icon(Icons.account_balance_rounded, color: Colors.white, size: 22),
+        );
+        final titleRow = Row(
+          children: [
+            Expanded(
+              child: Text(
+                college['name'] ?? '',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Rabar',
+                  color: isDark ? Colors.white : const Color(0xFF1E293B),
+                ),
+              ),
+            ),
+            if (college['fee'] != null && college['fee'].toString().trim().isNotEmpty)
+              Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  college['fee'].toString(),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Rabar',
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+          ],
+        );
         return Container(
           margin: const EdgeInsets.only(bottom: 20),
           decoration: BoxDecoration(
@@ -1373,140 +1413,111 @@ class _CollegesCard extends StatelessWidget {
               ),
             ],
           ),
-          child: ExpansionTile(
-            // Open by default — the departments are the point of this card, so
-            // don't make people tap to reveal them.
-            initiallyExpanded: true,
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
-            collapsedShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
-            tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            leading: Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: const Icon(Icons.account_balance_rounded, color: Colors.white, size: 22),
-            ),
-            title: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    college['name'] ?? '',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w900,
-                      fontFamily: 'Rabar',
-                      color: isDark ? Colors.white : const Color(0xFF1E293B),
-                    ),
+          // A college with no departments has nothing to expand into, so render it
+          // as a single plain row rather than an expander whose only body is a
+          // "no information" line.
+          child: departments.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  child: Row(
+                    children: [
+                      leadingIcon,
+                      const SizedBox(width: 16),
+                      Expanded(child: titleRow),
+                    ],
                   ),
-                ),
-                if (college['fee'] != null && college['fee'].toString().trim().isNotEmpty)
-                  Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      college['fee'].toString(),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Rabar',
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-            children: [
-              if (departments.isEmpty)
-                Text(l.noInformation, style: const TextStyle(fontSize: 13, color: AppColors.textGrey))
-              else
-                ...departments.map((dept) {
-                  // dept can be a string (legacy) or a Map with name/fee/discount
-                  final name = dept is Map ? (dept['name'] ?? '').toString() : dept.toString();
-                  final fee  = dept is Map ? (dept['fee'] ?? '').toString().trim() : '';
-                  final disc = dept is Map ? (dept['discount'] ?? '').toString().trim() : '';
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(top: 2),
-                          child: Icon(Icons.check_circle_outline_rounded, color: AppColors.primary, size: 18),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
+                )
+              : ExpansionTile(
+                  // Open by default — the departments are the point of this card, so
+                  // don't make people tap to reveal them.
+                  initiallyExpanded: true,
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
+                  collapsedShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  leading: leadingIcon,
+                  title: titleRow,
+                  childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  children: [
+                    ...departments.map((dept) {
+                        // dept can be a string (legacy) or a Map with name/fee/discount
+                        final name = dept is Map ? (dept['name'] ?? '').toString() : dept.toString();
+                        final fee  = dept is Map ? (dept['fee'] ?? '').toString().trim() : '';
+                        final disc = dept is Map ? (dept['discount'] ?? '').toString().trim() : '';
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: 'Rabar',
-                                  color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.8),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 2),
+                                child: Icon(Icons.check_circle_outline_rounded, color: AppColors.primary, size: 18),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      name,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        fontFamily: 'Rabar',
+                                        color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.8),
+                                      ),
+                                    ),
+                                    if (fee.isNotEmpty || disc.isNotEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Wrap(
+                                          spacing: 6,
+                                          children: [
+                                            if (fee.isNotEmpty)
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.primary.withValues(alpha: 0.1),
+                                                  borderRadius: BorderRadius.circular(6),
+                                                ),
+                                                child: Text(
+                                                  fee,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w800,
+                                                    fontFamily: 'Rabar',
+                                                    color: AppColors.primary,
+                                                  ),
+                                                ),
+                                              ),
+                                            if (disc.isNotEmpty)
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.green.withValues(alpha: 0.1),
+                                                  borderRadius: BorderRadius.circular(6),
+                                                ),
+                                                child: Text(
+                                                  'داشکان: $disc',
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w700,
+                                                    fontFamily: 'Rabar',
+                                                    color: Colors.green,
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ),
-                              if (fee.isNotEmpty || disc.isNotEmpty)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Wrap(
-                                    spacing: 6,
-                                    children: [
-                                      if (fee.isNotEmpty)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.primary.withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Text(
-                                            fee,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w800,
-                                              fontFamily: 'Rabar',
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                        ),
-                                      if (disc.isNotEmpty)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: Colors.green.withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Text(
-                                            'داشکان: $disc',
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w700,
-                                              fontFamily: 'Rabar',
-                                              color: Colors.green,
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-            ],
-          ),
+                        );
+                      }),
+                  ],
+                ),
         );
       }).toList(),
     );
