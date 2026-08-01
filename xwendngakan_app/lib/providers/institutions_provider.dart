@@ -16,6 +16,7 @@ class InstitutionsProvider extends ChangeNotifier {
   bool _hasMore = true;
   String? _error;
   String _selectedType = '';
+  List<String> _selectedTypes = [];
   String _selectedSector = 'all';
   String _selectedCity = '';
   String _searchQuery = '';
@@ -33,6 +34,7 @@ class InstitutionsProvider extends ChangeNotifier {
   bool get hasMore => _hasMore;
   String? get error => _error;
   String get selectedType => _selectedType;
+  List<String> get selectedTypes => _selectedTypes;
   String get selectedSector => _selectedSector;
   String get selectedCity => _selectedCity;
   String get searchQuery => _searchQuery;
@@ -74,6 +76,7 @@ class InstitutionsProvider extends ChangeNotifier {
 
     final result = await _api.getInstitutions(
       type: _selectedType,
+      types: _selectedTypes,
       sector: _selectedSector,
       city: _selectedCity,
       search: _searchQuery,
@@ -128,8 +131,15 @@ class InstitutionsProvider extends ChangeNotifier {
     }
   }
 
-  void setFilter({String? type, String? city, String? sector}) {
-    if (type != null) _selectedType = type == 'all' ? '' : type;
+  /// [types] narrows to a group of types at once (a home-screen parent
+  /// category); passing an empty list clears it. Setting a single [type]
+  /// always clears the group, since the two would otherwise fight.
+  void setFilter({String? type, List<String>? types, String? city, String? sector}) {
+    if (types != null) _selectedTypes = List<String>.from(types);
+    if (type != null) {
+      _selectedType = type == 'all' ? '' : type;
+      if (types == null) _selectedTypes = [];
+    }
     if (city != null) _selectedCity = city == 'all' ? '' : city;
     if (sector != null) _selectedSector = sector == 'all' ? '' : sector;
     fetchInstitutions(refresh: true);
@@ -142,6 +152,7 @@ class InstitutionsProvider extends ChangeNotifier {
 
   void clearFilters() {
     _selectedType = '';
+    _selectedTypes = [];
     _selectedSector = 'all';
     _selectedCity = '';
     _searchQuery = '';

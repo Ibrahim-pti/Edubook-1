@@ -835,6 +835,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return items;
   }
 
+  /// The concrete type keys that make up the selected parent category — what
+  /// "All" means inside that category. Empty for the top-level "All", where no
+  /// group filter should be applied at all.
+  List<String> _parentTypeKeys(List<InstitutionTypeModel> allTypes) {
+    if (_selectedParentFilter == 'all') return const [];
+    return _getSubFilters(allTypes)
+        .where((s) => s.type != null)
+        .map((s) => s.type!)
+        .toList();
+  }
+
   Widget _buildParentFilterItem({
     required String key,
     required String name,
@@ -849,26 +860,10 @@ class _HomeScreenState extends State<HomeScreen> {
           _selectedChildFilterId = 'all';
         });
 
+        // Every parent category opens on "All" — meaning all of *its own*
+        // types, not the whole catalogue.
         final p = Provider.of<InstitutionsProvider>(context, listen: false);
-        final subCats = _getSubFilters(p.institutionTypes);
-
-        if (key == 'all') {
-          p.setFilter(type: 'all');
-        } else {
-          // Find first available sub-category other than 'all' if present, to show some data,
-          // OR just default to 'all' so it shows everything in that parent?
-          // Since the API doesn't support multiple types (e.g. university AND institute),
-          // we have to pick one. Let's select the first concrete child.
-          final firstReal = subCats.where((s) => s.id != 'all').firstOrNull;
-          if (firstReal != null) {
-            setState(() {
-              _selectedChildFilterId = firstReal.id;
-            });
-            p.setFilter(type: firstReal.type ?? 'all');
-          } else {
-            p.setFilter(type: 'all');
-          }
-        }
+        p.setFilter(type: 'all', types: _parentTypeKeys(p.institutionTypes));
       },
       child: AnimatedContainer(
         duration: AppConstants.medium,
@@ -930,7 +925,11 @@ class _HomeScreenState extends State<HomeScreen> {
           _selectedChildFilterId = item.id;
         });
         final p = Provider.of<InstitutionsProvider>(context, listen: false);
-        p.setFilter(type: item.type ?? 'all');
+        // "All" inside a parent falls back to that parent's own types.
+        p.setFilter(
+          type: item.type ?? 'all',
+          types: item.type == null ? _parentTypeKeys(p.institutionTypes) : const [],
+        );
       },
       child: AnimatedContainer(
         duration: AppConstants.medium,

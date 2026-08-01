@@ -17,8 +17,15 @@ class InstitutionController extends Controller
     {
         $query = Institution::where('approved', true);
 
-        // Filter by type
-        if ($request->has('type') && $request->type !== 'all') {
+        // Filter by type. `types` takes a comma-separated list so the app can
+        // ask for a whole category group (e.g. everything that is neither
+        // higher education nor a Ministry of Education institution) in one go.
+        if ($request->filled('types')) {
+            $types = array_values(array_filter(array_map('trim', explode(',', $request->types))));
+            if ($types) {
+                $query->whereIn('type', $types);
+            }
+        } elseif ($request->has('type') && $request->type !== 'all') {
             $query->where('type', $request->type);
         }
 

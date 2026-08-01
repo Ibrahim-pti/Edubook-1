@@ -312,6 +312,7 @@ class ApiService {
 
   Future<ApiResult<List<InstitutionModel>>> getInstitutions({
     String? type,
+    List<String>? types,
     String? city,
     String? search,
     String? sector,
@@ -319,7 +320,12 @@ class ApiService {
   }) async {
     try {
       final query = {
-        if (type != null && type.isNotEmpty) 'type': type,
+        // `types` asks for a whole category group at once; it wins over the
+        // single-type filter when both are set.
+        if (types != null && types.isNotEmpty)
+          'types': types.join(',')
+        else if (type != null && type.isNotEmpty)
+          'type': type,
         if (city != null && city.isNotEmpty) 'city': city,
         if (search != null && search.isNotEmpty) 'search': search,
         if (sector != null && sector.isNotEmpty && sector != 'all')
