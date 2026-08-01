@@ -626,10 +626,11 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (colleges.isNotEmpty)
+            // The departments section below already lists everything (with fees),
+            // so the college cards only stand in when there is no dept list at all.
+            if (depts.isEmpty && colleges.isNotEmpty)
               _CollegesCard(colleges: colleges, isDark: isDark),
             if (depts.isNotEmpty) ...[
-              if (colleges.isNotEmpty) const SizedBox(height: 20),
               _AcademicSection(
                 icon: Icons.menu_book_rounded,
                 title: l.departments,
