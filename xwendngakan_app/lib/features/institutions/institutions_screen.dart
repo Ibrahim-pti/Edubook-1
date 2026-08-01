@@ -142,7 +142,7 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
                               crossAxisCount: 2,
                               mainAxisSpacing: 16,
                               crossAxisSpacing: 16,
-                              childAspectRatio: 1.05,
+                              childAspectRatio: 0.82,
                             ),
                             itemCount: prov.institutions.length + (prov.hasMore ? 1 : 0),
                             itemBuilder: (_, i) {
@@ -311,7 +311,7 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
         crossAxisCount: 2,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
-        childAspectRatio: 1.05,
+        childAspectRatio: 0.82,
       ),
       itemCount: 6,
       itemBuilder: (_, __) => const ShimmerBox(

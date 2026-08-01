@@ -65,7 +65,6 @@ class InstitutionCard extends StatelessWidget {
 
     // Immersive full-image card: the whole tile is the photo, with a
     // frosted-glass info panel floating at the bottom.
-    final hasContact = hasPhone || hasWeb || hasSocial;
 
     return GestureDetector(
       onTap: onTap,
@@ -169,26 +168,32 @@ class InstitutionCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    // Name
-                    Text(
-                      institutionName,
-                      style: const TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        fontFamily: 'Rabar',
-                        height: 1.2,
-                        shadows: [
-                          Shadow(blurRadius: 4, color: Colors.black87),
-                        ],
+                    // Name — always reserves two lines so the chip above and the
+                    // meta row below sit at the same height on every card, even
+                    // when one name wraps and its neighbour doesn't.
+                    SizedBox(
+                      height: 33,
+                      child: Text(
+                        institutionName,
+                        style: const TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          fontFamily: 'Rabar',
+                          height: 1.2,
+                          shadows: [
+                            Shadow(blurRadius: 4, color: Colors.black87),
+                          ],
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    // City & Contact Info row
-                    if ((institution.city != null && institution.city!.isNotEmpty) || hasContact) ...[
-                      const SizedBox(height: 6),
-                      Row(
+                    // City & contact row — fixed height for the same reason.
+                    const SizedBox(height: 6),
+                    SizedBox(
+                      height: 24,
+                      child: Row(
                         children: [
                           if (institution.city != null && institution.city!.isNotEmpty) ...[
                             const Icon(Icons.location_on_rounded, size: 10, color: Colors.white70),
@@ -206,18 +211,17 @@ class InstitutionCard extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          ],
-                          if (hasContact) ...[
-                            if (hasPhone)
-                              const _InfoBadge(icon: Icons.phone_rounded, color: AppColors.success),
-                            if (hasWeb)
-                              const _InfoBadge(icon: Icons.language_rounded, color: AppColors.accentGold),
-                            if (hasSocial)
-                              const _InfoBadge(icon: Icons.share_rounded, color: Color(0xFFE05C8A)),
-                          ]
+                          ] else
+                            const Spacer(),
+                          if (hasPhone)
+                            const _InfoBadge(icon: Icons.phone_rounded, color: AppColors.success),
+                          if (hasWeb)
+                            const _InfoBadge(icon: Icons.language_rounded, color: AppColors.accentGold),
+                          if (hasSocial)
+                            const _InfoBadge(icon: Icons.share_rounded, color: Color(0xFFE05C8A)),
                         ],
                       ),
-                    ],
+                    ),
                   ],
                 ),
               ),
