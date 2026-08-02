@@ -902,10 +902,6 @@
         <div class="db-card">
           <div class="db-card-head">
             <div class="db-card-title">📋 ناوی دامەزراوە</div>
-            <button type="button" class="btn-tr" onclick="autoTranslate('nku', ['nkbd', 'nar', 'nen'], this)">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
-              وەرگێڕان
-            </button>
           </div>
           <div class="f-row">
             <div class="f-group">
@@ -1075,10 +1071,6 @@
         <div id="academic-section" class="db-card {{ $isPublic ? 'hide-fees' : '' }}" style="{{ $showSection ? '' : 'display:none' }}">
           <div class="db-card-head">
             <div class="db-card-title">📚 <span id="academic-title">{{ $showColleges ? 'کۆلێژ و بەشەکان' : 'بەشەکان و پارەدان' }}</span></div>
-            <button type="button" class="btn-tr" onclick="translateDeptNames(this)">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
-              وەرگێڕان
-            </button>
           </div>
 
           {{-- Mode 1: Colleges → nested depts + fee/discount per dept --}}
@@ -1185,10 +1177,6 @@
         <div class="db-card">
           <div class="db-card-head">
             <div class="db-card-title">📝 دەربارە</div>
-            <button type="button" class="btn-tr" onclick="autoTranslate('desc', ['desc_kbd', 'desc_ar', 'desc_en'], this)">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
-              وەرگێڕان
-            </button>
           </div>
           <div class="f-group">
             <label class="f-label">کوردی (سۆرانی)</label>
@@ -1299,15 +1287,11 @@
           </div>
         </div>
 
-        <!-- TRANSLATE ALL SECTION -->
-        <div class="db-card" style="border-color: var(--gold); box-shadow: 0 0 20px rgba(226, 176, 66, 0.1);">
-          <div style="text-align: center;">
-            <h4 style="color: var(--gold); margin-bottom: 10px;">وەرگێڕانی گشتی (پێویستە)</h4>
-            <p style="font-size: .85rem; color: var(--txt2); margin-bottom: 15px;">پێش ئەوەی زانیارییەکان پاشەکەوت بکەیت، پێویستە کلیک لەم دوگمەیە بکەیت بۆ وەرگێڕانی هەموو بەشەکان بۆ ئینگلیزی و عەرەبی.</p>
-            <button type="button" id="btn-translate-all" class="btn-primary" onclick="translateAll()" style="width: 100%; max-width: 300px;">
-              <span>🌐</span> <span>وەرگێڕانی هەمووی بە یەکجار</span>
-            </button>
-          </div>
+        <!-- TRANSLATE ALL -->
+        <div style="text-align: center; margin-top: 1rem;">
+          <button type="button" id="btn-translate-all" class="btn-primary" onclick="translateAll()" style="padding:12px 36px;font-size:.9rem">
+            <span>🌐</span> <span>وەرگێڕانی گشتی</span>
+          </button>
         </div>
 
         <div style="display:flex;align-items:center;gap:1rem;margin-top:.5rem;padding-top:1.5rem;border-top:1px solid var(--border)">
@@ -1750,8 +1734,10 @@ async function translateAll() {
             await translateDeptNames(document.querySelector('button[onclick*="translateDeptNames"]'));
         }
         isTranslatedAll = true;
-        btn.innerHTML = '<span>✅</span> <span>وەرگێڕان تەواو بوو</span>';
-        btn.classList.replace('btn-primary', 'btn-outline');
+        btn.innerHTML = '<span>✅</span> <span>وەرگێڕانی گشتی تەواو بوو</span>';
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.cursor = 'not-allowed';
     } catch (e) {
         alert('هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵبدەرەوە.');
         btn.innerHTML = originalText;
