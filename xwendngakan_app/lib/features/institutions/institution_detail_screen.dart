@@ -614,6 +614,7 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
         final depts = _parseDepts(inst.depts, lang);
         // Build a dept-name → {fee,discount} lookup from tuition_plans
         final tuitionMap = _buildTuitionMap(inst.tuitionPlans);
+        final strDiscount = lang == 'en' ? 'Discount' : (lang == 'ar' ? 'خصم' : 'داشکان');
         if (colleges.isEmpty && depts.isEmpty) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 60),
@@ -643,6 +644,7 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                     final fee   = plan?['fee'] ?? '';
                     final disc  = plan?['discount'] ?? '';
                     final finalPrice = plan?['final_price'] ?? '';
+                    final discAmount = plan?['discount_amount'] ?? '';
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 6),
@@ -674,54 +676,74 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                                 if (fee.isNotEmpty || disc.isNotEmpty)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 4),
-                                    child: Wrap(spacing: 6, children: [
-                                      if (fee.isNotEmpty)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.primary.withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Text(
+                                    child: Wrap(
+                                      spacing: 6,
+                                      crossAxisAlignment: WrapCrossAlignment.center,
+                                      children: [
+                                        if (fee.isNotEmpty)
+                                          Text(
                                             fee,
-                                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, fontFamily: 'Rabar', color: AppColors.primary),
-                                          ),
-                                        ),
-                                      if (disc.isNotEmpty)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: Colors.green.withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Text(
-                                            disc,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w700,
+                                            style: TextStyle(
+                                              fontSize: (disc.isNotEmpty) ? 12 : 13,
+                                              fontWeight: (disc.isNotEmpty) ? FontWeight.w600 : FontWeight.w800,
                                               fontFamily: 'Rabar',
-                                              color: Colors.green,
+                                              color: (disc.isNotEmpty) ? (isDark ? Colors.white54 : Colors.grey) : AppColors.primary,
+                                              decoration: (disc.isNotEmpty) ? TextDecoration.lineThrough : null,
                                             ),
                                           ),
-                                        ),
-                                      if (finalPrice.isNotEmpty)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFF43F5E).withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Text(
-                                            finalPrice,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w800,
-                                              fontFamily: 'Rabar',
-                                              color: Color(0xFFF43F5E),
+                                        if (finalPrice.isNotEmpty) ...[
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: Colors.green.withValues(alpha: 0.1),
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: Text(
+                                              finalPrice,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w800,
+                                                fontFamily: 'Rabar',
+                                                color: Colors.green,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                    ]),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red.withValues(alpha: 0.1),
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: Text(
+                                              '$strDiscount ${discAmount.isNotEmpty ? discAmount : '$disc%'}',
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w800,
+                                                fontFamily: 'Rabar',
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ] else if (disc.isNotEmpty) ...[
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red.withValues(alpha: 0.1),
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: Text(
+                                              '$strDiscount $disc',
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w800,
+                                                fontFamily: 'Rabar',
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
                                   ),
                               ],
                             ),
@@ -849,6 +871,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
             p['dept'].toString(): {
               'fee': (p['fee'] ?? '').toString().trim(),
               'discount': (p['discount'] ?? '').toString().trim(),
+              'final_price': (p['final_price'] ?? '').toString().trim(),
+              'discount_amount': (p['discount_amount'] ?? '').toString().trim(),
             }
       };
     } catch (_) {
@@ -1436,6 +1460,9 @@ class _CollegesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Localizations.localeOf(context).languageCode;
+    final strDiscount = lang == 'en' ? 'Discount' : (lang == 'ar' ? 'خصم' : 'داشکان');
+    
     return Column(
       children: colleges.map((college) {
         final departments = college['departments'] as List<dynamic>? ?? [];
@@ -1496,6 +1523,7 @@ class _CollegesCard extends StatelessWidget {
           final fee  = dept is Map ? (dept['fee'] ?? '').toString().trim() : '';
           final disc = dept is Map ? (dept['discount'] ?? '').toString().trim() : '';
           final finalPrice = dept is Map ? (dept['final_price'] ?? '').toString().trim() : '';
+          final discAmount = dept is Map ? (dept['discount_amount'] ?? '').toString().trim() : '';
           
           return Padding(
             padding: const EdgeInsets.only(top: 12),
@@ -1525,46 +1553,24 @@ class _CollegesCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 4),
                           child: Wrap(
                             spacing: 6,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               if (fee.isNotEmpty)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    fee,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      fontFamily: 'Rabar',
-                                      color: AppColors.primary,
-                                    ),
+                                Text(
+                                  fee,
+                                  style: TextStyle(
+                                    fontSize: (disc.isNotEmpty) ? 12 : 13,
+                                    fontWeight: (disc.isNotEmpty) ? FontWeight.w600 : FontWeight.w800,
+                                    fontFamily: 'Rabar',
+                                    color: (disc.isNotEmpty) ? (isDark ? Colors.white54 : Colors.grey) : AppColors.primary,
+                                    decoration: (disc.isNotEmpty) ? TextDecoration.lineThrough : null,
                                   ),
                                 ),
-                              if (disc.isNotEmpty)
+                              if (finalPrice.isNotEmpty) ...[
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: Colors.green.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    disc,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      fontFamily: 'Rabar',
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ),
-                              if (finalPrice.isNotEmpty)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFF43F5E).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
@@ -1573,10 +1579,44 @@ class _CollegesCard extends StatelessWidget {
                                       fontSize: 12,
                                       fontWeight: FontWeight.w800,
                                       fontFamily: 'Rabar',
-                                      color: Color(0xFFF43F5E),
+                                      color: Colors.green,
                                     ),
                                   ),
                                 ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    '$strDiscount ${discAmount.isNotEmpty ? discAmount : '$disc%'}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      fontFamily: 'Rabar',
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ] else if (disc.isNotEmpty) ...[
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    '$strDiscount $disc',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      fontFamily: 'Rabar',
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
