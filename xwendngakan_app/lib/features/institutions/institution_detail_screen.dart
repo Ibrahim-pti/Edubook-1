@@ -642,6 +642,33 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                     final plan  = tuitionMap[deptMap['original']];
                     final fee   = plan?['fee'] ?? '';
                     final disc  = plan?['discount'] ?? '';
+
+                    final langCode = Localizations.localeOf(context).languageCode;
+                    final strDiscount = langCode == 'en' ? 'Discount' : (langCode == 'ar' ? 'خصم' : 'داشکان');
+                    final strFinal = langCode == 'en' ? 'Final Price' : (langCode == 'ar' ? 'السعر النهائي' : 'نرخی کۆتایی');
+
+                    String formatNumber(double n) {
+                      String s = n.truncate().toString();
+                      String r = '';
+                      int c = 0;
+                      for (int i = s.length - 1; i >= 0; i--) {
+                        if (c > 0 && c % 3 == 0) r = ',' + r;
+                        r = s[i] + r;
+                        c++;
+                      }
+                      return r;
+                    }
+
+                    String finalPriceStr = '';
+                    if (fee.isNotEmpty && disc.isNotEmpty) {
+                      final fNum = double.tryParse(fee.replaceAll(RegExp(r'[^0-9.]'), ''));
+                      final dNum = double.tryParse(disc.replaceAll(RegExp(r'[^0-9.]'), ''));
+                      if (fNum != null && dNum != null && dNum > 0 && dNum <= 100) {
+                        final finalPrice = fNum - (fNum * (dNum / 100));
+                        finalPriceStr = formatNumber(finalPrice);
+                      }
+                    }
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 6),
                       child: Row(
@@ -693,8 +720,30 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                                             borderRadius: BorderRadius.circular(6),
                                           ),
                                           child: Text(
-                                            'داشکان: $disc',
-                                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, fontFamily: 'Rabar', color: Colors.green),
+                                            '$strDiscount: $disc',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: 'Rabar',
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                        ),
+                                      if (finalPriceStr.isNotEmpty)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF43F5E).withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            '$strFinal: $finalPriceStr',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w800,
+                                              fontFamily: 'Rabar',
+                                              color: Color(0xFFF43F5E),
+                                            ),
                                           ),
                                         ),
                                     ]),
@@ -1465,12 +1514,38 @@ class _CollegesCard extends StatelessWidget {
               ),
           ],
         );
+        final lang = Localizations.localeOf(context).languageCode;
+        final strDiscount = lang == 'en' ? 'Discount' : (lang == 'ar' ? 'خصم' : 'داشکان');
+        final strFinal = lang == 'en' ? 'Final Price' : (lang == 'ar' ? 'السعر النهائي' : 'نرخی کۆتایی');
+
+        String formatNumber(double n) {
+          String s = n.truncate().toString();
+          String r = '';
+          int c = 0;
+          for (int i = s.length - 1; i >= 0; i--) {
+            if (c > 0 && c % 3 == 0) r = ',' + r;
+            r = s[i] + r;
+            c++;
+          }
+          return r;
+        }
+
         // Rows are built once and reused by all three layouts below.
         final deptRows = departments.map<Widget>((dept) {
           // dept can be a string (legacy) or a Map with name/fee/discount
           final name = dept is Map ? (dept['translated'] ?? dept['original'] ?? '').toString() : dept.toString();
           final fee  = dept is Map ? (dept['fee'] ?? '').toString().trim() : '';
           final disc = dept is Map ? (dept['discount'] ?? '').toString().trim() : '';
+          
+          String finalPriceStr = '';
+          if (fee.isNotEmpty && disc.isNotEmpty) {
+            final fNum = double.tryParse(fee.replaceAll(RegExp(r'[^0-9.]'), ''));
+            final dNum = double.tryParse(disc.replaceAll(RegExp(r'[^0-9.]'), ''));
+            if (fNum != null && dNum != null && dNum > 0 && dNum <= 100) {
+              final finalPrice = fNum - (fNum * (dNum / 100));
+              finalPriceStr = formatNumber(finalPrice);
+            }
+          }
           return Padding(
             padding: const EdgeInsets.only(top: 12),
             child: Row(
