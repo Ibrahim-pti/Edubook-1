@@ -1049,8 +1049,10 @@
                       foreach (($col['depts'] ?? $col['departments'] ?? []) as $d) {
                           $depts[] = [
                               'name'     => is_string($d) ? $d : ($d['name'] ?? $d['dept_name'] ?? ''),
-                              'fee'      => $d['fee'] ?? '',
-                              'discount' => $d['discount'] ?? '',
+                              'name_en'  => is_string($d) ? '' : ($d['name_en'] ?? ''),
+                              'name_ar'  => is_string($d) ? '' : ($d['name_ar'] ?? ''),
+                              'fee'      => is_string($d) ? '' : ($d['fee'] ?? ''),
+                              'discount' => is_string($d) ? '' : ($d['discount'] ?? ''),
                           ];
                       }
                       $collegesData[] = [
@@ -1069,10 +1071,35 @@
           $tuitionList  = is_array($institution?->tuition_plans)
                           ? $institution->tuition_plans
                           : (json_decode($institution?->tuition_plans ?? '[]', true) ?: []);
-          $deptsList    = array_filter(array_map('trim', explode("\n", $institution?->depts ?? '')));
-          $simpleDeptRows = (count($tuitionList) && !$showColleges)
-                          ? $tuitionList
-                          : array_map(fn($d) => ['dept' => $d, 'fee' => '', 'discount' => ''], $deptsList);
+          
+          $simpleDeptRows = [];
+          if (count($tuitionList) && !$showColleges) {
+              $deptsStr = trim($institution?->depts ?? '');
+              $deptsJson = [];
+              if (str_starts_with($deptsStr, '[')) {
+                  $deptsJson = json_decode($deptsStr, true) ?: [];
+              }
+              foreach ($tuitionList as $t) {
+                  $ku = trim($t['dept'] ?? '');
+                  $en = ''; $ar = '';
+                  foreach ($deptsJson as $dj) {
+                      if (($dj['ku'] ?? '') === $ku) {
+                          $en = $dj['en'] ?? '';
+                          $ar = $dj['ar'] ?? '';
+                          break;
+                      }
+                  }
+                  $t['name_en'] = $en;
+                  $t['name_ar'] = $ar;
+                  $simpleDeptRows[] = $t;
+              }
+          } else {
+              $deptsStr = trim($institution?->depts ?? '');
+              if (!str_starts_with($deptsStr, '[')) {
+                  $deptsList = array_filter(array_map('trim', explode("\n", $deptsStr)));
+                  $simpleDeptRows = array_map(fn($d) => ['dept' => $d, 'fee' => '', 'discount' => '', 'name_en' => '', 'name_ar' => ''], $deptsList);
+              }
+          }
         @endphp
 
         <div id="academic-section" class="db-card {{ $isPublic ? 'hide-fees' : '' }}" style="{{ $showSection ? '' : 'display:none' }}">
@@ -1103,8 +1130,13 @@
                       @forelse($col['depts'] as $dept)
                         @php $di = $loop->index; @endphp
                         <div class="dept-row">
-                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][name]" class="f-input" value="{{ $dept['name'] }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][fee]" class="f-input currency-input" value="{{ $dept['fee'] }}" placeholder="پارە (150,000)">
+                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][name]" class="f-input" value="{{ $dept['name'] ?? '' }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
+                          @if(!empty($dept['name_ar']) || !empty($dept['name_en']))
+                            <small class="tr-hint" style="display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7"><span style="color:var(--gold);font-weight:800">AR</span> {{ $dept['name_ar'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> {{ $dept['name_en'] ?? '' }}</small>
+                            <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_en]" value="{{ $dept['name_en'] ?? '' }}">
+                            <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_ar]" value="{{ $dept['name_ar'] ?? '' }}">
+                          @endif
+                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][fee]" class="f-input currency-input" value="{{ $dept['fee'] ?? '' }}" placeholder="پارە (150,000)">
                           <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][discount]" class="f-input" value="{{ $dept['discount'] }}" placeholder="داشکان (10%)">
                           <button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>
                         </div>
@@ -1163,6 +1195,11 @@
               @forelse($simpleDeptRows as $row)
                 <div class="fee-row">
                   <input type="text" name="simple_dept[]" class="f-input" value="{{ $row['dept'] ?? $row['name'] ?? '' }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
+                  @if(!empty($row['name_ar']) || !empty($row['name_en']))
+                    <small class="tr-hint" style="display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7"><span style="color:var(--gold);font-weight:800">AR</span> {{ $row['name_ar'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> {{ $row['name_en'] ?? '' }}</small>
+                    <input type="hidden" name="simple_dept_en[]" value="{{ $row['name_en'] ?? '' }}">
+                    <input type="hidden" name="simple_dept_ar[]" value="{{ $row['name_ar'] ?? '' }}">
+                  @endif
                   <input type="text" name="simple_fee[]" class="f-input currency-input" value="{{ $row['fee'] ?? '' }}" placeholder="پارە (150,000)">
                   <input type="text" name="simple_discount[]" class="f-input" value="{{ $row['discount'] ?? '' }}" placeholder="داشکان (10%)">
                   <button type="button" class="dept-del-btn" onclick="removeRow(this)">✕</button>
@@ -1503,6 +1540,42 @@ function formatCurrency(val) {
     if (!num) return '';
     return Number(num).toLocaleString('en-US');
 }
+
+// Transliterate Kurmanji Latin to Arabic Script
+function kurmanjiLatinToArabic(text) {
+    const map = {
+        'A':'ئا','a':'ا', 'B':'ب','b':'ب', 'C':'ج','c':'ج', 'Ç':'چ','ç':'چ',
+        'D':'د','d':'د', 'E':'ئە','e':'ە', 'Ê':'ئێ','ê':'ێ', 'F':'ف','f':'ف',
+        'G':'گ','g':'گ', 'H':'هـ','h':'هـ', 'I':'','i':'', 'Î':'ئی','î':'ی',
+        'J':'ژ','j':'ژ', 'K':'ک','k':'ک', 'L':'ل','l':'ل', 'M':'م','m':'م',
+        'N':'ن','n':'ن', 'O':'ئۆ','o':'ۆ', 'P':'پ','p':'پ', 'Q':'ق','q':'ق',
+        'R':'ر','r':'ر', 'S':'س','s':'س', 'Ş':'ش','ş':'ش', 'T':'ت','t':'ت',
+        'U':'ئو','u':'و', 'Û':'ئوو','û':'وو', 'V':'ڤ','v':'ڤ', 'W':'و','w':'و',
+        'X':'خ','x':'خ', 'Y':'ی','y':'ی', 'Z':'ز','z':'ز', ' ': ' ', '-': '-', '.': '.'
+    };
+    
+    let words = text.split(' ');
+    for(let i=0; i<words.length; i++) {
+        let w = words[i];
+        if(!w) continue;
+        let c = w[0];
+        if(c === 'a' || c === 'A') words[i] = 'ئا' + w.slice(1);
+        else if(c === 'e' || c === 'E') words[i] = 'ئە' + w.slice(1);
+        else if(c === 'ê' || c === 'Ê') words[i] = 'ئێ' + w.slice(1);
+        else if(c === 'î' || c === 'Î') words[i] = 'ئی' + w.slice(1);
+        else if(c === 'o' || c === 'O') words[i] = 'ئۆ' + w.slice(1);
+        else if(c === 'u' || c === 'U') words[i] = 'ئو' + w.slice(1);
+        else if(c === 'û' || c === 'Û') words[i] = 'ئوو' + w.slice(1);
+    }
+    
+    let str = words.join(' ');
+    let res = '';
+    for(let i=0; i<str.length; i++) {
+        res += map[str[i]] !== undefined ? map[str[i]] : str[i];
+    }
+    return res;
+}
+
 function attachCurrencyFormatter() {
     document.querySelectorAll('.currency-input').forEach(input => {
         // Format on load
@@ -1695,15 +1768,20 @@ async function autoTranslate(sourceId, targetIds, btn) {
     if (!text) { alert('تکایە سەرەتا دەقەکە بنووسە.'); return; }
     if (btn) { btn.classList.add('loading'); btn.disabled = true; }
     // Map target field IDs to Google Translate language codes
-    // Note: 'ku' returns Kurmanji in Latin script. We use 'ckb' (Sorani) so it remains in Arabic script, which the user can manually adjust.
-    const langMap = { 'desc_kbd': 'ckb', 'desc_ar': 'ar', 'desc_en': 'en', 'nkbd': 'ckb', 'nar': 'ar', 'nen': 'en' };
+    const langMap = { 'desc_kbd': 'ku', 'desc_ar': 'ar', 'desc_en': 'en', 'nkbd': 'ku', 'nar': 'ar', 'nen': 'en' };
     try {
         for (const targetId of targetIds) {
-            const lang = langMap[targetId] ?? (targetId.includes('ar') ? 'ar' : targetId.includes('en') ? 'en' : 'ckb');
+            const lang = langMap[targetId] ?? (targetId.includes('ar') ? 'ar' : targetId.includes('en') ? 'en' : 'ku');
             const url  = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ckb&tl=${lang}&dt=t&q=${encodeURIComponent(text)}`;
             const data = await (await fetch(url)).json();
             if (data?.[0]) {
-                const translated = data[0].map(p => p[0] ?? '').join('');
+                let translated = data[0].map(p => p[0] ?? '').join('');
+                
+                // If it's a Badini field and we used 'ku' (which returns Latin script), transliterate to Arabic script
+                if ((targetId === 'desc_kbd' || targetId === 'nkbd') && lang === 'ku') {
+                    translated = kurmanjiLatinToArabic(translated);
+                }
+
                 if (quillEditors[targetId]) {
                     quillEditors[targetId].root.innerHTML = translated;
                 } else {
