@@ -104,6 +104,67 @@ class AppConstants {
     'کەرکوک',
   ];
 
+  // === CITY TRANSLATIONS ===
+  static const Map<String, Map<String, String>> cityNames = {
+    'هەولێر':       {'en': 'Erbil',          'ar': 'أربيل'},
+    'سلێمانی':      {'en': 'Sulaymaniyah',   'ar': 'السليمانية'},
+    'دهۆک':         {'en': 'Duhok',          'ar': 'دهوك'},
+    'زاخۆ':         {'en': 'Zakho',          'ar': 'زاخو'},
+    'ئامێدی':       {'en': 'Amedi',          'ar': 'العمادية'},
+    'سیمێل':        {'en': 'Simele',         'ar': 'سيميل'},
+    'شێخان':        {'en': 'Shekhan',        'ar': 'شيخان'},
+    'دیانا':        {'en': 'Diana',          'ar': 'ديانا'},
+    'چۆمان':        {'en': 'Choman',         'ar': 'جومان'},
+    'سۆران':        {'en': 'Soran',          'ar': 'سوران'},
+    'هەڵەبجە':      {'en': 'Halabja',        'ar': 'حلبجة'},
+    'رانیە':        {'en': 'Ranya',          'ar': 'رانية'},
+    'کەلار':        {'en': 'Kalar',          'ar': 'كلار'},
+    'قلادزێ':       {'en': 'Qaladze',        'ar': 'قلادزة'},
+    'دوکان':        {'en': 'Dokan',          'ar': 'دوكان'},
+    'دەربەندیخان':  {'en': 'Darbandikhan',   'ar': 'دربنديخان'},
+    'چەمچەماڵ':     {'en': 'Chamchamal',     'ar': 'جمجمال'},
+    'شارەزووری':    {'en': 'Sharazur',       'ar': 'شهرزور'},
+    'پێنجوێن':      {'en': 'Penjwen',        'ar': 'بنجوين'},
+    'سەید سادق':    {'en': 'Said Sadiq',     'ar': 'سيد صادق'},
+    'کفری':         {'en': 'Kifri',          'ar': 'كفري'},
+    'کەرکووک':      {'en': 'Kirkuk',         'ar': 'كركوك'},
+    'کەرکوک':       {'en': 'Kirkuk',         'ar': 'كركوك'},
+    'بەغداد':       {'en': 'Baghdad',        'ar': 'بغداد'},
+    'مووسڵ':        {'en': 'Mosul',          'ar': 'الموصل'},
+    'بەسرە':        {'en': 'Basra',          'ar': 'البصرة'},
+    'نەجەف':        {'en': 'Najaf',          'ar': 'النجف'},
+    'کەربەلا':      {'en': 'Karbala',        'ar': 'كربلاء'},
+    'حیللە':        {'en': 'Hilla',          'ar': 'الحلة'},
+    'سامەراء':      {'en': 'Samarra',        'ar': 'سامراء'},
+    'تکریت':        {'en': 'Tikrit',         'ar': 'تكريت'},
+    'رمادی':        {'en': 'Ramadi',         'ar': 'الرمادي'},
+    'فەللووجە':     {'en': 'Fallujah',       'ar': 'الفلوجة'},
+    'نەسیریە':      {'en': 'Nasiriyah',      'ar': 'الناصرية'},
+    'عەماره':       {'en': 'Amarah',         'ar': 'العمارة'},
+    'کووت':         {'en': 'Kut',            'ar': 'الكوت'},
+    'دیوانیە':      {'en': 'Diwaniyah',      'ar': 'الديوانية'},
+    'بعقووبە':      {'en': 'Baqubah',        'ar': 'بعقوبة'},
+    'سینجار':       {'en': 'Sinjar',         'ar': 'سنجار'},
+    'تەلاعەفەر':    {'en': 'Tal Afar',       'ar': 'تلعفر'},
+    'دوزەخوڕماتو':  {'en': 'Tuz Khurmatu',   'ar': 'طوز خورماتو'},
+    'دیالی':        {'en': 'Diyala',         'ar': 'ديالى'},
+    'رووتبە':       {'en': 'Rutba',          'ar': 'الرطبة'},
+    'قائم':         {'en': 'Qaim',           'ar': 'القائم'},
+    'عەلی گەرب':    {'en': 'Ali al-Gharbi',  'ar': 'علي الغربي'},
+    'مەیسان':       {'en': 'Maysan',         'ar': 'ميسان'},
+    'واسط':         {'en': 'Wasit',          'ar': 'واسط'},
+    'صلاح الدین':   {'en': 'Salah al-Din',   'ar': 'صلاح الدين'},
+    'ئەنبار':       {'en': 'Anbar',          'ar': 'الأنبار'},
+    'نینەوا':       {'en': 'Nineveh',        'ar': 'نينوى'},
+  };
+
+  static String localizedCityName(String kuName, String lang) {
+    if (lang == 'ku' || lang == 'kbd') return kuName;
+    final tr = cityNames[kuName];
+    if (tr == null) return kuName;
+    return tr[lang] ?? kuName;
+  }
+
   // === CITIES ===
   static const List<String> iraqiCities = [
     // کوردستان

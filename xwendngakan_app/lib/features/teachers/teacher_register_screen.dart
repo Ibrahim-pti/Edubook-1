@@ -460,10 +460,13 @@ class _TeacherRegisterScreenState extends State<TeacherRegisterScreen>
                                 initialValue: _city,
                                 decoration: _inputDeco(l.city, Icons.location_on_outlined),
                                 borderRadius: BorderRadius.circular(20),
-                                items: AppConstants.iraqiCities.map((c) => DropdownMenuItem(
-                                  value: c,
-                                  child: Text(c, style: const TextStyle(fontFamily: 'Rabar')),
-                                )).toList(),
+                                items: AppConstants.iraqiCities.map((c) {
+                                  final lang = Localizations.localeOf(context).languageCode;
+                                  return DropdownMenuItem(
+                                    value: c,
+                                    child: Text(AppConstants.localizedCityName(c, lang), style: const TextStyle(fontFamily: 'Rabar')),
+                                  );
+                                }).toList(),
                                 onChanged: (v) => setState(() => _city = v),
                               ),
                               const SizedBox(height: 14),

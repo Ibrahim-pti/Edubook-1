@@ -532,6 +532,7 @@ class _TeachersScreenState extends State<TeachersScreen> {
                 runSpacing: 10,
                 children: AppConstants.iraqiCities.map((city) {
                   final sel = _selectedCity == city;
+                  final lang = Localizations.localeOf(context).languageCode;
                   return GestureDetector(
                     onTap: () {
                       HapticFeedback.lightImpact();
@@ -552,7 +553,7 @@ class _TeachersScreenState extends State<TeachersScreen> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Text(
-                        city,
+                        AppConstants.localizedCityName(city, lang),
                         style: TextStyle(
                           color: sel
                               ? Colors.white

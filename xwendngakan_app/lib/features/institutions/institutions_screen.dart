@@ -237,7 +237,7 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
                     return GestureDetector(
                       onTap: () => setModalState(() => tempCity = city),
                       child: Chip(
-                        label: Text(city,
+                        label: Text(AppConstants.localizedCityName(city, Localizations.localeOf(context).languageCode),
                             style: TextStyle(
                                 color: isSelected ? Colors.white : null,
                                 fontSize: 12,

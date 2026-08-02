@@ -522,9 +522,10 @@ class _AdvancedFilterSheetState extends State<_AdvancedFilterSheet> {
                     child: Text(l.allCities, style: const TextStyle(fontFamily: 'Rabar')),
                   ),
                   ...AppConstants.iraqiCities.map((city) {
+                    final lang = Localizations.localeOf(context).languageCode;
                     return DropdownMenuItem(
                       value: city,
-                      child: Text(city, style: const TextStyle(fontFamily: 'Rabar')),
+                      child: Text(AppConstants.localizedCityName(city, lang), style: const TextStyle(fontFamily: 'Rabar')),
                     );
                   })
                 ],
