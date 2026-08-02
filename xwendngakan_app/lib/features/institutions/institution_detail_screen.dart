@@ -649,9 +649,10 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 6),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(top: 1.5, right: 2, left: 6),
+                            padding: const EdgeInsets.only(right: 6, left: 6),
                             child: Container(
                               width: 5, height: 5,
                               decoration: BoxDecoration(
@@ -660,26 +661,25 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  deptName,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'Rabar',
-                                    color: isDark ? Colors.white70 : AppColors.textDark,
-                                  ),
-                                ),
-                                if (fee.isNotEmpty || disc.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: Wrap(
-                                      spacing: 6,
-                                      crossAxisAlignment: WrapCrossAlignment.center,
-                                      children: [
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: Text(
+                              deptName,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'Rabar',
+                                color: isDark ? Colors.white70 : AppColors.textDark,
+                              ),
+                            ),
+                          ),
+                          if (fee.isNotEmpty || disc.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 16),
+                              child: Wrap(
+                                spacing: 6,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
                                         if (fee.isNotEmpty)
                                           Text(
                                             fee,
@@ -695,6 +695,22 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                                           Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                             decoration: BoxDecoration(
+                                              color: Colors.red.withValues(alpha: 0.1),
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: Text(
+                                              '$strDiscount $disc${finalPrice.isNotEmpty ? '%' : ''}',
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w800,
+                                                fontFamily: 'Rabar',
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                            decoration: BoxDecoration(
                                               color: Colors.green.withValues(alpha: 0.1),
                                               borderRadius: BorderRadius.circular(6),
                                             ),
@@ -705,22 +721,6 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                                                 fontWeight: FontWeight.w800,
                                                 fontFamily: 'Rabar',
                                                 color: Colors.green,
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                            decoration: BoxDecoration(
-                                              color: Colors.red.withValues(alpha: 0.1),
-                                              borderRadius: BorderRadius.circular(6),
-                                            ),
-                                            child: Text(
-                                              '$strDiscount ${discAmount.isNotEmpty ? discAmount : '$disc%'}',
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w800,
-                                                fontFamily: 'Rabar',
-                                                color: Colors.red,
                                               ),
                                             ),
                                           ),
@@ -745,9 +745,7 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                                       ],
                                     ),
                                   ),
-                              ],
-                            ),
-                          ),
+
                         ],
                       ),
                     );
@@ -1528,29 +1526,27 @@ class _CollegesCard extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(top: 12),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Padding(
-                  padding: EdgeInsets.only(top: 2),
+                  padding: EdgeInsets.only(right: 6, left: 6),
                   child: Icon(Icons.check_circle_outline_rounded, color: AppColors.primary, size: 18),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'Rabar',
-                          color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.8),
-                        ),
-                      ),
-                      if (fee.isNotEmpty || disc.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Rabar',
+                      color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.8),
+                    ),
+                  ),
+                ),
+                if (fee.isNotEmpty || disc.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
                           child: Wrap(
                             spacing: 6,
                             crossAxisAlignment: WrapCrossAlignment.center,
@@ -1570,6 +1566,22 @@ class _CollegesCard extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
+                                    color: Colors.red.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    '$strDiscount $disc${finalPrice.isNotEmpty ? '%' : ''}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      fontFamily: 'Rabar',
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
                                     color: Colors.green.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
@@ -1580,22 +1592,6 @@ class _CollegesCard extends StatelessWidget {
                                       fontWeight: FontWeight.w800,
                                       fontFamily: 'Rabar',
                                       color: Colors.green,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    '$strDiscount ${discAmount.isNotEmpty ? discAmount : '$disc%'}',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      fontFamily: 'Rabar',
-                                      color: Colors.red,
                                     ),
                                   ),
                                 ),
@@ -1620,9 +1616,7 @@ class _CollegesCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                    ],
-                  ),
-                ),
+
               ],
             ),
           );

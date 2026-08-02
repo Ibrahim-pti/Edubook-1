@@ -898,12 +898,6 @@
       <form id="form-inst" method="POST" action="{{ route('portal.institution.save') }}" enctype="multipart/form-data" onsubmit="handleAjaxSubmit(event, 'btn-save-inst')">
         @csrf
 
-        {{-- وەرگێڕانی گشتی --}}
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-          <button type="button" id="btn-translate-all" onclick="translateAll()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: .85rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-            <span>🌐</span> <span>وەرگێڕانی گشتی</span>
-          </button>
-        </div>
 
         {{-- ناو --}}
         <div class="db-card">
@@ -1349,6 +1343,11 @@
           <button type="submit" id="btn-save-inst" class="btn-primary" style="padding:14px 42px;font-size:.95rem">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0" class="btn-icon"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             <span>پاشەکەوتکردن</span>
+          </button>
+          
+          {{-- وەرگێڕانی گشتی --}}
+          <button type="button" id="btn-translate-all" onclick="translateAll()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 14px 20px; border-radius: 8px; font-size: .95rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <span>🌐</span> <span>وەرگێڕانی گشتی</span>
           </button>
           <span style="font-size:.78rem;color:var(--txt3);font-weight:600">گۆڕانکارییەکانت خۆکارانە دەنێردرێن</span>
         </div>
@@ -1848,13 +1847,6 @@ async function translateAll() {
 
 const originalHandleAjaxSubmit = window.handleAjaxSubmit;
 window.handleAjaxSubmit = function(e, btnId) {
-    if (btnId === 'btn-save-inst' && !isTranslatedAll) {
-        e.preventDefault();
-        alert('پێویستە سەرەتا کلیک لە دوگمەی "وەرگێڕانی هەمووی بە یەکجار" بکەیت پێش پاشەکەوتکردن!');
-        // Scroll to the button
-        document.getElementById('btn-translate-all').scrollIntoView({behavior: 'smooth', block: 'center'});
-        return false;
-    }
     if (originalHandleAjaxSubmit) {
         return originalHandleAjaxSubmit(e, btnId);
     }
