@@ -124,236 +124,253 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
     final isFav = prov.favorites.contains(inst.id);
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBg : const Color(0xFFFBFBFE),
-      body: RefreshIndicator(
-        onRefresh: _load,
-        child: CustomScrollView(
-          controller: _scrollController,
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          slivers: [
-          // ── Premium Sliver Header ──
-          SliverAppBar(
-            expandedHeight: 280,
-            pinned: true,
-            stretch: true,
-            backgroundColor: typeColor,
-            elevation: 0,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
-            ),
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_rounded, color: Colors.white, size: 18),
-                      onPressed: () => context.pop(),
-                    ),
-                  ),
+        backgroundColor: isDark ? AppColors.darkBg : const Color(0xFFFBFBFE),
+        body: RefreshIndicator(
+          onRefresh: _load,
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
+            slivers: [
+              // ── Premium Sliver Header ──
+              SliverAppBar(
+                expandedHeight: 280,
+                pinned: true,
+                stretch: true,
+                backgroundColor: typeColor,
+                elevation: 0,
+                shape: const RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(40)),
                 ),
-              ),
-            ),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: Container(
-                      color: Colors.black.withValues(alpha: 0.15),
-                      child: IconButton(
-                        icon: Icon(
-                          isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                          color: isFav ? Colors.redAccent : Colors.white,
-                          size: 22,
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Container(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_rounded,
+                              color: Colors.white, size: 18),
+                          onPressed: () => context.pop(),
                         ),
-                        onPressed: () => prov.toggleFavorite(inst.id),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-            title: AnimatedOpacity(
-              duration: const Duration(milliseconds: 200),
-              opacity: _showTitle ? 1.0 : 0.0,
-              child: Text(
-                inst.name(lang),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'Rabar',
-                ),
-              ),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              stretchModes: const [StretchMode.zoomBackground],
-              background: ClipRRect(
-                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(40)),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    // Cover image background
-                    if (inst.imgUrl.isNotEmpty)
-                      CachedNetworkImage(
-                        imageUrl: inst.imgUrl,
-                        fit: BoxFit.cover,
-                        placeholder: (_, __) => Container(color: typeColor),
-                        errorWidget: (_, __, ___) => Container(color: typeColor),
-                      )
-                    else
-                      Container(color: typeColor),
-                    // Dark gradient overlay for legibility
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withValues(alpha: 0.1),
-                            Colors.black.withValues(alpha: 0.8),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Logo positioned nicely at the bottom
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 24),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                         child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 3),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: ClipOval(
-                            child: inst.logoUrl.isNotEmpty
-                                ? CachedNetworkImage(
-                                    imageUrl: inst.logoUrl,
-                                    fit: BoxFit.contain,
-                                    placeholder: (_, __) => Icon(Icons.school_rounded, color: typeColor, size: 40),
-                                    errorWidget: (_, __, ___) => Icon(Icons.school_rounded, color: typeColor, size: 40),
-                                  )
-                                : Icon(Icons.school_rounded, color: typeColor, size: 40),
+                          color: Colors.black.withValues(alpha: 0.15),
+                          child: IconButton(
+                            icon: Icon(
+                              isFav
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_rounded,
+                              color: isFav ? Colors.redAccent : Colors.white,
+                              size: 22,
+                            ),
+                            onPressed: () => prov.toggleFavorite(inst.id),
                           ),
                         ),
                       ),
                     ),
+                  ),
+                ],
+                title: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: _showTitle ? 1.0 : 0.0,
+                  child: Text(
+                    inst.name(lang),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w900,
+                      fontFamily: 'Rabar',
+                    ),
+                  ),
+                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  stretchModes: const [StretchMode.zoomBackground],
+                  background: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(40)),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // Cover image background
+                        if (inst.imgUrl.isNotEmpty)
+                          CachedNetworkImage(
+                            imageUrl: inst.imgUrl,
+                            fit: BoxFit.cover,
+                            placeholder: (_, __) => Container(color: typeColor),
+                            errorWidget: (_, __, ___) =>
+                                Container(color: typeColor),
+                          )
+                        else
+                          Container(color: typeColor),
+                        // Dark gradient overlay for legibility
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black.withValues(alpha: 0.1),
+                                Colors.black.withValues(alpha: 0.8),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // Logo positioned nicely at the bottom
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 24),
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(color: Colors.white, width: 3),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                ],
+                              ),
+                              child: ClipOval(
+                                child: inst.logoUrl.isNotEmpty
+                                    ? CachedNetworkImage(
+                                        imageUrl: inst.logoUrl,
+                                        fit: BoxFit.contain,
+                                        placeholder: (_, __) => Icon(
+                                            Icons.school_rounded,
+                                            color: typeColor,
+                                            size: 40),
+                                        errorWidget: (_, __, ___) => Icon(
+                                            Icons.school_rounded,
+                                            color: typeColor,
+                                            size: 40),
+                                      )
+                                    : Icon(Icons.school_rounded,
+                                        color: typeColor, size: 40),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 24),
+                    // ── Name & Info ──
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        children: [
+                          Text(
+                            inst.name(lang),
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: 'Rabar',
+                              letterSpacing: -0.5,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // ── Video Card ──
+                    if (inst.video != null && inst.video!.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: RepaintBoundary(
+                          child: _VideoCard(
+                            videoUrl: inst.video!,
+                            isDark: isDark,
+                            typeColor: typeColor,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 28),
+                    ],
+
+                    // ── Links & Actions Bar ──
+                    _buildLinksAndActions(inst, l, isDark),
+                    const SizedBox(height: 32),
+
+                    // ── Premium Tab Switcher ──
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.darkCard : Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.white.withValues(alpha: 0.05)
+                              : Colors.black.withValues(alpha: 0.03),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black
+                                .withValues(alpha: isDark ? 0.2 : 0.04),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          _buildTabItem(0, l.about, isDark),
+                          _buildTabItem(1, l.departments, isDark),
+                          _buildTabItem(2, l.news, isDark),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // ── Tab Content ──
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: RepaintBoundary(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: KeyedSubtree(
+                            key: ValueKey(_activeTab),
+                            child: _buildTabContent(inst, isDark, lang, l),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 100),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                const SizedBox(height: 24),
-                // ── Name & Info ──
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    children: [
-                      Text(
-                        inst.name(lang),
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w900,
-                          fontFamily: 'Rabar',
-                          letterSpacing: -0.5,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 32),
-
-                // ── Video Card ──
-                if (inst.video != null && inst.video!.isNotEmpty) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: RepaintBoundary(
-                      child: _VideoCard(
-                        videoUrl: inst.video!,
-                        isDark: isDark,
-                        typeColor: typeColor,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                ],
-
-                // ── Links & Actions Bar ──
-                _buildLinksAndActions(inst, l, isDark),
-                const SizedBox(height: 32),
-
-                // ── Premium Tab Switcher ──
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkCard : Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(
-                      color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      _buildTabItem(0, l.about, isDark),
-                      _buildTabItem(1, l.departments, isDark),
-                      _buildTabItem(2, l.news, isDark),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // ── Tab Content ──
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: RepaintBoundary(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: KeyedSubtree(
-                        key: ValueKey(_activeTab),
-                        child: _buildTabContent(inst, isDark, lang, l),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 100),
-              ],
-            ),
-          ),
-        ],
-      ),
-    )
-    );
+        ));
   }
 
   Widget _buildActionItem({
@@ -389,36 +406,46 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
     );
   }
 
-  Widget _buildLinksAndActions(InstitutionModel inst, AppLocalizations l, bool isDark) {
+  Widget _buildLinksAndActions(
+      InstitutionModel inst, AppLocalizations l, bool isDark) {
     final items = <Widget>[];
 
     void add(IconData icon, String label, Color color, VoidCallback onTap) {
-      items.add(_buildActionItem(icon: icon, label: label, color: color, onTap: onTap));
+      items.add(_buildActionItem(
+          icon: icon, label: label, color: color, onTap: onTap));
     }
 
     if (inst.phone != null && inst.phone!.isNotEmpty) {
-      add(Icons.phone_in_talk_rounded, l.contact, const Color(0xFF10B981), () => _launch('tel:${inst.phone!}'));
+      add(Icons.phone_in_talk_rounded, l.contact, const Color(0xFF10B981),
+          () => _launch('tel:${inst.phone!}'));
     }
-    
-    add(Icons.map_rounded, l.map, const Color(0xFFEC4899), () => context.push('/map', extra: inst));
-    
+
+    add(Icons.map_rounded, l.map, const Color(0xFFEC4899),
+        () => context.push('/map', extra: inst));
+
     if (inst.web != null && inst.web!.isNotEmpty) {
-      add(Icons.language_rounded, 'Website', const Color(0xFF6366F1), () => _launch(inst.web!));
+      add(Icons.language_rounded, 'Website', const Color(0xFF6366F1),
+          () => _launch(inst.web!));
     }
     if (inst.fb != null && inst.fb!.isNotEmpty) {
-      add(Icons.facebook, 'Facebook', const Color(0xFF1877F2), () => _launch(inst.fb!));
+      add(Icons.facebook, 'Facebook', const Color(0xFF1877F2),
+          () => _launch(inst.fb!));
     }
     if (inst.tg != null && inst.tg!.isNotEmpty) {
-      add(Icons.telegram_rounded, 'Telegram', const Color(0xFF229ED9), () => _launch(inst.tg!));
+      add(Icons.telegram_rounded, 'Telegram', const Color(0xFF229ED9),
+          () => _launch(inst.tg!));
     }
     if (inst.wa != null && inst.wa!.isNotEmpty) {
-      add(Icons.chat_bubble_outline_rounded, 'WhatsApp', const Color(0xFF25D366), () => _launch('https://wa.me/${inst.wa}'));
+      add(Icons.chat_bubble_outline_rounded, 'WhatsApp',
+          const Color(0xFF25D366), () => _launch('https://wa.me/${inst.wa}'));
     }
     if (inst.yt != null && inst.yt!.isNotEmpty) {
-      add(Icons.play_circle_fill_rounded, 'YouTube', const Color(0xFFFF0000), () => _launch(inst.yt!));
+      add(Icons.play_circle_fill_rounded, 'YouTube', const Color(0xFFFF0000),
+          () => _launch(inst.yt!));
     }
     if (inst.tk != null && inst.tk!.isNotEmpty) {
-      add(Icons.music_note_rounded, 'TikTok', const Color(0xFF010101), () => _launch(inst.tk!));
+      add(Icons.music_note_rounded, 'TikTok', const Color(0xFF010101),
+          () => _launch(inst.tk!));
     }
 
     return SingleChildScrollView(
@@ -427,10 +454,12 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: items.map((e) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: e,
-        )).toList(),
+        children: items
+            .map((e) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: e,
+                ))
+            .toList(),
       ),
     );
   }
@@ -465,7 +494,9 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
               fontFamily: 'Rabar',
               color: isActive
                   ? Colors.white
-                  : (isDark ? Colors.white60 : AppColors.textDark.withValues(alpha: 0.6)),
+                  : (isDark
+                      ? Colors.white60
+                      : AppColors.textDark.withValues(alpha: 0.6)),
             ),
           ),
         ),
@@ -491,10 +522,13 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
       if (rows.isNotEmpty) {
         rows.add(Divider(
           height: 20,
-          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.06)
+              : Colors.black.withValues(alpha: 0.05),
         ));
       }
-      rows.add(_InfoRow(icon: icon, label: label, value: v, accent: accent, isDark: isDark));
+      rows.add(_InfoRow(
+          icon: icon, label: label, value: v, accent: accent, isDark: isDark));
     }
 
     add(Icons.school_rounded, 'ئاستی خوێندن', inst.level);
@@ -512,7 +546,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
           title: 'خەرجی و خزمەتگوزاری',
           accentColor: accent,
           isDark: isDark,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: rows),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, children: rows),
         ),
         const SizedBox(height: 20),
       ],
@@ -529,10 +564,13 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
       if (rows.isNotEmpty) {
         rows.add(Divider(
           height: 20,
-          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.06)
+              : Colors.black.withValues(alpha: 0.05),
         ));
       }
-      rows.add(_InfoRow(icon: icon, label: label, value: v, accent: accent, isDark: isDark));
+      rows.add(_InfoRow(
+          icon: icon, label: label, value: v, accent: accent, isDark: isDark));
     }
 
     add(Icons.cake_rounded, 'تەمەنی وەرگرتن', inst.kgAge);
@@ -549,14 +587,16 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
           title: 'زانیاری باخچەی منداڵان',
           accentColor: accent,
           isDark: isDark,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: rows),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, children: rows),
         ),
         const SizedBox(height: 20),
       ],
     );
   }
 
-  Widget _buildTabContent(InstitutionModel inst, bool isDark, String lang, AppLocalizations l) {
+  Widget _buildTabContent(
+      InstitutionModel inst, bool isDark, String lang, AppLocalizations l) {
     switch (_activeTab) {
       case 0: // About
         return Column(
@@ -584,7 +624,9 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                         fontSize: 15,
                         height: 1.9,
                         fontFamily: 'Rabar',
-                        color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.8),
+                        color: isDark
+                            ? Colors.white70
+                            : AppColors.textDark.withValues(alpha: 0.8),
                       ),
                     ),
                   ),
@@ -604,9 +646,9 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
               title: l.contact,
               accentColor: AppColors.typeColor(inst.type),
               isDark: isDark,
-              child: _ContactCard(inst: inst, isDark: isDark, onLaunch: _launch),
+              child:
+                  _ContactCard(inst: inst, isDark: isDark, onLaunch: _launch),
             ),
-
           ],
         );
       case 1: // Colleges & Departments
@@ -614,7 +656,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
         final depts = _parseDepts(inst.depts, lang);
         // Build a dept-name → {fee,discount} lookup from tuition_plans
         final tuitionMap = _buildTuitionMap(inst.tuitionPlans);
-        final strDiscount = lang == 'en' ? 'Discount' : (lang == 'ar' ? 'خصم' : 'داشکان');
+        final strDiscount =
+            lang == 'en' ? 'Discount' : (lang == 'ar' ? 'خصم' : 'داشکان');
         if (colleges.isEmpty && depts.isEmpty) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 60),
@@ -639,10 +682,11 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                 isDark: isDark,
                 child: Column(
                   children: depts.map((deptMap) {
-                    final deptName = deptMap['translated'] ?? deptMap['original'] ?? '';
-                    final plan  = tuitionMap[deptMap['original']];
-                    final fee   = plan?['fee'] ?? '';
-                    final disc  = plan?['discount'] ?? '';
+                    final deptName =
+                        deptMap['translated'] ?? deptMap['original'] ?? '';
+                    final plan = tuitionMap[deptMap['original']];
+                    final fee = plan?['fee'] ?? '';
+                    final disc = plan?['discount'] ?? '';
                     final finalPrice = plan?['final_price'] ?? '';
                     final discAmount = plan?['discount_amount'] ?? '';
 
@@ -654,7 +698,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                           Padding(
                             padding: const EdgeInsets.only(right: 6, left: 6),
                             child: Container(
-                              width: 5, height: 5,
+                              width: 5,
+                              height: 5,
                               decoration: BoxDecoration(
                                 color: isDark ? Colors.white60 : Colors.black45,
                                 shape: BoxShape.circle,
@@ -669,7 +714,9 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
                                 fontFamily: 'Rabar',
-                                color: isDark ? Colors.white70 : AppColors.textDark,
+                                color: isDark
+                                    ? Colors.white70
+                                    : AppColors.textDark,
                               ),
                             ),
                           ),
@@ -680,72 +727,85 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                                 spacing: 6,
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
-                                        if (fee.isNotEmpty)
-                                          Text(
-                                            fee,
-                                            style: TextStyle(
-                                              fontSize: (disc.isNotEmpty) ? 12 : 13,
-                                              fontWeight: (disc.isNotEmpty) ? FontWeight.w600 : FontWeight.w800,
-                                              fontFamily: 'Rabar',
-                                              color: (disc.isNotEmpty) ? (isDark ? Colors.white54 : Colors.grey) : AppColors.primary,
-                                              decoration: (disc.isNotEmpty) ? TextDecoration.lineThrough : null,
-                                            ),
-                                          ),
-                                        if (finalPrice.isNotEmpty) ...[
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                            decoration: BoxDecoration(
-                                              color: Colors.red.withValues(alpha: 0.1),
-                                              borderRadius: BorderRadius.circular(6),
-                                            ),
-                                            child: Text(
-                                              '$strDiscount $disc${finalPrice.isNotEmpty ? '%' : ''}',
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w800,
-                                                fontFamily: 'Rabar',
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                            decoration: BoxDecoration(
-                                              color: Colors.green.withValues(alpha: 0.1),
-                                              borderRadius: BorderRadius.circular(6),
-                                            ),
-                                            child: Text(
-                                              finalPrice,
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w800,
-                                                fontFamily: 'Rabar',
-                                                color: Colors.green,
-                                              ),
-                                            ),
-                                          ),
-                                        ] else if (disc.isNotEmpty) ...[
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                            decoration: BoxDecoration(
-                                              color: Colors.red.withValues(alpha: 0.1),
-                                              borderRadius: BorderRadius.circular(6),
-                                            ),
-                                            child: Text(
-                                              '$strDiscount $disc',
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w800,
-                                                fontFamily: 'Rabar',
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ],
+                                  if (fee.isNotEmpty)
+                                    Text(
+                                      fee,
+                                      style: TextStyle(
+                                        fontSize: (disc.isNotEmpty) ? 12 : 13,
+                                        fontWeight: (disc.isNotEmpty)
+                                            ? FontWeight.w600
+                                            : FontWeight.w800,
+                                        fontFamily: 'Rabar',
+                                        color: (disc.isNotEmpty)
+                                            ? (isDark
+                                                ? Colors.white54
+                                                : Colors.grey)
+                                            : AppColors.primary,
+                                        decoration: (disc.isNotEmpty)
+                                            ? TextDecoration.lineThrough
+                                            : null,
+                                      ),
                                     ),
-                                  ),
-
+                                  if (finalPrice.isNotEmpty) ...[
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.red.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        '$strDiscount $disc${finalPrice.isNotEmpty ? '%' : ''}',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w800,
+                                          fontFamily: 'Rabar',
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.green.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        finalPrice,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w800,
+                                          fontFamily: 'Rabar',
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                    ),
+                                  ] else if (disc.isNotEmpty) ...[
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.red.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        '$strDiscount $disc',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w800,
+                                          fontFamily: 'Rabar',
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     );
@@ -769,7 +829,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: inst.posts.length,
-          itemBuilder: (context, index) => _PostCard(post: inst.posts[index], isDark: isDark),
+          itemBuilder: (context, index) =>
+              _PostCard(post: inst.posts[index], isDark: isDark),
         );
       default:
         return const SizedBox();
@@ -784,36 +845,48 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
         final List<dynamic> decoded = jsonDecode(trimmed);
         return decoded.map((c) {
           if (c is! Map) return <String, dynamic>{};
-          
+
           String cNameTranslated = c['name'] ?? '';
-          if (lang == 'en' && c['name_en'] != null && c['name_en'].toString().isNotEmpty) {
+          if (lang == 'en' &&
+              c['name_en'] != null &&
+              c['name_en'].toString().isNotEmpty) {
             cNameTranslated = c['name_en'];
-          } else if (lang == 'ar' && c['name_ar'] != null && c['name_ar'].toString().isNotEmpty) {
+          } else if (lang == 'ar' &&
+              c['name_ar'] != null &&
+              c['name_ar'].toString().isNotEmpty) {
             cNameTranslated = c['name_ar'];
-          } else if (lang == 'kbd' && c['name_kbd'] != null && c['name_kbd'].toString().isNotEmpty) {
+          } else if (lang == 'kbd' &&
+              c['name_kbd'] != null &&
+              c['name_kbd'].toString().isNotEmpty) {
             cNameTranslated = c['name_kbd'];
           }
 
           final deptsList = (c['depts'] as List<dynamic>? ?? []).map((d) {
-             if (d is Map) {
-               String dNameTranslated = d['name'] ?? '';
-               if (lang == 'en' && d['name_en'] != null && d['name_en'].toString().isNotEmpty) {
-                 dNameTranslated = d['name_en'];
-               } else if (lang == 'ar' && d['name_ar'] != null && d['name_ar'].toString().isNotEmpty) {
-                 dNameTranslated = d['name_ar'];
-               } else if (lang == 'kbd' && d['name_kbd'] != null && d['name_kbd'].toString().isNotEmpty) {
-                 dNameTranslated = d['name_kbd'];
-               }
-               return {
-                  'original': d['name'] ?? '',
-                  'translated': dNameTranslated,
-                  'fee': d['fee'],
-                  'discount': d['discount'],
-               };
-             }
-             return d;
+            if (d is Map) {
+              String dNameTranslated = d['name'] ?? '';
+              if (lang == 'en' &&
+                  d['name_en'] != null &&
+                  d['name_en'].toString().isNotEmpty) {
+                dNameTranslated = d['name_en'];
+              } else if (lang == 'ar' &&
+                  d['name_ar'] != null &&
+                  d['name_ar'].toString().isNotEmpty) {
+                dNameTranslated = d['name_ar'];
+              } else if (lang == 'kbd' &&
+                  d['name_kbd'] != null &&
+                  d['name_kbd'].toString().isNotEmpty) {
+                dNameTranslated = d['name_kbd'];
+              }
+              return {
+                'original': d['name'] ?? '',
+                'translated': dNameTranslated,
+                'fee': d['fee'],
+                'discount': d['discount'],
+              };
+            }
+            return d;
           }).toList();
-          
+
           return {
             'name': cNameTranslated, // display name
             'original': c['name'],
@@ -822,9 +895,10 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
         }).toList();
       } catch (_) {}
     }
-    
+
     // 2. Fallback to comma-separated string
-    return trimmed.split(',')
+    return trimmed
+        .split(',')
         .where((s) => s.trim().isNotEmpty)
         .map((s) => {'name': s.trim(), 'original': s.trim(), 'departments': []})
         .toList();
@@ -838,22 +912,34 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
         final List<dynamic> decoded = jsonDecode(trimmed);
         return decoded.map((e) {
           if (e is Map) {
-             String translated = e['ku'] ?? e['name'] ?? '';
-             if (lang == 'en' && e['en'] != null && e['en'].toString().isNotEmpty) translated = e['en'];
-             else if (lang == 'ar' && e['ar'] != null && e['ar'].toString().isNotEmpty) translated = e['ar'];
-             else if (lang == 'kbd' && e['kbd'] != null && e['kbd'].toString().isNotEmpty) translated = e['kbd'];
-             return {
-                'original': e['ku'] ?? e['name'] ?? '',
-                'translated': translated,
-             };
+            String translated = e['ku'] ?? e['name'] ?? '';
+            if (lang == 'en' &&
+                e['en'] != null &&
+                e['en'].toString().isNotEmpty)
+              translated = e['en'];
+            else if (lang == 'ar' &&
+                e['ar'] != null &&
+                e['ar'].toString().isNotEmpty)
+              translated = e['ar'];
+            else if (lang == 'kbd' &&
+                e['kbd'] != null &&
+                e['kbd'].toString().isNotEmpty) translated = e['kbd'];
+            return {
+              'original': e['ku'] ?? e['name'] ?? '',
+              'translated': translated,
+            };
           } else if (e is String) {
-             return {'original': e, 'translated': e};
+            return {'original': e, 'translated': e};
           }
           return {'original': '', 'translated': ''};
         }).toList();
       } catch (_) {}
     }
-    return trimmed.split('\n').where((s) => s.trim().isNotEmpty).map((s) => {'original': s.trim(), 'translated': s.trim()}).toList();
+    return trimmed
+        .split('\n')
+        .where((s) => s.trim().isNotEmpty)
+        .map((s) => {'original': s.trim(), 'translated': s.trim()})
+        .toList();
   }
 
   /// Builds a map from dept name → {fee, discount} using the tuition_plans JSON.
@@ -884,24 +970,31 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const ShimmerBox(width: double.infinity, height: 280, borderRadius: 0),
+            const ShimmerBox(
+                width: double.infinity, height: 280, borderRadius: 0),
             const SizedBox(height: 32),
             const ShimmerBox(width: 250, height: 28, borderRadius: 12),
             const SizedBox(height: 12),
             const ShimmerBox(width: 150, height: 20, borderRadius: 8),
             const SizedBox(height: 40),
             Row(
-              children: List.generate(3, (i) => const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: ShimmerBox(width: double.infinity, height: 80, borderRadius: 16),
-                ),
-              )),
+              children: List.generate(
+                  3,
+                  (i) => const Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: ShimmerBox(
+                              width: double.infinity,
+                              height: 80,
+                              borderRadius: 16),
+                        ),
+                      )),
             ),
             const SizedBox(height: 40),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 24),
-              child: ShimmerBox(width: double.infinity, height: 64, borderRadius: 24),
+              child: ShimmerBox(
+                  width: double.infinity, height: 64, borderRadius: 24),
             ),
             const SizedBox(height: 32),
             const Padding(
@@ -911,9 +1004,11 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                 children: [
                   ShimmerBox(width: 120, height: 24, borderRadius: 8),
                   SizedBox(height: 16),
-                  ShimmerBox(width: double.infinity, height: 120, borderRadius: 20),
+                  ShimmerBox(
+                      width: double.infinity, height: 120, borderRadius: 20),
                   SizedBox(height: 32),
-                  ShimmerBox(width: double.infinity, height: 90, borderRadius: 20),
+                  ShimmerBox(
+                      width: double.infinity, height: 90, borderRadius: 20),
                 ],
               ),
             ),
@@ -947,7 +1042,9 @@ class _AcademicSection extends StatelessWidget {
         color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.04),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.black.withValues(alpha: 0.04),
         ),
         boxShadow: [
           BoxShadow(
@@ -966,7 +1063,9 @@ class _AcademicSection extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05),
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.06)
+                      : Colors.black.withValues(alpha: 0.05),
                 ),
               ),
             ),
@@ -1013,7 +1112,6 @@ class _AcademicSection extends StatelessWidget {
   }
 }
 
-
 // ─── Info row (label + value) ───────────────────────────────────────────────
 
 class _InfoRow extends StatelessWidget {
@@ -1054,7 +1152,9 @@ class _InfoRow extends StatelessWidget {
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Rabar',
-                  color: isDark ? Colors.white54 : AppColors.textDark.withValues(alpha: 0.5),
+                  color: isDark
+                      ? Colors.white54
+                      : AppColors.textDark.withValues(alpha: 0.5),
                 ),
               ),
               const SizedBox(height: 3),
@@ -1134,7 +1234,9 @@ class _StatsRow extends StatelessWidget {
         color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.black.withValues(alpha: 0.03),
         ),
         boxShadow: [
           BoxShadow(
@@ -1192,8 +1294,8 @@ class _StatItem extends StatelessWidget {
 class _VDivider extends StatelessWidget {
   const _VDivider();
   @override
-  Widget build(BuildContext context) =>
-      Container(width: 1, height: 40, color: Colors.grey.withValues(alpha: 0.1));
+  Widget build(BuildContext context) => Container(
+      width: 1, height: 40, color: Colors.grey.withValues(alpha: 0.1));
 }
 
 // ─── Video card ───────────────────────────────────────────────────────────────
@@ -1275,8 +1377,10 @@ class _VideoCardState extends State<_VideoCard> {
                 CachedNetworkImage(
                   imageUrl: thumb,
                   fit: BoxFit.cover,
-                  placeholder: (_, __) => Container(color: widget.typeColor.withValues(alpha: 0.15)),
-                  errorWidget: (_, __, ___) => Container(color: widget.typeColor.withValues(alpha: 0.15)),
+                  placeholder: (_, __) => Container(
+                      color: widget.typeColor.withValues(alpha: 0.15)),
+                  errorWidget: (_, __, ___) => Container(
+                      color: widget.typeColor.withValues(alpha: 0.15)),
                 ),
                 // Dark overlay
                 Container(color: Colors.black.withValues(alpha: 0.35)),
@@ -1296,7 +1400,8 @@ class _VideoCardState extends State<_VideoCard> {
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.play_arrow_rounded, color: Colors.redAccent, size: 38),
+                    child: const Icon(Icons.play_arrow_rounded,
+                        color: Colors.redAccent, size: 38),
                   ),
                 ),
               ],
@@ -1362,7 +1467,8 @@ class _ContactCard extends StatelessWidget {
       add(Icons.location_on_rounded, inst.addr!, const Color(0xFFF43F5E), null);
     }
     if (inst.email != null && inst.email!.isNotEmpty) {
-      add(Icons.email_rounded, inst.email!, const Color(0xFF3B82F6), 'mailto:${inst.email}');
+      add(Icons.email_rounded, inst.email!, const Color(0xFF3B82F6),
+          'mailto:${inst.email}');
     }
 
     if (items.isEmpty) {
@@ -1374,7 +1480,8 @@ class _ContactCard extends StatelessWidget {
         ),
       );
     }
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: items);
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start, children: items);
   }
 }
 
@@ -1404,7 +1511,9 @@ class _ContactTile extends StatelessWidget {
             color: isDark ? AppColors.darkCard : Colors.white,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.black.withValues(alpha: 0.03),
             ),
           ),
           child: Row(
@@ -1429,7 +1538,8 @@ class _ContactTile extends StatelessWidget {
                   ),
                 ),
               ),
-              Icon(Icons.arrow_forward_ios_rounded, size: 14, color: isDark ? Colors.white24 : Colors.black26),
+              Icon(Icons.arrow_forward_ios_rounded,
+                  size: 14, color: isDark ? Colors.white24 : Colors.black26),
             ],
           ),
         ),
@@ -1459,8 +1569,9 @@ class _CollegesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lang = Localizations.localeOf(context).languageCode;
-    final strDiscount = lang == 'en' ? 'Discount' : (lang == 'ar' ? 'خصم' : 'داشکان');
-    
+    final strDiscount =
+        lang == 'en' ? 'Discount' : (lang == 'ar' ? 'خصم' : 'داشکان');
+
     return Column(
       children: colleges.map((college) {
         final departments = college['departments'] as List<dynamic>? ?? [];
@@ -1479,7 +1590,8 @@ class _CollegesCard extends StatelessWidget {
             gradient: AppColors.primaryGradient,
             borderRadius: BorderRadius.circular(14),
           ),
-          child: const Icon(Icons.account_balance_rounded, color: Colors.white, size: 22),
+          child: const Icon(Icons.account_balance_rounded,
+              color: Colors.white, size: 22),
         );
         final titleRow = Row(
           children: [
@@ -1494,10 +1606,12 @@ class _CollegesCard extends StatelessWidget {
                 ),
               ),
             ),
-            if (college['fee'] != null && college['fee'].toString().trim().isNotEmpty)
+            if (college['fee'] != null &&
+                college['fee'].toString().trim().isNotEmpty)
               Container(
                 margin: const EdgeInsets.only(right: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -1517,12 +1631,18 @@ class _CollegesCard extends StatelessWidget {
         // Rows are built once and reused by all three layouts below.
         final deptRows = departments.map<Widget>((dept) {
           // dept can be a string (legacy) or a Map with name/fee/discount
-          final name = dept is Map ? (dept['translated'] ?? dept['original'] ?? '').toString() : dept.toString();
-          final fee  = dept is Map ? (dept['fee'] ?? '').toString().trim() : '';
-          final disc = dept is Map ? (dept['discount'] ?? '').toString().trim() : '';
-          final finalPrice = dept is Map ? (dept['final_price'] ?? '').toString().trim() : '';
-          final discAmount = dept is Map ? (dept['discount_amount'] ?? '').toString().trim() : '';
-          
+          final name = dept is Map
+              ? (dept['translated'] ?? dept['original'] ?? '').toString()
+              : dept.toString();
+          final fee = dept is Map ? (dept['fee'] ?? '').toString().trim() : '';
+          final disc =
+              dept is Map ? (dept['discount'] ?? '').toString().trim() : '';
+          final finalPrice =
+              dept is Map ? (dept['final_price'] ?? '').toString().trim() : '';
+          final discAmount = dept is Map
+              ? (dept['discount_amount'] ?? '').toString().trim()
+              : '';
+
           return Padding(
             padding: const EdgeInsets.only(top: 12),
             child: Row(
@@ -1530,7 +1650,8 @@ class _CollegesCard extends StatelessWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.only(right: 6, left: 6),
-                  child: Icon(Icons.check_circle_outline_rounded, color: AppColors.primary, size: 18),
+                  child: Icon(Icons.check_circle_outline_rounded,
+                      color: AppColors.primary, size: 18),
                 ),
                 Flexible(
                   fit: FlexFit.loose,
@@ -1540,83 +1661,93 @@ class _CollegesCard extends StatelessWidget {
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Rabar',
-                      color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.8),
+                      color: isDark
+                          ? Colors.white70
+                          : AppColors.textDark.withValues(alpha: 0.8),
                     ),
                   ),
                 ),
                 if (fee.isNotEmpty || disc.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
-                          child: Wrap(
-                            spacing: 6,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              if (fee.isNotEmpty)
-                                Text(
-                                  fee,
-                                  style: TextStyle(
-                                    fontSize: (disc.isNotEmpty) ? 12 : 13,
-                                    fontWeight: (disc.isNotEmpty) ? FontWeight.w600 : FontWeight.w800,
-                                    fontFamily: 'Rabar',
-                                    color: (disc.isNotEmpty) ? (isDark ? Colors.white54 : Colors.grey) : AppColors.primary,
-                                    decoration: (disc.isNotEmpty) ? TextDecoration.lineThrough : null,
-                                  ),
-                                ),
-                              if (finalPrice.isNotEmpty) ...[
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    '$strDiscount $disc${finalPrice.isNotEmpty ? '%' : ''}',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      fontFamily: 'Rabar',
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.green.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    finalPrice,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      fontFamily: 'Rabar',
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ),
-                              ] else if (disc.isNotEmpty) ...[
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    '$strDiscount $disc',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      fontFamily: 'Rabar',
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
+                    child: Wrap(
+                      spacing: 6,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        if (fee.isNotEmpty)
+                          Text(
+                            fee,
+                            style: TextStyle(
+                              fontSize: (disc.isNotEmpty) ? 12 : 13,
+                              fontWeight: (disc.isNotEmpty)
+                                  ? FontWeight.w600
+                                  : FontWeight.w800,
+                              fontFamily: 'Rabar',
+                              color: (disc.isNotEmpty)
+                                  ? (isDark ? Colors.white54 : Colors.grey)
+                                  : AppColors.primary,
+                              decoration: (disc.isNotEmpty)
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                            ),
                           ),
-                        ),
-
+                        if (finalPrice.isNotEmpty) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.red.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '$strDiscount $disc${finalPrice.isNotEmpty ? '%' : ''}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                fontFamily: 'Rabar',
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              finalPrice,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                fontFamily: 'Rabar',
+                                color: Colors.green,
+                              ),
+                            ),
+                          ),
+                        ] else if (disc.isNotEmpty) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.red.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '$strDiscount $disc',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                fontFamily: 'Rabar',
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
               ],
             ),
           );
@@ -1628,7 +1759,9 @@ class _CollegesCard extends StatelessWidget {
             color: isDark ? AppColors.darkCard : Colors.white,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.black.withValues(alpha: 0.03),
             ),
             boxShadow: [
               BoxShadow(
@@ -1642,7 +1775,8 @@ class _CollegesCard extends StatelessWidget {
           child: departments.isEmpty
               // Nothing to expand into — one plain row, no "no information" line.
               ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   child: Row(
                     children: [
                       leadingIcon,
@@ -1665,9 +1799,12 @@ class _CollegesCard extends StatelessWidget {
                       // Open by default — the departments are the point of this
                       // card, so don't make people tap to reveal them.
                       initiallyExpanded: true,
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
-                      collapsedShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
-                      tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(24))),
+                      collapsedShape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(24))),
+                      tilePadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 8),
                       leading: leadingIcon,
                       title: titleRow,
                       childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -1696,7 +1833,9 @@ class _PostCard extends StatelessWidget {
           color: isDark ? AppColors.darkCard : Colors.white,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.black.withValues(alpha: 0.03),
           ),
           boxShadow: [
             BoxShadow(
@@ -1711,13 +1850,15 @@ class _PostCard extends StatelessWidget {
           children: [
             if (post.imageUrl.isNotEmpty)
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(24)),
                 child: CachedNetworkImage(
                   imageUrl: post.imageUrl,
                   width: double.infinity,
                   height: 200,
                   fit: BoxFit.cover,
-                  placeholder: (_, __) => const ShimmerBox(width: double.infinity, height: 200, borderRadius: 0),
+                  placeholder: (_, __) => const ShimmerBox(
+                      width: double.infinity, height: 200, borderRadius: 0),
                   errorWidget: (_, __, ___) => const SizedBox(),
                 ),
               ),
@@ -1745,7 +1886,9 @@ class _PostCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         height: 1.6,
-                        color: isDark ? Colors.white70 : AppColors.textDark.withValues(alpha: 0.7),
+                        color: isDark
+                            ? Colors.white70
+                            : AppColors.textDark.withValues(alpha: 0.7),
                         fontFamily: 'Rabar',
                       ),
                     ),
@@ -1779,4 +1922,3 @@ class _PostCard extends StatelessWidget {
     );
   }
 }
-
