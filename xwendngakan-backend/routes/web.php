@@ -325,16 +325,16 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
             $calcDiscount = function($fee, $discount) {
                 $fStr = trim((string)$fee);
                 $dStr = trim((string)$discount);
-                if ($fStr === '' || $dStr === '') return $dStr;
+                if ($fStr === '' || $dStr === '') return ['discount' => $dStr, 'final_price' => ''];
                 
                 $f = (float) preg_replace('/[^0-9.]/', '', $fStr);
                 $d = (float) preg_replace('/[^0-9.]/', '', $dStr);
                 
                 if ($d > 0 && $d <= 100 && $f > 0) {
                     $final = $f - ($f * ($d / 100));
-                    return number_format($final, 0, '.', ',');
+                    return ['discount' => $dStr, 'final_price' => number_format($final, 0, '.', ',')];
                 }
-                return $dStr;
+                return ['discount' => $dStr, 'final_price' => ''];
             };
 
             $typeObj = InstitutionType::where('key', $data['type'])->first();
@@ -353,16 +353,16 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
                         $dnAr = trim((string)($dept['name_ar'] ?? ''));
                         $dnKbd = trim((string)($dept['name_kbd'] ?? ''));
                         $fee  = trim((string)($dept['fee'] ?? ''));
-                        $disc = $calcDiscount($fee, $dept['discount'] ?? '');
+                        $res  = $calcDiscount($fee, $dept['discount'] ?? '');
                         $depts[] = [
                             'name' => $dn, 'name_en' => $dnEn, 'name_ar' => $dnAr, 'name_kbd' => $dnKbd,
-                            'fee' => $fee, 'discount' => $disc
+                            'fee' => $fee, 'discount' => $res['discount'], 'final_price' => $res['final_price']
                         ];
                         $allDeptsJson[] = ['ku' => $dn, 'en' => $dnEn, 'ar' => $dnAr, 'kbd' => $dnKbd];
-                        $tuitionPlans[] = ['dept' => $dn, 'fee' => $fee, 'discount' => $disc];
+                        $tuitionPlans[] = ['dept' => $dn, 'fee' => $fee, 'discount' => $res['discount'], 'final_price' => $res['final_price']];
                     }
                     $cFee = trim((string)($col['fee'] ?? ''));
-                    $cDisc = $calcDiscount($cFee, $col['discount'] ?? '');
+                    $cRes = $calcDiscount($cFee, $col['discount'] ?? '');
 
                     $collegesJson[] = [
                         'name'     => $colName,
@@ -370,7 +370,8 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
                         'name_ar'  => trim((string)($col['name_ar'] ?? '')),
                         'name_kbd' => trim((string)($col['name_kbd'] ?? '')),
                         'fee'      => $cFee,
-                        'discount' => $cDisc,
+                        'discount' => $cRes['discount'],
+                        'final_price' => $cRes['final_price'],
                         'depts'    => $depts,
                     ];
                 }
@@ -386,12 +387,13 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
                     $dnKbd = trim((string)($simpleDeptsKbd[$i] ?? ''));
                     $allDeptsJson[] = ['ku' => $dn, 'en' => $dnEn, 'ar' => $dnAr, 'kbd' => $dnKbd];
                     $sFee = trim((string)($simpleFees[$i] ?? ''));
-                    $sDisc = $calcDiscount($sFee, $simpleDiscs[$i] ?? '');
+                    $sRes = $calcDiscount($sFee, $simpleDiscs[$i] ?? '');
 
                     $tuitionPlans[] = [
                         'dept'     => $dn,
                         'fee'      => $sFee,
-                        'discount' => $sDisc,
+                        'discount' => $sRes['discount'],
+                        'final_price' => $sRes['final_price'],
                     ];
                 }
                 $data['colleges'] = '';

@@ -642,6 +642,7 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                     final plan  = tuitionMap[deptMap['original']];
                     final fee   = plan?['fee'] ?? '';
                     final disc  = plan?['discount'] ?? '';
+                    final finalPrice = plan?['final_price'] ?? '';
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 6),
@@ -700,6 +701,23 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                                               fontWeight: FontWeight.w700,
                                               fontFamily: 'Rabar',
                                               color: Colors.green,
+                                            ),
+                                          ),
+                                        ),
+                                      if (finalPrice.isNotEmpty)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF43F5E).withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            finalPrice,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w800,
+                                              fontFamily: 'Rabar',
+                                              color: Color(0xFFF43F5E),
                                             ),
                                           ),
                                         ),
@@ -1477,6 +1495,7 @@ class _CollegesCard extends StatelessWidget {
           final name = dept is Map ? (dept['translated'] ?? dept['original'] ?? '').toString() : dept.toString();
           final fee  = dept is Map ? (dept['fee'] ?? '').toString().trim() : '';
           final disc = dept is Map ? (dept['discount'] ?? '').toString().trim() : '';
+          final finalPrice = dept is Map ? (dept['final_price'] ?? '').toString().trim() : '';
           
           return Padding(
             padding: const EdgeInsets.only(top: 12),
@@ -1538,6 +1557,23 @@ class _CollegesCard extends StatelessWidget {
                                       fontWeight: FontWeight.w700,
                                       fontFamily: 'Rabar',
                                       color: Colors.green,
+                                    ),
+                                  ),
+                                ),
+                              if (finalPrice.isNotEmpty)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF43F5E).withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    finalPrice,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      fontFamily: 'Rabar',
+                                      color: Color(0xFFF43F5E),
                                     ),
                                   ),
                                 ),
