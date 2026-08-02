@@ -258,14 +258,22 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
                 'web'      => 'nullable|url|max:255',
                 'clg'                    => 'nullable|array',
                 'clg.*.name'             => 'nullable|string|max:255',
+                'clg.*.name_en'          => 'nullable|string|max:255',
+                'clg.*.name_ar'          => 'nullable|string|max:255',
                 'clg.*.fee'              => 'nullable|string|max:50',
                 'clg.*.discount'         => 'nullable|string|max:20',
                 'clg.*.depts'            => 'nullable|array',
                 'clg.*.depts.*.name'     => 'nullable|string|max:255',
+                'clg.*.depts.*.name_en'  => 'nullable|string|max:255',
+                'clg.*.depts.*.name_ar'  => 'nullable|string|max:255',
                 'clg.*.depts.*.fee'      => 'nullable|string|max:50',
                 'clg.*.depts.*.discount' => 'nullable|string|max:20',
                 'simple_dept'            => 'nullable|array',
                 'simple_dept.*'          => 'nullable|string|max:255',
+                'simple_dept_en'         => 'nullable|array',
+                'simple_dept_en.*'       => 'nullable|string|max:255',
+                'simple_dept_ar'         => 'nullable|array',
+                'simple_dept_ar.*'       => 'nullable|string|max:255',
                 'simple_fee'             => 'nullable|array',
                 'simple_discount'        => 'nullable|array',
                 'fb'               => 'nullable|string|max:255',
@@ -298,13 +306,15 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
             // Build unified colleges JSON + tuition_plans from new nested form
             $clgInput    = $data['clg'] ?? [];
             $simpleDepts = $data['simple_dept'] ?? [];
+            $simpleDeptsEn = $data['simple_dept_en'] ?? [];
+            $simpleDeptsAr = $data['simple_dept_ar'] ?? [];
             $simpleFees  = $data['simple_fee'] ?? [];
             $simpleDiscs = $data['simple_discount'] ?? [];
-            unset($data['clg'], $data['simple_dept'], $data['simple_fee'], $data['simple_discount']);
+            unset($data['clg'], $data['simple_dept'], $data['simple_dept_en'], $data['simple_dept_ar'], $data['simple_fee'], $data['simple_discount']);
 
             $collegesJson = [];
             $tuitionPlans = [];
-            $allDeptNames = [];
+            $allDeptsJson = [];
 
             $typeObj = InstitutionType::where('key', $data['type'])->first();
             $hasColleges = $typeObj ? (bool)$typeObj->has_colleges : false;
@@ -318,27 +328,36 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
                     foreach (array_values($col['depts'] ?? []) as $dept) {
                         $dn = trim((string)($dept['name'] ?? ''));
                         if (!$dn) continue;
+                        $dnEn = trim((string)($dept['name_en'] ?? ''));
+                        $dnAr = trim((string)($dept['name_ar'] ?? ''));
                         $fee  = trim((string)($dept['fee'] ?? ''));
                         $disc = trim((string)($dept['discount'] ?? ''));
-                        $depts[]        = ['name' => $dn, 'fee' => $fee, 'discount' => $disc];
-                        $allDeptNames[] = $dn;
+                        $depts[] = [
+                            'name' => $dn, 'name_en' => $dnEn, 'name_ar' => $dnAr,
+                            'fee' => $fee, 'discount' => $disc
+                        ];
+                        $allDeptsJson[] = ['ku' => $dn, 'en' => $dnEn, 'ar' => $dnAr];
                         $tuitionPlans[] = ['dept' => $dn, 'fee' => $fee, 'discount' => $disc];
                     }
                     $collegesJson[] = [
                         'name'     => $colName,
+                        'name_en'  => trim((string)($col['name_en'] ?? '')),
+                        'name_ar'  => trim((string)($col['name_ar'] ?? '')),
                         'fee'      => trim((string)($col['fee'] ?? '')),
                         'discount' => trim((string)($col['discount'] ?? '')),
                         'depts'    => $depts,
                     ];
                 }
                 $data['colleges'] = json_encode($collegesJson, JSON_UNESCAPED_UNICODE);
-                $data['depts']    = implode("\n", $allDeptNames);
+                $data['depts']    = json_encode($allDeptsJson, JSON_UNESCAPED_UNICODE);
             } else {
                 // Mode 2: simple depts (schools etc.)
                 foreach ($simpleDepts as $i => $dn) {
                     $dn = trim((string)$dn);
                     if (!$dn) continue;
-                    $allDeptNames[] = $dn;
+                    $dnEn = trim((string)($simpleDeptsEn[$i] ?? ''));
+                    $dnAr = trim((string)($simpleDeptsAr[$i] ?? ''));
+                    $allDeptsJson[] = ['ku' => $dn, 'en' => $dnEn, 'ar' => $dnAr];
                     $tuitionPlans[] = [
                         'dept'     => $dn,
                         'fee'      => trim((string)($simpleFees[$i] ?? '')),
@@ -346,7 +365,7 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
                     ];
                 }
                 $data['colleges'] = '';
-                $data['depts']    = implode("\n", $allDeptNames);
+                $data['depts']    = json_encode($allDeptsJson, JSON_UNESCAPED_UNICODE);
             }
             // Pass array directly — model cast handles json encoding
             $data['tuition_plans'] = $tuitionPlans;

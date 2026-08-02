@@ -610,8 +610,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
           ],
         );
       case 1: // Colleges & Departments
-        final colleges = _parseColleges(inst.colleges);
-        final depts = _parseDepts(inst.depts);
+        final colleges = _parseColleges(inst.colleges, lang);
+        final depts = _parseDepts(inst.depts, lang);
         // Build a dept-name → {fee,discount} lookup from tuition_plans
         final tuitionMap = _buildTuitionMap(inst.tuitionPlans);
         if (colleges.isEmpty && depts.isEmpty) {
@@ -637,32 +637,31 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                 accentColor: AppColors.typeColor(inst.type),
                 isDark: isDark,
                 child: Column(
-                  children: depts.map((dept) {
-                    final plan  = tuitionMap[dept];
+                  children: depts.map((deptMap) {
+                    final deptName = deptMap['translated'] ?? deptMap['original'] ?? '';
+                    final plan  = tuitionMap[deptMap['original']];
                     final fee   = plan?['fee'] ?? '';
                     final disc  = plan?['discount'] ?? '';
                     return Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(bottom: 6),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(top: 4),
+                            padding: const EdgeInsets.only(top: 1.5, right: 2, left: 6),
                             child: Container(
-                              width: 8, height: 8,
+                              width: 5, height: 5,
                               decoration: BoxDecoration(
-                                color: AppColors.typeColor(inst.type),
+                                color: isDark ? Colors.white60 : Colors.black45,
                                 shape: BoxShape.circle,
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  dept,
+                                  deptName,
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
@@ -733,35 +732,79 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
     }
   }
 
-  List<Map<String, dynamic>> _parseColleges(String? raw) {
+  List<Map<String, dynamic>> _parseColleges(String? raw, String lang) {
     if (raw == null || raw.isEmpty) return [];
     final trimmed = raw.trim();
-    
-    // 1. Try JSON format
     if (trimmed.startsWith('[')) {
       try {
         final List<dynamic> decoded = jsonDecode(trimmed);
-        return decoded.map((e) => Map<String, dynamic>.from(e)).toList();
+        return decoded.map((c) {
+          if (c is! Map) return <String, dynamic>{};
+          
+          String cNameTranslated = c['name'] ?? '';
+          if (lang == 'en' && c['name_en'] != null && c['name_en'].toString().isNotEmpty) {
+            cNameTranslated = c['name_en'];
+          } else if (lang == 'ar' && c['name_ar'] != null && c['name_ar'].toString().isNotEmpty) {
+            cNameTranslated = c['name_ar'];
+          }
+
+          final deptsList = (c['depts'] as List<dynamic>? ?? []).map((d) {
+             if (d is Map) {
+               String dNameTranslated = d['name'] ?? '';
+               if (lang == 'en' && d['name_en'] != null && d['name_en'].toString().isNotEmpty) {
+                 dNameTranslated = d['name_en'];
+               } else if (lang == 'ar' && d['name_ar'] != null && d['name_ar'].toString().isNotEmpty) {
+                 dNameTranslated = d['name_ar'];
+               }
+               return {
+                  'original': d['name'] ?? '',
+                  'translated': dNameTranslated,
+                  'fee': d['fee'],
+                  'discount': d['discount'],
+               };
+             }
+             return d;
+          }).toList();
+          
+          return {
+            'name': cNameTranslated, // display name
+            'original': c['name'],
+            'departments': deptsList,
+          };
+        }).toList();
       } catch (_) {}
     }
     
     // 2. Fallback to comma-separated string
     return trimmed.split(',')
         .where((s) => s.trim().isNotEmpty)
-        .map((s) => {'name': s.trim(), 'departments': []})
+        .map((s) => {'name': s.trim(), 'original': s.trim(), 'departments': []})
         .toList();
   }
 
-  List<String> _parseDepts(String? raw) {
+  List<Map<String, dynamic>> _parseDepts(String? raw, String lang) {
     if (raw == null || raw.isEmpty) return [];
     final trimmed = raw.trim();
     if (trimmed.startsWith('[')) {
       try {
         final List<dynamic> decoded = jsonDecode(trimmed);
-        return decoded.map((e) => e.toString()).toList();
+        return decoded.map((e) {
+          if (e is Map) {
+             String translated = e['ku'] ?? e['name'] ?? '';
+             if (lang == 'en' && e['en'] != null && e['en'].toString().isNotEmpty) translated = e['en'];
+             else if (lang == 'ar' && e['ar'] != null && e['ar'].toString().isNotEmpty) translated = e['ar'];
+             return {
+                'original': e['ku'] ?? e['name'] ?? '',
+                'translated': translated,
+             };
+          } else if (e is String) {
+             return {'original': e, 'translated': e};
+          }
+          return {'original': '', 'translated': ''};
+        }).toList();
       } catch (_) {}
     }
-    return trimmed.split('\n').where((s) => s.trim().isNotEmpty).map((s) => s.trim()).toList();
+    return trimmed.split('\n').where((s) => s.trim().isNotEmpty).map((s) => {'original': s.trim(), 'translated': s.trim()}).toList();
   }
 
   /// Builds a map from dept name → {fee, discount} using the tuition_plans JSON.
@@ -1368,6 +1411,7 @@ class _CollegesCard extends StatelessWidget {
       children: colleges.map((college) {
         final departments = college['departments'] as List<dynamic>? ?? [];
         final collegeName = (college['name'] ?? '').toString().trim();
+        if (collegeName.isEmpty) return const SizedBox.shrink();
         // Some institutions store their departments under a college that is just
         // called "Departments" — the same word as the tab this list sits in.
         // Matched against every language, since the label is stored data and has
@@ -1419,7 +1463,7 @@ class _CollegesCard extends StatelessWidget {
         // Rows are built once and reused by all three layouts below.
         final deptRows = departments.map<Widget>((dept) {
           // dept can be a string (legacy) or a Map with name/fee/discount
-          final name = dept is Map ? (dept['name'] ?? '').toString() : dept.toString();
+          final name = dept is Map ? (dept['translated'] ?? dept['original'] ?? '').toString() : dept.toString();
           final fee  = dept is Map ? (dept['fee'] ?? '').toString().trim() : '';
           final disc = dept is Map ? (dept['discount'] ?? '').toString().trim() : '';
           return Padding(

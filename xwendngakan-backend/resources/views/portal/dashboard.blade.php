@@ -1299,6 +1299,17 @@
           </div>
         </div>
 
+        <!-- TRANSLATE ALL SECTION -->
+        <div class="db-card" style="border-color: var(--gold); box-shadow: 0 0 20px rgba(226, 176, 66, 0.1);">
+          <div style="text-align: center;">
+            <h4 style="color: var(--gold); margin-bottom: 10px;">وەرگێڕانی گشتی (پێویستە)</h4>
+            <p style="font-size: .85rem; color: var(--txt2); margin-bottom: 15px;">پێش ئەوەی زانیارییەکان پاشەکەوت بکەیت، پێویستە کلیک لەم دوگمەیە بکەیت بۆ وەرگێڕانی هەموو بەشەکان بۆ ئینگلیزی و عەرەبی.</p>
+            <button type="button" id="btn-translate-all" class="btn-primary" onclick="translateAll()" style="width: 100%; max-width: 300px;">
+              <span>🌐</span> <span>وەرگێڕانی هەمووی بە یەکجار</span>
+            </button>
+          </div>
+        </div>
+
         <div style="display:flex;align-items:center;gap:1rem;margin-top:.5rem;padding-top:1.5rem;border-top:1px solid var(--border)">
           <button type="submit" id="btn-save-inst" class="btn-primary" style="padding:14px 42px;font-size:.95rem">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0" class="btn-icon"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -1664,6 +1675,15 @@ async function translateDeptNames(btn) {
                 hint.style.cssText = 'display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7';
                 inp.after(hint);
             }
+
+            // Create hidden inputs for translation
+            const nameEn = inp.name.replace('[name]', '[name_en]').replace('simple_dept[]', 'simple_dept_en[]');
+            const nameAr = inp.name.replace('[name]', '[name_ar]').replace('simple_dept[]', 'simple_dept_ar[]');
+            
+            // Remove old hidden inputs if any
+            const parent = inp.parentElement;
+            parent.querySelectorAll(`input[name="${nameEn}"], input[name="${nameAr}"]`).forEach(e => e.remove());
+
             hint.textContent = '⏳ وەرگێران...';
             const [arRes, enRes] = await Promise.all([
                 fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ckb&tl=ar&dt=t&q=${encodeURIComponent(text)}`).then(r => r.json()),
@@ -1672,6 +1692,12 @@ async function translateDeptNames(btn) {
             const ar = arRes?.[0]?.map(p => p[0] ?? '').join('') ?? '';
             const en = enRes?.[0]?.map(p => p[0] ?? '').join('') ?? '';
             hint.innerHTML = `<span style="color:var(--gold);font-weight:800">AR</span> ${ar}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> ${en}`;
+
+            // Add hidden inputs
+            const hEn = document.createElement('input'); hEn.type = 'hidden'; hEn.name = nameEn; hEn.value = en;
+            const hAr = document.createElement('input'); hAr.type = 'hidden'; hAr.name = nameAr; hAr.value = ar;
+            parent.appendChild(hEn);
+            parent.appendChild(hAr);
         }
     } catch { alert('هەڵەیەک ڕوویدا لە کاتی وەرگێڕان.'); }
     finally { btn.classList.remove('loading'); btn.disabled = false; }
@@ -1701,6 +1727,50 @@ async function autoTranslate(sourceId, targetIds, btn) {
         }
     } catch { alert('هەڵەیەک ڕوویدا لە کاتی وەرگێڕان.'); }
     finally { btn.classList.remove('loading'); btn.disabled = false; }
+}
+
+let isTranslatedAll = false;
+async function translateAll() {
+    const btn = document.getElementById('btn-translate-all');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span>⏳</span> <span>لە پرۆسەدایە... تکایە چاوەڕێبە</span>';
+    btn.disabled = true;
+    
+    try {
+        // Translate Name
+        if (document.getElementById('nku').value.trim()) {
+            await autoTranslate('nku', ['nkbd', 'nar', 'nen'], document.querySelector('button[onclick*="autoTranslate(\'nku\'"]'));
+        }
+        // Translate Description
+        if (document.getElementById('desc').value.trim() || (quillEditors['desc'] && quillEditors['desc'].getText().trim())) {
+            await autoTranslate('desc', ['desc_kbd', 'desc_ar', 'desc_en'], document.querySelector('button[onclick*="autoTranslate(\'desc\'"]'));
+        }
+        // Translate Departments
+        if (document.getElementById('academic-section').style.display !== 'none') {
+            await translateDeptNames(document.querySelector('button[onclick*="translateDeptNames"]'));
+        }
+        isTranslatedAll = true;
+        btn.innerHTML = '<span>✅</span> <span>وەرگێڕان تەواو بوو</span>';
+        btn.classList.replace('btn-primary', 'btn-outline');
+    } catch (e) {
+        alert('هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵبدەرەوە.');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+
+const originalHandleAjaxSubmit = window.handleAjaxSubmit;
+window.handleAjaxSubmit = function(e, btnId) {
+    if (btnId === 'btn-save-inst' && !isTranslatedAll) {
+        e.preventDefault();
+        alert('پێویستە سەرەتا کلیک لە دوگمەی "وەرگێڕانی هەمووی بە یەکجار" بکەیت پێش پاشەکەوتکردن!');
+        // Scroll to the button
+        document.getElementById('btn-translate-all').scrollIntoView({behavior: 'smooth', block: 'center'});
+        return false;
+    }
+    if (originalHandleAjaxSubmit) {
+        return originalHandleAjaxSubmit(e, btnId);
+    }
 }
 const TYPE_FLAGS = @json($typeFlags);
 function handleTypeChange(type) {
