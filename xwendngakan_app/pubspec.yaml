@@ -1,7 +1,7 @@
 name: xwendngakan_app
 description: "Khwenden - Xwendngakan"
 publish_to: 'none'
-version: 1.0.10+18
+version: 1.0.11+19
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
