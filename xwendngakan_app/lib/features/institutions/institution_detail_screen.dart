@@ -746,6 +746,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
             cNameTranslated = c['name_en'];
           } else if (lang == 'ar' && c['name_ar'] != null && c['name_ar'].toString().isNotEmpty) {
             cNameTranslated = c['name_ar'];
+          } else if (lang == 'kbd' && c['name_kbd'] != null && c['name_kbd'].toString().isNotEmpty) {
+            cNameTranslated = c['name_kbd'];
           }
 
           final deptsList = (c['depts'] as List<dynamic>? ?? []).map((d) {
@@ -755,6 +757,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                  dNameTranslated = d['name_en'];
                } else if (lang == 'ar' && d['name_ar'] != null && d['name_ar'].toString().isNotEmpty) {
                  dNameTranslated = d['name_ar'];
+               } else if (lang == 'kbd' && d['name_kbd'] != null && d['name_kbd'].toString().isNotEmpty) {
+                 dNameTranslated = d['name_kbd'];
                }
                return {
                   'original': d['name'] ?? '',
@@ -793,6 +797,7 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
              String translated = e['ku'] ?? e['name'] ?? '';
              if (lang == 'en' && e['en'] != null && e['en'].toString().isNotEmpty) translated = e['en'];
              else if (lang == 'ar' && e['ar'] != null && e['ar'].toString().isNotEmpty) translated = e['ar'];
+             else if (lang == 'kbd' && e['kbd'] != null && e['kbd'].toString().isNotEmpty) translated = e['kbd'];
              return {
                 'original': e['ku'] ?? e['name'] ?? '',
                 'translated': translated,

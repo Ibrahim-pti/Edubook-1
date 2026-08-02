@@ -1051,6 +1051,7 @@
                               'name'     => is_string($d) ? $d : ($d['name'] ?? $d['dept_name'] ?? ''),
                               'name_en'  => is_string($d) ? '' : ($d['name_en'] ?? ''),
                               'name_ar'  => is_string($d) ? '' : ($d['name_ar'] ?? ''),
+                              'name_kbd' => is_string($d) ? '' : ($d['name_kbd'] ?? ''),
                               'fee'      => is_string($d) ? '' : ($d['fee'] ?? ''),
                               'discount' => is_string($d) ? '' : ($d['discount'] ?? ''),
                           ];
@@ -1081,23 +1082,25 @@
               }
               foreach ($tuitionList as $t) {
                   $ku = trim($t['dept'] ?? '');
-                  $en = ''; $ar = '';
+                  $en = ''; $ar = ''; $kbd = '';
                   foreach ($deptsJson as $dj) {
                       if (($dj['ku'] ?? '') === $ku) {
                           $en = $dj['en'] ?? '';
                           $ar = $dj['ar'] ?? '';
+                          $kbd = $dj['kbd'] ?? '';
                           break;
                       }
                   }
                   $t['name_en'] = $en;
                   $t['name_ar'] = $ar;
+                  $t['name_kbd'] = $kbd;
                   $simpleDeptRows[] = $t;
               }
           } else {
               $deptsStr = trim($institution?->depts ?? '');
               if (!str_starts_with($deptsStr, '[')) {
                   $deptsList = array_filter(array_map('trim', explode("\n", $deptsStr)));
-                  $simpleDeptRows = array_map(fn($d) => ['dept' => $d, 'fee' => '', 'discount' => '', 'name_en' => '', 'name_ar' => ''], $deptsList);
+                  $simpleDeptRows = array_map(fn($d) => ['dept' => $d, 'fee' => '', 'discount' => '', 'name_en' => '', 'name_ar' => '', 'name_kbd' => ''], $deptsList);
               }
           }
         @endphp
@@ -1131,10 +1134,11 @@
                         @php $di = $loop->index; @endphp
                         <div class="dept-row">
                           <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][name]" class="f-input" value="{{ $dept['name'] ?? '' }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                          @if(!empty($dept['name_ar']) || !empty($dept['name_en']))
-                            <small class="tr-hint" style="display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7"><span style="color:var(--gold);font-weight:800">AR</span> {{ $dept['name_ar'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> {{ $dept['name_en'] ?? '' }}</small>
+                          @if(!empty($dept['name_ar']) || !empty($dept['name_en']) || !empty($dept['name_kbd']))
+                            <small class="tr-hint" style="display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7"><span style="color:var(--gold);font-weight:800">AR</span> {{ $dept['name_ar'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> {{ $dept['name_en'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">KBD</span> {{ $dept['name_kbd'] ?? '' }}</small>
                             <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_en]" value="{{ $dept['name_en'] ?? '' }}">
                             <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_ar]" value="{{ $dept['name_ar'] ?? '' }}">
+                            <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_kbd]" value="{{ $dept['name_kbd'] ?? '' }}">
                           @endif
                           <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][fee]" class="f-input currency-input" value="{{ $dept['fee'] ?? '' }}" placeholder="پارە (150,000)">
                           <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][discount]" class="f-input" value="{{ $dept['discount'] }}" placeholder="داشکان (10%)">
@@ -1195,10 +1199,11 @@
               @forelse($simpleDeptRows as $row)
                 <div class="fee-row">
                   <input type="text" name="simple_dept[]" class="f-input" value="{{ $row['dept'] ?? $row['name'] ?? '' }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                  @if(!empty($row['name_ar']) || !empty($row['name_en']))
-                    <small class="tr-hint" style="display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7"><span style="color:var(--gold);font-weight:800">AR</span> {{ $row['name_ar'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> {{ $row['name_en'] ?? '' }}</small>
+                  @if(!empty($row['name_ar']) || !empty($row['name_en']) || !empty($row['name_kbd']))
+                    <small class="tr-hint" style="display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7"><span style="color:var(--gold);font-weight:800">AR</span> {{ $row['name_ar'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> {{ $row['name_en'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">KBD</span> {{ $row['name_kbd'] ?? '' }}</small>
                     <input type="hidden" name="simple_dept_en[]" value="{{ $row['name_en'] ?? '' }}">
                     <input type="hidden" name="simple_dept_ar[]" value="{{ $row['name_ar'] ?? '' }}">
+                    <input type="hidden" name="simple_dept_kbd[]" value="{{ $row['name_kbd'] ?? '' }}">
                   @endif
                   <input type="text" name="simple_fee[]" class="f-input currency-input" value="{{ $row['fee'] ?? '' }}" placeholder="پارە (150,000)">
                   <input type="text" name="simple_discount[]" class="f-input" value="{{ $row['discount'] ?? '' }}" placeholder="داشکان (10%)">
@@ -1577,7 +1582,8 @@ function kurmanjiLatinToArabic(text) {
 }
 
 function attachCurrencyFormatter() {
-    document.querySelectorAll('.currency-input').forEach(input => {
+    document.querySelectorAll('.currency-input:not(.formatted)').forEach(input => {
+        input.classList.add('formatted');
         // Format on load
         input.value = formatCurrency(input.value);
         // Format on input
@@ -1737,25 +1743,32 @@ async function translateDeptNames(btn) {
             // Create hidden inputs for translation
             const nameEn = inp.name.replace('[name]', '[name_en]').replace('simple_dept[]', 'simple_dept_en[]');
             const nameAr = inp.name.replace('[name]', '[name_ar]').replace('simple_dept[]', 'simple_dept_ar[]');
+            const nameKbd = inp.name.replace('[name]', '[name_kbd]').replace('simple_dept[]', 'simple_dept_kbd[]');
             
             // Remove old hidden inputs if any
             const parent = inp.parentElement;
-            parent.querySelectorAll(`input[name="${nameEn}"], input[name="${nameAr}"]`).forEach(e => e.remove());
+            parent.querySelectorAll(`input[name="${nameEn}"], input[name="${nameAr}"], input[name="${nameKbd}"]`).forEach(e => e.remove());
 
             hint.textContent = '⏳ وەرگێران...';
-            const [arRes, enRes] = await Promise.all([
+            const [arRes, enRes, kbdRes] = await Promise.all([
                 fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ckb&tl=ar&dt=t&q=${encodeURIComponent(text)}`).then(r => r.json()),
                 fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ckb&tl=en&dt=t&q=${encodeURIComponent(text)}`).then(r => r.json()),
+                fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ckb&tl=ku&dt=t&q=${encodeURIComponent(text)}`).then(r => r.json()),
             ]);
             const ar = arRes?.[0]?.map(p => p[0] ?? '').join('') ?? '';
             const en = enRes?.[0]?.map(p => p[0] ?? '').join('') ?? '';
-            hint.innerHTML = `<span style="color:var(--gold);font-weight:800">AR</span> ${ar}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> ${en}`;
+            let kbd = kbdRes?.[0]?.map(p => p[0] ?? '').join('') ?? '';
+            kbd = kurmanjiLatinToArabic(kbd);
+            
+            hint.innerHTML = `<span style="color:var(--gold);font-weight:800">AR</span> ${ar}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> ${en}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">KBD</span> ${kbd}`;
 
             // Add hidden inputs
             const hEn = document.createElement('input'); hEn.type = 'hidden'; hEn.name = nameEn; hEn.value = en;
             const hAr = document.createElement('input'); hAr.type = 'hidden'; hAr.name = nameAr; hAr.value = ar;
+            const hKbd = document.createElement('input'); hKbd.type = 'hidden'; hKbd.name = nameKbd; hKbd.value = kbd;
             parent.appendChild(hEn);
             parent.appendChild(hAr);
+            parent.appendChild(hKbd);
         }
     } catch { alert('هەڵەیەک ڕوویدا لە کاتی وەرگێڕان.'); }
     finally { if (btn) { btn.classList.remove('loading'); btn.disabled = false; } }
@@ -1887,7 +1900,7 @@ function addCollege() {
           `<div class="depts-wrap">` +
             `<div class="dept-row">` +
               `<input type="text" name="clg[${ci}][depts][0][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
-              `<input type="text" name="clg[${ci}][depts][0][fee]" class="f-input" placeholder="پارە (150,000)">` +
+              `<input type="text" name="clg[${ci}][depts][0][fee]" class="f-input currency-input" placeholder="پارە (150,000)">` +
               `<input type="text" name="clg[${ci}][depts][0][discount]" class="f-input" placeholder="داشکان (10%)">` +
               `<button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>` +
             `</div>` +
@@ -1895,6 +1908,7 @@ function addCollege() {
           `<button type="button" class="add-dept-btn" onclick="addDept(this)">＋ بەش زیاد بکە</button>` +
         `</div>`;
     container.appendChild(card);
+    attachCurrencyFormatter();
     card.querySelector('input').focus();
 }
 function removeCollege(btn) {
@@ -1911,10 +1925,11 @@ function addDept(btn) {
     row.className = 'dept-row';
     row.innerHTML =
         `<input type="text" name="clg[${ci}][depts][${di}][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
-        `<input type="text" name="clg[${ci}][depts][${di}][fee]" class="f-input" placeholder="پارە (150,000)">` +
+        `<input type="text" name="clg[${ci}][depts][${di}][fee]" class="f-input currency-input" placeholder="پارە (150,000)">` +
         `<input type="text" name="clg[${ci}][depts][${di}][discount]" class="f-input" placeholder="داشکان (10%)">` +
         `<button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>`;
     wrap.appendChild(row);
+    attachCurrencyFormatter();
     row.querySelector('input').focus();
 }
 function removeDept(btn) {
@@ -1928,10 +1943,11 @@ function addSimpleDeptRow() {
     row.className = 'fee-row';
     row.innerHTML =
         `<input type="text" name="simple_dept[]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
-        `<input type="text" name="simple_fee[]" class="f-input" placeholder="پارە (150,000)">` +
+        `<input type="text" name="simple_fee[]" class="f-input currency-input" placeholder="پارە (150,000)">` +
         `<input type="text" name="simple_discount[]" class="f-input" placeholder="داشکان (10%)">` +
         `<button type="button" class="dept-del-btn" onclick="removeRow(this)">✕</button>`;
     list.appendChild(row);
+    attachCurrencyFormatter();
     row.querySelector('input').focus();
 }
 function removeRow(btn) {
