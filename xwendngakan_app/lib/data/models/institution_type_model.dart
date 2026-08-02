@@ -25,4 +25,15 @@ class InstitutionTypeModel {
       icon: json['icon'],
     );
   }
+
+  String localizedName(String lang) {
+    switch (lang) {
+      case 'en':
+        return (nameEn != null && nameEn!.isNotEmpty) ? nameEn! : name;
+      case 'ar':
+        return (nameAr != null && nameAr!.isNotEmpty) ? nameAr! : name;
+      default:
+        return name;
+    }
+  }
 }

@@ -73,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final theme = Provider.of<ThemeProvider>(context);
     final prov = Provider.of<InstitutionsProvider>(context);
     final isDark = theme.isDark;
+    final lang = locale.locale.languageCode;
 
     return Scaffold(
         backgroundColor: isDark ? AppColors.darkBg : AppColors.lightBg,
@@ -272,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         final inst = prov.institutions[i];
                         return InstitutionCard(
                           institution: inst,
-                          lang: locale.locale.languageCode,
+                          lang: lang,
                           isFavorite: prov.favorites.contains(inst.id),
                           onFavorite: () => prov.toggleFavorite(inst.id),
                           onTap: () => context.push('/institutions/${inst.id}'),
@@ -633,8 +634,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               runSpacing: 10,
                               children: prov.institutionTypes.map((t) {
                                 final isSelected = selectedType == t.key;
+                                final lang = Localizations.localeOf(context).languageCode;
                                 return _FilterChip(
-                                  label: '${t.emoji ?? ''} ${t.name}'.trim(),
+                                  label: '${t.emoji ?? ''} ${t.localizedName(lang)}'.trim(),
                                   isSelected: isSelected,
                                   isDark: isDark,
                                   onTap: () => setState(() {
@@ -796,6 +798,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<_SubFilterItem> _getSubFilters(List<InstitutionTypeModel> allTypes) {
     final l = AppLocalizations.of(context);
+    final lang = Localizations.localeOf(context).languageCode;
     List<_SubFilterItem> items = [];
     items.add(
         _SubFilterItem(id: 'all', name: l.allFilter, icon: Icons.apps_rounded));
@@ -805,14 +808,14 @@ class _HomeScreenState extends State<HomeScreen> {
       final mheTypes = allTypes.where((t) => mheKeys.contains(t.key));
       for (var t in mheTypes) {
         items.add(_SubFilterItem(
-            id: t.key, name: t.name, type: t.key, emoji: t.emoji));
+            id: t.key, name: t.localizedName(lang), type: t.key, emoji: t.emoji));
       }
     } else if (_selectedParentFilter == 'moe') {
       final moeKeys = ['school', 'kg', 'inst5'];
       final moeTypes = allTypes.where((t) => moeKeys.contains(t.key));
       for (var t in moeTypes) {
         items.add(_SubFilterItem(
-            id: t.key, name: t.name, type: t.key, emoji: t.emoji));
+            id: t.key, name: t.localizedName(lang), type: t.key, emoji: t.emoji));
       }
     } else if (_selectedParentFilter == 'others') {
       final knownKeys = [
@@ -828,7 +831,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final otherTypes = allTypes.where((t) => !knownKeys.contains(t.key));
       for (var t in otherTypes) {
         items.add(_SubFilterItem(
-            id: t.key, name: t.name, type: t.key, emoji: t.emoji));
+            id: t.key, name: t.localizedName(lang), type: t.key, emoji: t.emoji));
       }
     }
 

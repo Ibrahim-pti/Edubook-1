@@ -95,7 +95,7 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
                           },
                         ),
                         ...prov.institutionTypes.map((type) => _FilterChip(
-                              label: '${type.emoji ?? ''} ${lang == 'ku' ? type.name : (lang == 'ar' ? (type.nameAr ?? type.name) : (type.nameEn ?? type.name))}',
+                              label: '${type.emoji ?? ''} ${type.localizedName(lang)}',
                               isSelected: _selectedType == type.key,
                               onTap: () {
                                 setState(() => _selectedType = type.key);
@@ -265,7 +265,7 @@ class _InstitutionsScreenState extends State<InstitutionsScreen> {
                       ...prov.institutionTypes.map((type) {
                         final isSelected = tempType == type.key;
                         final lang = Localizations.localeOf(context).languageCode;
-                        final label = lang == 'ku' ? type.name : (lang == 'ar' ? (type.nameAr ?? type.name) : (type.nameEn ?? type.name));
+                        final label = type.localizedName(lang);
                         return Padding(
                           padding: const EdgeInsets.only(right: 8),
                           child: ChoiceChip(

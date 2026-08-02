@@ -93,6 +93,14 @@ class TranslateInstitutions extends Command
                                     $deptsDirty = true;
                                     $dirty = true;
                                 }
+                            } elseif (is_string($d)) {
+                                $d = [
+                                    'ku' => $d,
+                                    'en' => $this->translateText($d, 'en'),
+                                    'ar' => $this->translateText($d, 'ar')
+                                ];
+                                $deptsDirty = true;
+                                $dirty = true;
                             }
                         }
                         if ($deptsDirty) {
