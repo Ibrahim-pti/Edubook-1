@@ -1133,20 +1133,24 @@
                       @forelse($col['depts'] as $dept)
                         @php $di = $loop->index; @endphp
                         <div class="dept-row">
-                          <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][name]" class="f-input" value="{{ $dept['name'] ?? '' }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                          @if(!empty($dept['name_ar']) || !empty($dept['name_en']) || !empty($dept['name_kbd']))
-                            <small class="tr-hint" style="display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7"><span style="color:var(--gold);font-weight:800">AR</span> {{ $dept['name_ar'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> {{ $dept['name_en'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">KBD</span> {{ $dept['name_kbd'] ?? '' }}</small>
-                            <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_en]" value="{{ $dept['name_en'] ?? '' }}">
-                            <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_ar]" value="{{ $dept['name_ar'] ?? '' }}">
-                            <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_kbd]" value="{{ $dept['name_kbd'] ?? '' }}">
-                          @endif
+                          <div style="display:flex; flex-direction:column; min-width:0;">
+                            <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][name]" class="f-input tr-input" value="{{ $dept['name'] ?? '' }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
+                            @if(!empty($dept['name_ar']) || !empty($dept['name_en']) || !empty($dept['name_kbd']))
+                              <small class="tr-hint" style="display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7"><span style="color:var(--gold);font-weight:800">AR</span> {{ $dept['name_ar'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> {{ $dept['name_en'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">KBD</span> {{ $dept['name_kbd'] ?? '' }}</small>
+                              <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_en]" value="{{ $dept['name_en'] ?? '' }}">
+                              <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_ar]" value="{{ $dept['name_ar'] ?? '' }}">
+                              <input type="hidden" name="clg[{{ $ci }}][depts][{{ $di }}][name_kbd]" value="{{ $dept['name_kbd'] ?? '' }}">
+                            @endif
+                          </div>
                           <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][fee]" class="f-input currency-input" value="{{ $dept['fee'] ?? '' }}" placeholder="پارە (150,000)">
                           <input type="text" name="clg[{{ $ci }}][depts][{{ $di }}][discount]" class="f-input" value="{{ $dept['discount'] }}" placeholder="داشکان (10%)">
                           <button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>
                         </div>
                       @empty
                         <div class="dept-row">
-                          <input type="text" name="clg[{{ $ci }}][depts][0][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
+                          <div style="display:flex; flex-direction:column; min-width:0;">
+                            <input type="text" name="clg[{{ $ci }}][depts][0][name]" class="f-input tr-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
+                          </div>
                           <input type="text" name="clg[{{ $ci }}][depts][0][fee]" class="f-input currency-input" placeholder="پارە (150,000)">
                           <input type="text" name="clg[{{ $ci }}][depts][0][discount]" class="f-input" placeholder="داشکان (10%)">
                           <button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>
@@ -1198,20 +1202,24 @@
             <div id="depts-list">
               @forelse($simpleDeptRows as $row)
                 <div class="fee-row">
-                  <input type="text" name="simple_dept[]" class="f-input" value="{{ $row['dept'] ?? $row['name'] ?? '' }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
-                  @if(!empty($row['name_ar']) || !empty($row['name_en']) || !empty($row['name_kbd']))
-                    <small class="tr-hint" style="display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7"><span style="color:var(--gold);font-weight:800">AR</span> {{ $row['name_ar'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> {{ $row['name_en'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">KBD</span> {{ $row['name_kbd'] ?? '' }}</small>
-                    <input type="hidden" name="simple_dept_en[]" value="{{ $row['name_en'] ?? '' }}">
-                    <input type="hidden" name="simple_dept_ar[]" value="{{ $row['name_ar'] ?? '' }}">
-                    <input type="hidden" name="simple_dept_kbd[]" value="{{ $row['name_kbd'] ?? '' }}">
-                  @endif
+                  <div style="display:flex; flex-direction:column; min-width:0;">
+                    <input type="text" name="simple_dept[]" class="f-input tr-input" value="{{ $row['dept'] ?? $row['name'] ?? '' }}" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
+                    @if(!empty($row['name_ar']) || !empty($row['name_en']) || !empty($row['name_kbd']))
+                      <small class="tr-hint" style="display:block;font-size:.68rem;color:var(--txt3);margin-top:3px;direction:rtl;line-height:1.7"><span style="color:var(--gold);font-weight:800">AR</span> {{ $row['name_ar'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">EN</span> {{ $row['name_en'] ?? '' }}&nbsp;&nbsp;<span style="color:var(--gold);font-weight:800">KBD</span> {{ $row['name_kbd'] ?? '' }}</small>
+                      <input type="hidden" name="simple_dept_en[]" value="{{ $row['name_en'] ?? '' }}">
+                      <input type="hidden" name="simple_dept_ar[]" value="{{ $row['name_ar'] ?? '' }}">
+                      <input type="hidden" name="simple_dept_kbd[]" value="{{ $row['name_kbd'] ?? '' }}">
+                    @endif
+                  </div>
                   <input type="text" name="simple_fee[]" class="f-input currency-input" value="{{ $row['fee'] ?? '' }}" placeholder="پارە (150,000)">
                   <input type="text" name="simple_discount[]" class="f-input" value="{{ $row['discount'] ?? '' }}" placeholder="داشکان (10%)">
                   <button type="button" class="dept-del-btn" onclick="removeRow(this)">✕</button>
                 </div>
               @empty
                 <div class="fee-row">
-                  <input type="text" name="simple_dept[]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
+                  <div style="display:flex; flex-direction:column; min-width:0;">
+                    <input type="text" name="simple_dept[]" class="f-input tr-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">
+                  </div>
                   <input type="text" name="simple_fee[]" class="f-input currency-input" placeholder="پارە (150,000)">
                   <input type="text" name="simple_discount[]" class="f-input" placeholder="داشکان (10%)">
                   <button type="button" class="dept-del-btn" onclick="removeRow(this)">✕</button>
@@ -1721,9 +1729,9 @@ async function translateDeptNames(btn) {
     let inputs = [];
     if (isCollege) {
         section.querySelectorAll('.college-card .clg-name').forEach(i => inputs.push(i));
-        section.querySelectorAll('.college-card .dept-row .f-input:first-child').forEach(i => inputs.push(i));
+        section.querySelectorAll('.college-card .dept-row .tr-input').forEach(i => inputs.push(i));
     } else {
-        section.querySelectorAll('#depts-list .fee-row .f-input:first-child').forEach(i => inputs.push(i));
+        section.querySelectorAll('#depts-list .fee-row .tr-input').forEach(i => inputs.push(i));
     }
     inputs = inputs.filter(i => i.value.trim());
     if (!inputs.length) { alert('تکایە سەرەتا ناوی بەشەکان بنووسە.'); return; }
@@ -1899,7 +1907,9 @@ function addCollege() {
           `</div>` +
           `<div class="depts-wrap">` +
             `<div class="dept-row">` +
-              `<input type="text" name="clg[${ci}][depts][0][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
+              `<div style="display:flex; flex-direction:column; min-width:0;">` +
+                `<input type="text" name="clg[${ci}][depts][0][name]" class="f-input tr-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
+              `</div>` +
               `<input type="text" name="clg[${ci}][depts][0][fee]" class="f-input currency-input" placeholder="پارە (150,000)">` +
               `<input type="text" name="clg[${ci}][depts][0][discount]" class="f-input" placeholder="داشکان (10%)">` +
               `<button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>` +
@@ -1924,7 +1934,9 @@ function addDept(btn) {
     const row  = document.createElement('div');
     row.className = 'dept-row';
     row.innerHTML =
-        `<input type="text" name="clg[${ci}][depts][${di}][name]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
+        `<div style="display:flex; flex-direction:column; min-width:0;">` +
+          `<input type="text" name="clg[${ci}][depts][${di}][name]" class="f-input tr-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
+        `</div>` +
         `<input type="text" name="clg[${ci}][depts][${di}][fee]" class="f-input currency-input" placeholder="پارە (150,000)">` +
         `<input type="text" name="clg[${ci}][depts][${di}][discount]" class="f-input" placeholder="داشکان (10%)">` +
         `<button type="button" class="dept-del-btn" onclick="removeDept(this)">✕</button>`;
@@ -1942,7 +1954,9 @@ function addSimpleDeptRow() {
     const row  = document.createElement('div');
     row.className = 'fee-row';
     row.innerHTML =
-        `<input type="text" name="simple_dept[]" class="f-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
+        `<div style="display:flex; flex-direction:column; min-width:0;">` +
+          `<input type="text" name="simple_dept[]" class="f-input tr-input" placeholder="بۆ نموونە: بەشی کۆمپیوتەر">` +
+        `</div>` +
         `<input type="text" name="simple_fee[]" class="f-input currency-input" placeholder="پارە (150,000)">` +
         `<input type="text" name="simple_discount[]" class="f-input" placeholder="داشکان (10%)">` +
         `<button type="button" class="dept-del-btn" onclick="removeRow(this)">✕</button>`;
