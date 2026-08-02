@@ -898,6 +898,13 @@
       <form id="form-inst" method="POST" action="{{ route('portal.institution.save') }}" enctype="multipart/form-data" onsubmit="handleAjaxSubmit(event, 'btn-save-inst')">
         @csrf
 
+        {{-- وەرگێڕانی گشتی --}}
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+          <button type="button" id="btn-translate-all" onclick="translateAll()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: .85rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <span>🌐</span> <span>وەرگێڕانی گشتی</span>
+          </button>
+        </div>
+
         {{-- ناو --}}
         <div class="db-card">
           <div class="db-card-head">
@@ -1286,12 +1293,6 @@
             </div>
           </div>
         </div>
-
-        <!-- TRANSLATE ALL -->
-        <div style="text-align: center; margin-top: 1rem;">
-          <button type="button" id="btn-translate-all" class="btn-primary" onclick="translateAll()" style="padding:12px 36px;font-size:.9rem">
-            <span>🌐</span> <span>وەرگێڕانی گشتی</span>
-          </button>
         </div>
 
         <div style="display:flex;align-items:center;gap:1rem;margin-top:.5rem;padding-top:1.5rem;border-top:1px solid var(--border)">
@@ -1647,7 +1648,7 @@ async function translateDeptNames(btn) {
     }
     inputs = inputs.filter(i => i.value.trim());
     if (!inputs.length) { alert('تکایە سەرەتا ناوی بەشەکان بنووسە.'); return; }
-    btn.classList.add('loading'); btn.disabled = true;
+    if (btn) { btn.classList.add('loading'); btn.disabled = true; }
     try {
         for (const inp of inputs) {
             const text = inp.value.trim();
@@ -1684,7 +1685,7 @@ async function translateDeptNames(btn) {
             parent.appendChild(hAr);
         }
     } catch { alert('هەڵەیەک ڕوویدا لە کاتی وەرگێڕان.'); }
-    finally { btn.classList.remove('loading'); btn.disabled = false; }
+    finally { if (btn) { btn.classList.remove('loading'); btn.disabled = false; } }
 }
 async function autoTranslate(sourceId, targetIds, btn) {
     let text = document.getElementById(sourceId).value;
@@ -1692,7 +1693,7 @@ async function autoTranslate(sourceId, targetIds, btn) {
         text = quillEditors[sourceId].getText().trim();
     }
     if (!text) { alert('تکایە سەرەتا دەقەکە بنووسە.'); return; }
-    btn.classList.add('loading'); btn.disabled = true;
+    if (btn) { btn.classList.add('loading'); btn.disabled = true; }
     // Map target field IDs to Google Translate language codes
     const langMap = { 'desc_kbd': 'ku', 'desc_ar': 'ar', 'desc_en': 'en', 'nkbd': 'ku', 'nar': 'ar', 'nen': 'en' };
     try {
@@ -1710,7 +1711,7 @@ async function autoTranslate(sourceId, targetIds, btn) {
             }
         }
     } catch { alert('هەڵەیەک ڕوویدا لە کاتی وەرگێڕان.'); }
-    finally { btn.classList.remove('loading'); btn.disabled = false; }
+    finally { if (btn) { btn.classList.remove('loading'); btn.disabled = false; } }
 }
 
 let isTranslatedAll = false;
@@ -1723,21 +1724,21 @@ async function translateAll() {
     try {
         // Translate Name
         if (document.getElementById('nku').value.trim()) {
-            await autoTranslate('nku', ['nkbd', 'nar', 'nen'], document.querySelector('button[onclick*="autoTranslate(\'nku\'"]'));
+            await autoTranslate('nku', ['nkbd', 'nar', 'nen'], null);
         }
         // Translate Description
         if (document.getElementById('desc').value.trim() || (quillEditors['desc'] && quillEditors['desc'].getText().trim())) {
-            await autoTranslate('desc', ['desc_kbd', 'desc_ar', 'desc_en'], document.querySelector('button[onclick*="autoTranslate(\'desc\'"]'));
+            await autoTranslate('desc', ['desc_kbd', 'desc_ar', 'desc_en'], null);
         }
         // Translate Departments
         if (document.getElementById('academic-section').style.display !== 'none') {
-            await translateDeptNames(document.querySelector('button[onclick*="translateDeptNames"]'));
+            await translateDeptNames(null);
         }
         isTranslatedAll = true;
         btn.innerHTML = '<span>✅</span> <span>وەرگێڕانی گشتی تەواو بوو</span>';
-        btn.disabled = true;
-        btn.style.opacity = '0.6';
-        btn.style.cursor = 'not-allowed';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
     } catch (e) {
         alert('هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵبدەرەوە.');
         btn.innerHTML = originalText;
