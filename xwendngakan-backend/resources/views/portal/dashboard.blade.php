@@ -1695,10 +1695,11 @@ async function autoTranslate(sourceId, targetIds, btn) {
     if (!text) { alert('تکایە سەرەتا دەقەکە بنووسە.'); return; }
     if (btn) { btn.classList.add('loading'); btn.disabled = true; }
     // Map target field IDs to Google Translate language codes
-    const langMap = { 'desc_kbd': 'ku', 'desc_ar': 'ar', 'desc_en': 'en', 'nkbd': 'ku', 'nar': 'ar', 'nen': 'en' };
+    // Note: 'ku' returns Kurmanji in Latin script. We use 'ckb' (Sorani) so it remains in Arabic script, which the user can manually adjust.
+    const langMap = { 'desc_kbd': 'ckb', 'desc_ar': 'ar', 'desc_en': 'en', 'nkbd': 'ckb', 'nar': 'ar', 'nen': 'en' };
     try {
         for (const targetId of targetIds) {
-            const lang = langMap[targetId] ?? (targetId.includes('ar') ? 'ar' : targetId.includes('en') ? 'en' : 'ku');
+            const lang = langMap[targetId] ?? (targetId.includes('ar') ? 'ar' : targetId.includes('en') ? 'en' : 'ckb');
             const url  = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ckb&tl=${lang}&dt=t&q=${encodeURIComponent(text)}`;
             const data = await (await fetch(url)).json();
             if (data?.[0]) {
