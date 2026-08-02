@@ -238,9 +238,9 @@ class _LoginScreenState extends State<LoginScreen>
                               ),
                             ),
                             const SizedBox(height: 20),
-                            const Text(
-                              'بەخێربێیتەوە',
-                              style: TextStyle(
+                            Text(
+                              l.welcomeBackTitle,
+                              style: const TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -250,7 +250,7 @@ class _LoginScreenState extends State<LoginScreen>
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'چوونەژوورەوە بۆ هەژمارەکەت',
+                              l.loginToAccountSubtitle,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.white.withValues(alpha: 0.9),

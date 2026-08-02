@@ -412,6 +412,20 @@ class AppLocalizations {
         'en': 'Welcome back!',
         'tr': 'Tekrar hoş geldin!'
       });
+  String get welcomeBackTitle => _t({
+        'ku': 'بەخێربێیتەوە',
+        'kbd': 'ب خێر بهێی ڤە',
+        'ar': 'مرحباً بعودتك',
+        'en': 'Welcome Back',
+        'tr': 'Tekrar Hoş Geldiniz'
+      });
+  String get loginToAccountSubtitle => _t({
+        'ku': 'چوونەژوورەوە بۆ هەژمارەکەت',
+        'kbd': 'چوونەژوورەوە بۆ هەژمارەکەت',
+        'ar': 'تسجيل الدخول إلى حسابك',
+        'en': 'Login to your account',
+        'tr': 'Hesabınıza giriş yapın'
+      });
   String get loginFailed => _t({
         'ku': 'ئیمەیڵ یان وشەی نهێنی هەڵەیە',
         'kbd': 'ئیمەیل یان پەیڤا نهێنی شاشییە',
