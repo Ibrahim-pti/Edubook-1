@@ -41,9 +41,15 @@
         <div class="card">
             <h3 class="fw-bold mb-4" style="border-bottom: 1px solid var(--border); padding-bottom: 12px;">زانیارییە سەرەکییەکان</h3>
 
-            <div class="form-group">
-                <label class="form-label">ناو (کوردی) <span class="required">*</span></label>
-                <input type="text" name="nku" class="form-control" value="{{ old('nku', $institution->nku) }}" required>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group">
+                    <label class="form-label">ناو (کوردی سۆرانی) <span class="required">*</span></label>
+                    <input type="text" name="nku" class="form-control" value="{{ old('nku', $institution->nku) }}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ناو (کوردی بادینی)</label>
+                    <input type="text" name="nkbd" class="form-control" value="{{ old('nkbd', $institution->nkbd) }}">
+                </div>
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
@@ -102,13 +108,124 @@
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
                 <div class="form-group">
+                    <label class="form-label">وڵات</label>
+                    <input type="text" name="country" class="form-control" value="{{ old('country', $institution->country) }}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ناونیشان</label>
+                    <input type="text" name="addr" class="form-control" value="{{ old('addr', $institution->addr) }}">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group">
                     <label class="form-label">تەلەفۆن</label>
                     <input type="text" name="phone" class="form-control" dir="ltr" value="{{ old('phone', $institution->phone) }}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ئیمەیڵ</label>
+                    <input type="email" name="email" class="form-control" dir="ltr" value="{{ old('email', $institution->email) }}">
+                </div>
+            </div>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group">
+                    <label class="form-label">وێبسایت</label>
+                    <input type="text" name="web" class="form-control" dir="ltr" value="{{ old('web', $institution->web) }}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">ناوی بەڕێوەبەر</label>
                     <input type="text" name="manager_name" class="form-control" value="{{ old('manager_name', $institution->manager_name) }}">
                 </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: rgba(0,0,0,0.02);">
+                <h4 class="fw-bold mb-3" style="font-size: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 8px;">تۆڕە کۆمەڵایەتییەکان</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label">فەیسبووک (Facebook)</label>
+                        <input type="text" name="fb" class="form-control" dir="ltr" value="{{ old('fb', $institution->fb) }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ئینستاگرام (Instagram)</label>
+                        <input type="text" name="ig" class="form-control" dir="ltr" value="{{ old('ig', $institution->ig) }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">تێلیگرام (Telegram)</label>
+                        <input type="text" name="tg" class="form-control" dir="ltr" value="{{ old('tg', $institution->tg) }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">وەتسئەپ (Whatsapp)</label>
+                        <input type="text" name="wa" class="form-control" dir="ltr" value="{{ old('wa', $institution->wa) }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">تیکتۆک (Tiktok)</label>
+                        <input type="text" name="tk" class="form-control" dir="ltr" value="{{ old('tk', $institution->tk) }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">یوتیوب (Youtube)</label>
+                        <input type="text" name="yt" class="form-control" dir="ltr" value="{{ old('yt', $institution->yt) }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: rgba(0,0,0,0.02);">
+                <h4 class="fw-bold mb-3" style="font-size: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 8px;">کرێی خوێندن و بەشەکان (تەنیا بینین)</h4>
+                @php
+                    $colleges = json_decode($institution->colleges ?? '[]', true) ?: [];
+                    $tuitionPlans = is_array($institution->tuition_plans) ? $institution->tuition_plans : json_decode($institution->tuition_plans ?? '[]', true) ?: [];
+                @endphp
+                
+                @if(count($colleges) > 0)
+                    @foreach($colleges as $college)
+                        <div style="background: var(--bg-base); padding: 12px; border-radius: 6px; margin-bottom: 12px; border: 1px solid var(--border);">
+                            <h5 style="color: var(--gold); margin-bottom: 10px;">{{ $college['name'] ?? 'کۆلێژ' }}</h5>
+                            <table class="table table-sm" style="font-size: 0.85rem; width: 100%; text-align: right;">
+                                <thead>
+                                    <tr>
+                                        <th style="padding: 6px;">بەش</th>
+                                        <th style="padding: 6px;">کرێ</th>
+                                        <th style="padding: 6px;">داشکاندن</th>
+                                        <th style="padding: 6px;">نرخی کۆتایی</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($college['depts'] ?? [] as $dept)
+                                    <tr>
+                                        <td style="padding: 6px; border-top: 1px solid var(--border);">{{ $dept['name'] ?? '' }}</td>
+                                        <td style="padding: 6px; border-top: 1px solid var(--border);">{{ $dept['fee'] ?? '' }}</td>
+                                        <td style="padding: 6px; border-top: 1px solid var(--border);">{{ $dept['discount'] ?? '' }}%</td>
+                                        <td style="padding: 6px; border-top: 1px solid var(--border);">{{ $dept['final_price'] ?? '' }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endforeach
+                @elseif(count($tuitionPlans) > 0)
+                    <table class="table table-sm" style="font-size: 0.85rem; width: 100%; text-align: right;">
+                        <thead>
+                            <tr>
+                                <th style="padding: 6px;">بەش / قۆناغ</th>
+                                <th style="padding: 6px;">کرێ</th>
+                                <th style="padding: 6px;">داشکاندن</th>
+                                <th style="padding: 6px;">نرخی کۆتایی</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($tuitionPlans as $plan)
+                            <tr>
+                                <td style="padding: 6px; border-top: 1px solid var(--border);">{{ $plan['dept'] ?? '' }}</td>
+                                <td style="padding: 6px; border-top: 1px solid var(--border);">{{ $plan['fee'] ?? '' }}</td>
+                                <td style="padding: 6px; border-top: 1px solid var(--border);">{{ $plan['discount'] ?? '' }}%</td>
+                                <td style="padding: 6px; border-top: 1px solid var(--border);">{{ $plan['final_price'] ?? '' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">هیچ زانیارییەکی بەش یان کرێ تۆمار نەکراوە.</div>
+                @endif
             </div>
 
             <div class="form-group">
