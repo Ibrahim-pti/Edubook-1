@@ -1637,6 +1637,13 @@ async function handleAjaxSubmit(e, btnId) {
         });
         const data = await res.json();
         
+        // Clear previous inline errors
+        form.querySelectorAll('.ajax-error').forEach(e => e.remove());
+        form.querySelectorAll('.has-ajax-error').forEach(e => {
+            e.classList.remove('has-ajax-error');
+            e.style.borderColor = '';
+        });
+
         if (res.ok) {
             showToast(data.message || 'سەرکەوتوو بوو', 'success');
             if (form.id === 'form-post' || form.id === 'form-settings') {
@@ -1647,6 +1654,28 @@ async function handleAjaxSubmit(e, btnId) {
             if (data.errors) {
                 const firstKey = Object.keys(data.errors)[0];
                 msg = data.errors[firstKey][0];
+                
+                // Show inline errors
+                for (let key in data.errors) {
+                    let inputName = key;
+                    if (key.includes('.')) {
+                        let parts = key.split('.');
+                        inputName = parts[0];
+                        for(let i=1; i<parts.length; i++) {
+                            inputName += `[${parts[i]}]`;
+                        }
+                    }
+                    let inputs = form.querySelectorAll(`[name="${inputName}"]`);
+                    inputs.forEach(input => {
+                        input.classList.add('has-ajax-error');
+                        input.style.borderColor = '#ef4444';
+                        let errDiv = document.createElement('div');
+                        errDiv.className = 'ajax-error';
+                        errDiv.style.cssText = 'color:#ef4444; font-size:.75rem; margin-top:4px;';
+                        errDiv.innerText = data.errors[key][0];
+                        input.parentNode.insertBefore(errDiv, input.nextSibling);
+                    });
+                }
             }
             showToast(msg, 'error');
         }
