@@ -291,6 +291,13 @@ class AppLocalizations {
         'en': 'Register',
         'tr': 'Kayıt'
       });
+  String get createNewAccount => _t({
+        'ku': 'هەژمارێکی نوێ دروست بکە',
+        'kbd': 'هەژمارەکێ نوی چێ بکە',
+        'ar': 'أنشئ حساباً جديداً',
+        'en': 'Create a new account',
+        'tr': 'Yeni bir hesap oluştur'
+      });
   String get logout => _t({
         'ku': 'چوونەدەرەوە',
         'kbd': 'دەرکەتن',

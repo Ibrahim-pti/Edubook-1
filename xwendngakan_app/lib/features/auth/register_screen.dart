@@ -252,9 +252,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                               ),
                             ),
                             const SizedBox(height: 20),
-                            const Text(
-                              'تۆمارکردن',
-                              style: TextStyle(
+                            Text(
+                              l.register,
+                              style: const TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -264,7 +264,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'هەژمارێکی نوێ دروست بکە',
+                              l.createNewAccount,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.white.withValues(alpha: 0.9),
