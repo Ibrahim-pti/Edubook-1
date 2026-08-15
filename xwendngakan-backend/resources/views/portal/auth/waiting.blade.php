@@ -1,5 +1,5 @@
 @extends('portal.layout')
-@section('title', 'چاوەڕوانی پەسەندکردن — Khwenden')
+@section('title', 'چاوەڕوانی پەسەندکردن — EduBook - IQ')
 @section('styles')
 <style>
 @keyframes pulse {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>پشتگیری — Khwenden</title>
+  <title>پشتگیری — EduBook - IQ</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -36,7 +36,7 @@
   <div class="wrap">
     <div class="header">
       <h1>پشتگیری و یارمەتی (Support)</h1>
-      <p>ئەپی Khwenden — خوێندنگاکان</p>
+      <p>ئەپی EduBook - IQ — خوێندنگاکان</p>
     </div>
 
     <div class="card">
@@ -61,7 +61,7 @@
 
     <div class="card ltr">
       <h2 style="text-align:right">Support (English)</h2>
-      <p>For any questions, issues, or feedback about the Khwenden app, contact us:</p>
+      <p>For any questions, issues, or feedback about the EduBook - IQ app, contact us:</p>
       <ul class="contact">
         <li>Email: <a href="mailto:ibrahim.ahmed@pti.edu.krd">ibrahim.ahmed@pti.edu.krd</a></li>
         <li>Website: <a href="https://khwenden.com">https://khwenden.com</a></li>
@@ -69,7 +69,7 @@
       <p class="muted">We usually respond within 24–48 hours.</p>
     </div>
 
-    <div class="footer">© {{ date('Y') }} Paytakht Technical Institute — Khwenden</div>
+    <div class="footer">© {{ date('Y') }} Paytakht Technical Institute — EduBook - IQ</div>
   </div>
 </body>
 </html>

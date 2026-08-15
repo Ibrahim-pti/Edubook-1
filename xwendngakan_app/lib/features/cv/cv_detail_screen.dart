@@ -47,7 +47,7 @@ class _CvDetailScreenState extends State<CvDetailScreen> {
 
   void _shareCv(CvModel cv, AppLocalizations l) {
     final text =
-        'Khwenden CV: ${cv.name}\n${cv.field ?? ""}\n\n${cv.experience ?? ""}\n\nDownloaded from Khwenden App';
+        'EduBook - IQ CV: ${cv.name}\n${cv.field ?? ""}\n\n${cv.experience ?? ""}\n\nDownloaded from the EduBook - IQ app';
     SharePlus.instance.share(ShareParams(text: text));
   }
 

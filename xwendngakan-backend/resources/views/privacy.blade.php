@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>سیاسەتی تایبەتمەندێتی — Khwenden</title>
+  <title>سیاسەتی تایبەتمەندێتی — EduBook - IQ</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -34,11 +34,11 @@
   <div class="wrap">
     <div class="header">
       <h1>سیاسەتی تایبەتمەندێتی (Privacy Policy)</h1>
-      <p>ئەپی Khwenden — خوێندنگاکان · دواین نوێکردنەوە: {{ date('Y-m-d') }}</p>
+      <p>ئەپی EduBook - IQ — خوێندنگاکان · دواین نوێکردنەوە: {{ date('Y-m-d') }}</p>
     </div>
 
     <div class="card">
-      <p>ئەم سیاسەتە ڕوون دەکاتەوە کە ئەپی <strong>Khwenden</strong> چۆن زانیاری بەکارهێنەران کۆدەکاتەوە، بەکاریدەهێنێت و دەیپارێزێت. بە بەکارهێنانی ئەپەکە، تۆ ڕازیبوونت بەم سیاسەتە دەردەبڕیت.</p>
+      <p>ئەم سیاسەتە ڕوون دەکاتەوە کە ئەپی <strong>EduBook - IQ</strong> چۆن زانیاری بەکارهێنەران کۆدەکاتەوە، بەکاریدەهێنێت و دەیپارێزێت. بە بەکارهێنانی ئەپەکە، تۆ ڕازیبوونت بەم سیاسەتە دەردەبڕیت.</p>
     </div>
 
     <div class="card">
@@ -100,7 +100,7 @@
       </ul>
     </div>
 
-    <div class="footer">© {{ date('Y') }} Khwenden — khwenden.com</div>
+    <div class="footer">© {{ date('Y') }} EduBook - IQ — khwenden.com</div>
   </div>
 </body>
 </html>

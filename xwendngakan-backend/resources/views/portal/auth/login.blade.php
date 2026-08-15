@@ -1,5 +1,5 @@
 @extends('portal.layout')
-@section('title', 'چوونەژوورەوە — Khwenden')
+@section('title', 'چوونەژوورەوە — EduBook - IQ')
 @section('styles')
 <style>
 .auth-page {

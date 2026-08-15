@@ -10,7 +10,7 @@
     <div class="login-page">
         <div class="login-card">
             <div class="login-logo">
-                <img src="/images/logo.svg" alt="Khwenden">
+                <img src="/images/logo.svg" alt="EduBook - IQ">
                 <h1>ئێدوو بووک</h1>
                 <p>چوونە ژوورەوە بۆ پانێڵی بەڕێوەبردن</p>
             </div>

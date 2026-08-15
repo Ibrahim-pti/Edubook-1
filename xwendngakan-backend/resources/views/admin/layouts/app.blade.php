@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'پانێڵی ئەدمین') - Khwenden</title>
+    <title>@yield('title', 'پانێڵی ئەدمین') - EduBook - IQ</title>
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -21,7 +21,7 @@
         <!-- Sidebar -->
         <aside class="admin-sidebar" id="admin-sidebar">
             <div class="sidebar-logo">
-                <img src="/images/logo.svg" alt="Khwenden">
+                <img src="/images/logo.svg" alt="EduBook - IQ">
                 <div class="sidebar-logo-text">
                     <span class="logo-name">ئێدوو بووک</span>
                     <span class="logo-sub">پانێڵی ئەدمین</span>

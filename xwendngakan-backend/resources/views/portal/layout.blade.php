@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Khwenden — پلاتفۆرمی پەروەردەیی')</title>
+    <title>@yield('title', 'EduBook - IQ — پلاتفۆرمی پەروەردەیی')</title>
     <link rel="icon" href="{{ asset('images/app_logo.png') }}?v={{ time() }}" type="image/png">
     <link rel="apple-touch-icon" href="{{ asset('images/app_logo.png') }}?v={{ time() }}">
-    <meta name="description" content="Khwenden — تۆمارکردنی دامەزراوەت و بەڕێوەبردنی پۆستەکانت بە ئاسانی">
+    <meta name="description" content="EduBook - IQ — تۆمارکردنی دامەزراوەت و بەڕێوەبردنی پۆستەکانت بە ئاسانی">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
@@ -148,9 +148,9 @@
     <nav class="navbar">
         <a href="{{ route('portal.home') }}" class="nav-brand">
             <div class="nav-logo" style="width: 38px; height: 38px; background:transparent; border:none; box-shadow:none;">
-                <img src="{{ asset('images/app_logo.png') }}?v={{ time() }}" alt="Khwenden" style="width:100%; height:100%; object-fit:contain; transform: scale(1.15);">
+                <img src="{{ asset('images/app_logo.png') }}?v={{ time() }}" alt="EduBook - IQ" style="width:100%; height:100%; object-fit:contain; transform: scale(1.15);">
             </div>
-            <div class="nav-brand-text">Khwen<span>den</span></div>
+            <div class="nav-brand-text">EduBook<span> - IQ</span></div>
         </a>
         <div class="nav-links">
             @auth

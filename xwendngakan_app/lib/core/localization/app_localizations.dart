@@ -32,11 +32,11 @@ class AppLocalizations {
   // APP GENERAL
   // =====================
   String get appName => _t({
-        'ku': 'Khwenden',
-        'kbd': 'Khwenden',
-        'ar': 'Khwenden',
-        'en': 'Khwenden',
-        'tr': 'Khwenden'
+        'ku': 'EduBook - IQ',
+        'kbd': 'EduBook - IQ',
+        'ar': 'EduBook - IQ',
+        'en': 'EduBook - IQ',
+        'tr': 'EduBook - IQ'
       });
   String get appTagline => _t({
         'ku': ' پلاتفۆرمی پەروەردەیی',
@@ -201,11 +201,11 @@ class AppLocalizations {
   // ONBOARDING
   // =====================
   String get onboardingTitle1 => _t({
-        'ku': 'Khwenden بدۆزەرەوە',
-        'kbd': 'Khwenden بدۆزەرەوە',
-        'ar': 'اكتشف Khwenden',
-        'en': 'Discover Khwenden',
-        'tr': 'Khwenden\'i Keşfet'
+        'ku': 'EduBook - IQ بدۆزەرەوە',
+        'kbd': 'EduBook - IQ بدۆزەرەوە',
+        'ar': 'اكتشف EduBook - IQ',
+        'en': 'Discover EduBook - IQ',
+        'tr': 'EduBook - IQ\'yu Keşfet'
       });
   String get onboardingDesc1 => _t({
         'ku': 'زانکۆ، قوتابخانە، و سەنتەرە پەروەردەییەکان بە ئاسانی بدۆزەرەوە',
