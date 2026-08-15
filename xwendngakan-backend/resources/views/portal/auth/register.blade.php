@@ -82,6 +82,11 @@
         @error('email')<div class="form-err">{{ $message }}</div>@enderror
       </div>
       <div class="form-group">
+        <label class="form-label" for="phone">ژمارەی مۆبایل</label>
+        <input id="phone" type="tel" name="phone" dir="ltr" class="form-input {{ $errors->has('phone') ? 'err' : '' }}" placeholder="07xx xxx xxxx" value="{{ old('phone') }}" required>
+        @error('phone')<div class="form-err">{{ $message }}</div>@enderror
+      </div>
+      <div class="form-group">
         <label class="form-label" for="password">وشەی تێپەڕبوونی نهێنی</label>
         <input id="password" type="password" name="password" class="form-input {{ $errors->has('password') ? 'err' : '' }}" placeholder="••••••••" required>
         @error('password')<div class="form-err">{{ $message }}</div>@enderror

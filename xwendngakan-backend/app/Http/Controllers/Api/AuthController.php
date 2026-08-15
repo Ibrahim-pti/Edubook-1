@@ -23,12 +23,14 @@ class AuthController extends Controller
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
+            'phone'    => 'nullable|string|max:20',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
         $user = User::create([
             'name'        => $request->name,
             'email'       => $request->email,
+            'phone'       => $request->phone,
             'password'    => Hash::make($request->password),
             'is_approved' => true,
             'user_type'   => 'mobile',
@@ -89,6 +91,7 @@ class AuthController extends Controller
         $request->validate([
             'id_token' => 'required|string',
             'name'     => 'nullable|string|max:255',
+            'phone'    => 'nullable|string|max:20',
         ]);
 
         /** @var FirebaseAuth|null $firebaseAuth */
@@ -125,15 +128,21 @@ class AuthController extends Controller
 
         $user = User::where('email', $email)->first();
 
+        $phone = $request->filled('phone') ? trim($request->phone) : null;
+
         if (!$user) {
             $user = User::create([
                 'name'        => $name,
                 'email'       => $email,
+                'phone'       => $phone,
                 // Random password: auth happens via Firebase, this is never used.
                 'password'    => Str::random(40),
                 'is_approved' => true,
                 'user_type'   => 'mobile',
             ]);
+        } elseif ($phone && !$user->phone) {
+            // Backfill for accounts created before the phone field existed.
+            $user->update(['phone' => $phone]);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;

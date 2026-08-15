@@ -1291,6 +1291,13 @@ class AppLocalizations {
         'en': 'Please enter name',
         'tr': 'Lütfen isim girin'
       });
+  String get requiredPhone => _t({
+        'ku': 'تکایە ژمارەی مۆبایل بنووسە',
+        'kbd': 'تکایە ژمارا مۆبایلی بنڤیسە',
+        'ar': 'يرجى إدخال رقم الهاتف',
+        'en': 'Please enter phone number',
+        'tr': 'Lütfen telefon numarası girin'
+      });
   String get requiredConfirmPassword => _t({
         'ku': 'تکایە وشەی نهێنی دووبارە بکەرەوە',
         'kbd': 'تکایە پەیڤا نهێنی دووبارە بکە',

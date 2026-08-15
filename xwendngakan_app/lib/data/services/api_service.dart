@@ -111,7 +111,7 @@ class ApiService {
   }
 
   Future<ApiResult<Map<String, dynamic>>> register(
-      String name, String email, String password) async {
+      String name, String email, String password, {String? phone}) async {
     try {
       final res = await http
           .post(
@@ -120,6 +120,7 @@ class ApiService {
             body: jsonEncode({
               'name': name,
               'email': email,
+              if (phone != null && phone.isNotEmpty) 'phone': phone,
               'password': password,
               'password_confirmation': password,
             }),
@@ -146,7 +147,7 @@ class ApiService {
 
   /// Exchanges a verified Firebase ID token for a Sanctum token from our API.
   Future<ApiResult<Map<String, dynamic>>> firebaseLogin(String idToken,
-      {String? name}) async {
+      {String? name, String? phone}) async {
     try {
       final res = await http
           .post(
@@ -155,6 +156,7 @@ class ApiService {
             body: jsonEncode({
               'id_token': idToken,
               if (name != null && name.isNotEmpty) 'name': name,
+              if (phone != null && phone.isNotEmpty) 'phone': phone,
             }),
           )
           .timeout(AppConstants.connectTimeout);

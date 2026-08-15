@@ -2,6 +2,7 @@ class UserModel {
   final int id;
   final String name;
   final String email;
+  final String? phone;
   final bool isAdmin;
   final bool notificationsEnabled;
   final String? createdAt;
@@ -10,6 +11,7 @@ class UserModel {
     required this.id,
     required this.name,
     required this.email,
+    this.phone,
     this.isAdmin = false,
     this.notificationsEnabled = true,
     this.createdAt,
@@ -20,6 +22,7 @@ class UserModel {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       email: json['email'] ?? '',
+      phone: json['phone'],
       isAdmin: json['is_admin'] ?? false,
       notificationsEnabled: json['notifications_enabled'] ?? true,
       createdAt: json['created_at'],
@@ -30,6 +33,7 @@ class UserModel {
     'id': id,
     'name': name,
     'email': email,
+    'phone': phone,
     'is_admin': isAdmin,
     'notifications_enabled': notificationsEnabled,
   };

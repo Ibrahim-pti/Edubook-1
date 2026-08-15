@@ -17,7 +17,7 @@
             <label class="form-label">گەڕان</label>
             <div class="search-input-wrap">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input type="text" name="search" class="form-control" placeholder="ناو یان ئیمەیڵ..." value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control" placeholder="ناو، ئیمەیڵ یان ژمارەی مۆبایل..." value="{{ request('search') }}">
             </div>
         </div>
 
@@ -54,6 +54,7 @@
                 <tr>
                     <th>ناو</th>
                     <th>ئیمەیڵ</th>
+                    <th>ژمارەی مۆبایل</th>
                     <th>جۆر</th>
                     <th>بەرواری تۆماربوون</th>
                     <th>دۆخ</th>
@@ -70,6 +71,13 @@
                             </div>
                         </td>
                         <td dir="ltr" style="text-align:right;">{{ $user->email }}</td>
+                        <td dir="ltr" style="text-align:right;">
+                            @if($user->phone)
+                                <a href="tel:{{ $user->phone }}" class="fw-bold">{{ $user->phone }}</a>
+                            @else
+                                <span class="td-muted">—</span>
+                            @endif
+                        </td>
                         <td>
                             @if($user->user_type == 'portal')
                                 <span class="badge badge-info"><svg viewBox="0 0 20 20" fill="currentColor" style="width:12px;height:12px;"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg> پۆرتال</span>
@@ -111,7 +119,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">هیچ بەکارهێنەرێک نەدۆزرایەوە.</td>
+                        <td colspan="7" style="text-align:center; padding:40px; color:var(--text-muted);">هیچ بەکارهێنەرێک نەدۆزرایەوە.</td>
                     </tr>
                 @endforelse
             </tbody>

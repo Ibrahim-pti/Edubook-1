@@ -17,6 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     with SingleTickerProviderStateMixin {
   final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -44,6 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     _anim.dispose();
     _nameCtrl.dispose();
     _emailCtrl.dispose();
+    _phoneCtrl.dispose();
     _passCtrl.dispose();
     _confirmCtrl.dispose();
     super.dispose();
@@ -54,7 +56,8 @@ class _RegisterScreenState extends State<RegisterScreen>
     final l = AppLocalizations.of(context);
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final ok = await auth.register(
-        _nameCtrl.text.trim(), _emailCtrl.text.trim(), _passCtrl.text);
+        _nameCtrl.text.trim(), _emailCtrl.text.trim(), _passCtrl.text,
+        phone: _phoneCtrl.text.trim());
     if (!mounted) return;
     if (ok) {
       context.go('/role-selection');
@@ -308,6 +311,22 @@ class _RegisterScreenState extends State<RegisterScreen>
                               if (v == null || v.trim().isEmpty) return l.requiredEmail;
                               final emailRegex = RegExp(r'^[\w.+\-]+@[a-zA-Z\d\-]+\.[a-zA-Z]{2,}$');
                               if (!emailRegex.hasMatch(v.trim())) return l.invalidEmail;
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _phoneCtrl,
+                            keyboardType: TextInputType.phone,
+                            textInputAction: TextInputAction.next,
+                            style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                            decoration: inputDeco(l.phone, Icons.phone_outlined, hint: '07xx xxx xxxx'),
+                            validator: (v) {
+                              if (v == null || v.trim().isEmpty) return l.requiredPhone;
+                              // Iraqi mobile format, same rule as the CV form.
+                              if (!RegExp(r'^(07)[0-9]{9}$').hasMatch(v.trim())) {
+                                return l.invalidPhone;
+                              }
                               return null;
                             },
                           ),

@@ -79,7 +79,8 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> register(String name, String email, String password) async {
+  Future<bool> register(String name, String email, String password,
+      {String? phone}) async {
     _status = AuthStatus.loading;
     _error = null;
     notifyListeners();
@@ -94,7 +95,7 @@ class AuthProvider extends ChangeNotifier {
       try {
         await cred.user?.sendEmailVerification();
       } catch (_) {}
-      return await _exchangeFirebaseToken(cred.user, name);
+      return await _exchangeFirebaseToken(cred.user, name, phone: phone);
     } on fb.FirebaseAuthException catch (e) {
       _failAuth(_mapFirebaseError(e));
       return false;
@@ -123,15 +124,16 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// Exchanges a Firebase user's ID token for a Sanctum token from our backend.
-  Future<bool> _exchangeFirebaseToken(fb.User? fbUser, String? name) async {
+  Future<bool> _exchangeFirebaseToken(fb.User? fbUser, String? name,
+      {String? phone}) async {
     final idToken = await fbUser?.getIdToken();
     if (fbUser == null || idToken == null) {
       _failAuth('چوونەژوورەوە سەرنەکەوت. تکایە دووبارە هەوڵ بدەرەوە.');
       return false;
     }
 
-    final result =
-        await _api.firebaseLogin(idToken, name: name ?? fbUser.displayName);
+    final result = await _api.firebaseLogin(idToken,
+        name: name ?? fbUser.displayName, phone: phone);
 
     if (result.success && result.data != null) {
       final inner =

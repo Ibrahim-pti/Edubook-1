@@ -182,11 +182,13 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
         $data = $request->validate([
             'name'                  => 'required|string|max:255',
             'email'                 => 'required|string|email|max:255|unique:users',
+            'phone'                 => 'required|string|max:20',
             'password'              => 'required|string|min:8|confirmed',
         ]);
         $user = User::create([
             'name'        => $data['name'],
             'email'       => $data['email'],
+            'phone'       => $data['phone'],
             'password'    => Hash::make($data['password']),
             'is_approved' => true,
             'user_type'   => 'portal',

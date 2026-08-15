@@ -17,7 +17,8 @@ class UserController extends Controller
 
         if ($search = $request->search) {
             $query->where(fn($q) => $q->where('name','like',"%$search%")
-                                       ->orWhere('email','like',"%$search%"));
+                                       ->orWhere('email','like',"%$search%")
+                                       ->orWhere('phone','like',"%$search%"));
         }
         if ($request->approved !== null && $request->approved !== '') {
             $query->where('is_approved', (bool)$request->approved);
