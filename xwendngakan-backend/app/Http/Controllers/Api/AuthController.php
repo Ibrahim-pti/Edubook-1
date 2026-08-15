@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\IraqPhone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,14 +24,14 @@ class AuthController extends Controller
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
-            'phone'    => 'nullable|string|max:20',
+            'phone'    => ['nullable', 'string', 'max:20', IraqPhone::rule()],
             'password' => 'required|string|min:6|confirmed',
         ]);
 
         $user = User::create([
             'name'        => $request->name,
             'email'       => $request->email,
-            'phone'       => $request->phone,
+            'phone'       => IraqPhone::normalize($request->phone),
             'password'    => Hash::make($request->password),
             'is_approved' => true,
             'user_type'   => 'mobile',
@@ -91,7 +92,7 @@ class AuthController extends Controller
         $request->validate([
             'id_token' => 'required|string',
             'name'     => 'nullable|string|max:255',
-            'phone'    => 'nullable|string|max:20',
+            'phone'    => ['nullable', 'string', 'max:20', IraqPhone::rule()],
         ]);
 
         /** @var FirebaseAuth|null $firebaseAuth */
@@ -128,7 +129,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $email)->first();
 
-        $phone = $request->filled('phone') ? trim($request->phone) : null;
+        $phone = IraqPhone::normalize($request->phone);
 
         if (!$user) {
             $user = User::create([

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_localizations.dart';
+import '../../core/utils/phone_utils.dart';
 import '../../providers/auth_provider.dart';
 import '../../shared/widgets/common_widgets.dart';
 
@@ -57,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final ok = await auth.register(
         _nameCtrl.text.trim(), _emailCtrl.text.trim(), _passCtrl.text,
-        phone: _phoneCtrl.text.trim());
+        phone: PhoneUtils.toE164(_phoneCtrl.text));
     if (!mounted) return;
     if (ok) {
       context.go('/role-selection');
@@ -319,14 +321,27 @@ class _RegisterScreenState extends State<RegisterScreen>
                             controller: _phoneCtrl,
                             keyboardType: TextInputType.phone,
                             textInputAction: TextInputAction.next,
+                            // Phone numbers always read left-to-right, even in
+                            // an RTL layout.
+                            textDirection: TextDirection.ltr,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(11),
+                            ],
                             style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-                            decoration: inputDeco(l.phone, Icons.phone_outlined, hint: '07xx xxx xxxx'),
+                            decoration: inputDeco(l.phone, Icons.phone_outlined, hint: '750 123 4567')
+                                .copyWith(
+                              prefixText: '${PhoneUtils.countryCode} ',
+                              prefixStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: isDark ? Colors.white70 : Colors.black54,
+                              ),
+                            ),
                             validator: (v) {
                               if (v == null || v.trim().isEmpty) return l.requiredPhone;
-                              // Iraqi mobile format, same rule as the CV form.
-                              if (!RegExp(r'^(07)[0-9]{9}$').hasMatch(v.trim())) {
-                                return l.invalidPhone;
-                              }
+                              // Korek (075x), Asiacell (077x) and Zain (078x) only.
+                              if (!PhoneUtils.isValid(v)) return l.invalidIraqiPhone;
                               return null;
                             },
                           ),

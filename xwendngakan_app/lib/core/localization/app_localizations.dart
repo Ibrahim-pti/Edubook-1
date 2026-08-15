@@ -1263,6 +1263,13 @@ class AppLocalizations {
         'en': 'Invalid phone number',
         'tr': 'Geçersiz telefon numarası'
       });
+  String get invalidIraqiPhone => _t({
+        'ku': 'تەنها ژمارەی کورەک، ئاسیاسێل و زەین (964+) وەردەگیرێت',
+        'kbd': 'تنێ ژمارا کۆرەک، ئاسیاسێل و زەین (964+) تێتە وەرگرتن',
+        'ar': 'يُقبل فقط رقم كورك أو آسياسيل أو زين (964+)',
+        'en': 'Only Korek, Asiacell or Zain numbers (+964) are accepted',
+        'tr': 'Yalnızca Korek, Asiacell veya Zain numaraları (+964) kabul edilir'
+      });
   String get requiredAge => _t({
         'ku': 'تکایە تەمەن بنووسە',
         'kbd': 'تکایە تەمەن بنووسە',

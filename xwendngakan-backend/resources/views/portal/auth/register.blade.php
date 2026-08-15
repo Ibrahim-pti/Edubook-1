@@ -82,8 +82,8 @@
         @error('email')<div class="form-err">{{ $message }}</div>@enderror
       </div>
       <div class="form-group">
-        <label class="form-label" for="phone">ژمارەی مۆبایل</label>
-        <input id="phone" type="tel" name="phone" dir="ltr" class="form-input {{ $errors->has('phone') ? 'err' : '' }}" placeholder="07xx xxx xxxx" value="{{ old('phone') }}" required>
+        <label class="form-label" for="phone">ژمارەی مۆبایل <span style="opacity:.7">(کورەک، ئاسیاسێل، زەین)</span></label>
+        <input id="phone" type="tel" name="phone" dir="ltr" inputmode="numeric" maxlength="11" class="form-input {{ $errors->has('phone') ? 'err' : '' }}" placeholder="0750 123 4567" value="{{ old('phone') }}" required>
         @error('phone')<div class="form-err">{{ $message }}</div>@enderror
       </div>
       <div class="form-group">
