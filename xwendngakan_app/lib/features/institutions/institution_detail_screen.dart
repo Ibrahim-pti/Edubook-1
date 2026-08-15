@@ -682,55 +682,20 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                 accentColor: AppColors.typeColor(inst.type),
                 isDark: isDark,
                 child: Column(
-                  children: depts.map((deptMap) {
-                    final deptName =
-                        deptMap['translated'] ?? deptMap['original'] ?? '';
-                    final price =
-                        tuitionMap[deptMap['original']] ?? TuitionPrice.empty;
-
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 6, left: 6),
-                            child: Container(
-                              width: 5,
-                              height: 5,
-                              decoration: BoxDecoration(
-                                color: isDark ? Colors.white60 : Colors.black45,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          ),
-                          Flexible(
-                            fit: FlexFit.loose,
-                            child: Text(
-                              deptName,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'Rabar',
-                                color: isDark
-                                    ? Colors.white70
-                                    : AppColors.textDark,
-                              ),
-                            ),
-                          ),
-                          if (!price.isEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 16),
-                              child: _PriceTags(
-                                price: price,
-                                isDark: isDark,
-                                discountLabel: strDiscount,
-                              ),
-                            ),
-                        ],
+                  children: [
+                    for (var i = 0; i < depts.length; i++)
+                      _DeptRow(
+                        name: depts[i]['translated'] ??
+                            depts[i]['original'] ??
+                            '',
+                        price: tuitionMap[depts[i]['original']] ??
+                            TuitionPrice.empty,
+                        accent: AppColors.typeColor(inst.type),
+                        isDark: isDark,
+                        discountLabel: strDiscount,
+                        showDivider: i < depts.length - 1,
                       ),
-                    );
-                  }).toList(),
+                  ],
                 ),
               ),
             ],
@@ -1477,64 +1442,179 @@ const _genericCollegeNames = {
   'bölümler',
 };
 
-/// The fee / discount / final-price tags shown at the end of a department row.
-/// Shared by the departments tab and the college cards so both stay in sync.
-class _PriceTags extends StatelessWidget {
+/// One department line: the name on top, its tuition underneath.
+///
+/// The two halves are stacked rather than squeezed into a single row so that
+/// long department names never push the prices out of alignment — every row
+/// starts its price at the same place, which is what makes a long list
+/// readable. Shared by the departments tab and the college cards.
+class _DeptRow extends StatelessWidget {
+  final String name;
   final TuitionPrice price;
+  final Color accent;
   final bool isDark;
   final String discountLabel;
+  final bool showDivider;
 
-  const _PriceTags({
+  const _DeptRow({
+    required this.name,
     required this.price,
+    required this.accent,
     required this.isDark,
     required this.discountLabel,
+    this.showDivider = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final struck = price.discount.isNotEmpty;
-    return Wrap(
-      spacing: 6,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        if (price.fee.isNotEmpty)
-          Text(
-            price.fee,
-            style: TextStyle(
-              fontSize: struck ? 12 : 13,
-              fontWeight: struck ? FontWeight.w600 : FontWeight.w800,
-              fontFamily: 'Rabar',
-              color: struck
-                  ? (isDark ? Colors.white54 : Colors.grey)
-                  : AppColors.primary,
-              decoration: struck ? TextDecoration.lineThrough : null,
-            ),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      decoration: showDivider
+          ? BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.06)
+                      : Colors.black.withValues(alpha: 0.05),
+                ),
+              ),
+            )
+          : null,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 5),
+                width: 3,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.65),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  name,
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.45,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Rabar',
+                    color: isDark ? Colors.white70 : AppColors.textDark,
+                  ),
+                ),
+              ),
+              if (price.hasDiscount) ...[
+                const SizedBox(width: 8),
+                _discountPill(),
+              ],
+            ],
           ),
-        if (price.hasDiscount) ...[
-          _tag('$discountLabel ${price.discount}%', Colors.red),
-          _tag(price.finalPrice, Colors.green),
-        ] else if (price.discount.isNotEmpty)
-          // Discount that could not be resolved into a percentage — show the
-          // stored value as-is rather than hiding the offer.
-          _tag('$discountLabel ${price.discount}', Colors.red),
-      ],
+          if (!price.isEmpty)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 13, top: 4),
+              child: _priceLine(),
+            ),
+        ],
+      ),
     );
   }
 
-  Widget _tag(String text, Color color) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+  /// A compact `15%` tag. The word "discount" is left off deliberately —
+  /// repeated down a list of twenty departments it was pure noise, and the
+  /// struck-through price next to it already says what the tag means.
+  Widget _discountPill() => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(6),
+          color: AppColors.error.withValues(alpha: isDark ? 0.18 : 0.09),
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w800,
-            fontFamily: 'Rabar',
-            color: color,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.sell_rounded, size: 10, color: AppColors.error),
+            const SizedBox(width: 3),
+            Text(
+              '${price.discount}%',
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Rabar',
+                color: AppColors.error,
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _priceLine() {
+    final muted = isDark ? Colors.white38 : const Color(0xFF94A3B8);
+
+    // Discounted: the price actually paid leads, the old one trails struck out.
+    if (price.hasDiscount) {
+      return Wrap(
+        spacing: 8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(
+            price.finalPrice,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w900,
+              fontFamily: 'Rabar',
+              color: AppColors.success,
+            ),
           ),
+          Text(
+            price.fee,
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Rabar',
+              color: muted,
+              decoration: TextDecoration.lineThrough,
+              decorationColor: muted,
+            ),
+          ),
+        ],
+      );
+    }
+
+    // A discount that could not be read as a percentage — show it spelled out
+    // rather than dropping the offer altogether.
+    if (price.discount.isNotEmpty) {
+      return Wrap(
+        spacing: 8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          if (price.fee.isNotEmpty) _plainFee(),
+          Text(
+            '$discountLabel ${price.discount}',
+            style: const TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Rabar',
+              color: AppColors.error,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return _plainFee();
+  }
+
+  Widget _plainFee() => Text(
+        price.fee,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w800,
+          fontFamily: 'Rabar',
+          color: accent,
         ),
       );
 }
@@ -1607,50 +1687,24 @@ class _CollegesCard extends StatelessWidget {
           ],
         );
         // Rows are built once and reused by all three layouts below.
-        final deptRows = departments.map<Widget>((dept) {
-          // dept can be a string (legacy) or a Map with name/fee/discount
-          final name = dept is Map
-              ? (dept['translated'] ?? dept['original'] ?? '').toString()
-              : dept.toString();
-          final price = TuitionPrice.parse(dept is Map ? dept : null);
-
-          return Padding(
-            padding: const EdgeInsets.only(top: 12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(right: 6, left: 6),
-                  child: Icon(Icons.check_circle_outline_rounded,
-                      color: AppColors.primary, size: 18),
-                ),
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: Text(
-                    name,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Rabar',
-                      color: isDark
-                          ? Colors.white70
-                          : AppColors.textDark.withValues(alpha: 0.8),
-                    ),
-                  ),
-                ),
-                if (!price.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: _PriceTags(
-                      price: price,
-                      isDark: isDark,
-                      discountLabel: strDiscount,
-                    ),
-                  ),
-              ],
+        // dept can be a string (legacy) or a Map with name/fee/discount.
+        final deptRows = <Widget>[
+          for (var i = 0; i < departments.length; i++)
+            _DeptRow(
+              name: departments[i] is Map
+                  ? (departments[i]['translated'] ??
+                          departments[i]['original'] ??
+                          '')
+                      .toString()
+                  : departments[i].toString(),
+              price: TuitionPrice.parse(
+                  departments[i] is Map ? departments[i] as Map : null),
+              accent: AppColors.primary,
+              isDark: isDark,
+              discountLabel: strDiscount,
+              showDivider: i < departments.length - 1,
             ),
-          );
-        }).toList();
+        ];
 
         return Container(
           margin: const EdgeInsets.only(bottom: 20),
