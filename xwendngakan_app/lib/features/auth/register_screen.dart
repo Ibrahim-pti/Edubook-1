@@ -321,9 +321,13 @@ class _RegisterScreenState extends State<RegisterScreen>
                             controller: _phoneCtrl,
                             keyboardType: TextInputType.phone,
                             textInputAction: TextInputAction.next,
-                            // Phone numbers always read left-to-right, even in
-                            // an RTL layout.
+                            // The field stays RTL like every other one on the
+                            // form, so label and icon keep their side. Only the
+                            // digits themselves run LTR, aligned right so they
+                            // sit next to the +964 prefix instead of drifting
+                            // to the far edge.
                             textDirection: TextDirection.ltr,
+                            textAlign: TextAlign.right,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
                               LengthLimitingTextInputFormatter(11),
@@ -331,11 +335,18 @@ class _RegisterScreenState extends State<RegisterScreen>
                             style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                             decoration: inputDeco(l.phone, Icons.phone_outlined, hint: '750 123 4567')
                                 .copyWith(
-                              prefixText: '${PhoneUtils.countryCode} ',
-                              prefixStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: isDark ? Colors.white70 : Colors.black54,
+                              // Wrapped LTR, otherwise the leading "+" is
+                              // pushed to the end and shows as "964+".
+                              prefix: Directionality(
+                                textDirection: TextDirection.ltr,
+                                child: Text(
+                                  '${PhoneUtils.countryCode} ',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: isDark ? Colors.white70 : Colors.black54,
+                                  ),
+                                ),
                               ),
                             ),
                             validator: (v) {
