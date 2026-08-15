@@ -73,7 +73,7 @@
                         <td dir="ltr" style="text-align:right;">{{ $user->email }}</td>
                         <td dir="ltr" style="text-align:right;">
                             @if($user->phone)
-                                <a href="tel:{{ $user->phone }}" class="fw-bold">{{ $user->phone }}</a>
+                                <span class="fw-bold">{{ $user->phone }}</span>
                             @else
                                 <span class="td-muted">—</span>
                             @endif
