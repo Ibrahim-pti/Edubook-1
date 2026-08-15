@@ -321,22 +321,37 @@ Route::prefix('portal')->name('portal.')->middleware('no-cache')->group(function
             $tuitionPlans = [];
             $allDeptsJson = [];
 
-            // Helper to calculate final price if discount is a percentage (<= 100)
+            // Helper to normalise a fee/discount pair into percentage + prices.
+            // A discount of 100 or less is read as a percentage; a larger value
+            // is read as the price after the discount, which is what owners
+            // typed into this field before the percentage rule existed.
             $calcDiscount = function($fee, $discount) {
                 $fStr = trim((string)$fee);
                 $dStr = trim((string)$discount);
                 if ($fStr === '' || $dStr === '') return ['discount' => $dStr, 'final_price' => '', 'discount_amount' => ''];
-                
+
                 $f = (float) preg_replace('/[^0-9.]/', '', $fStr);
                 $d = (float) preg_replace('/[^0-9.]/', '', $dStr);
-                
-                if ($d > 0 && $d <= 100 && $f > 0) {
-                    $discountAmt = $f * ($d / 100);
-                    $final = $f - $discountAmt;
+
+                if ($f > 0 && $d > 0) {
+                    if ($d <= 100) {
+                        $percent     = $d;
+                        $discountAmt = $f * ($d / 100);
+                        $final       = $f - $discountAmt;
+                    } elseif ($d < $f) {
+                        $final       = $d;
+                        $discountAmt = $f - $d;
+                        $percent     = $discountAmt / $f * 100;
+                    } else {
+                        // Discount is not smaller than the fee — nothing sensible
+                        // to derive, so keep the raw value rather than guess.
+                        return ['discount' => $dStr, 'final_price' => '', 'discount_amount' => $dStr];
+                    }
+
                     return [
-                        'discount' => $dStr,
-                        'final_price' => number_format($final, 0, '.', ','),
-                        'discount_amount' => number_format($discountAmt, 0, '.', ',')
+                        'discount'        => rtrim(rtrim(number_format($percent, 1, '.', ''), '0'), '.'),
+                        'final_price'     => number_format($final, 0, '.', ','),
+                        'discount_amount' => number_format($discountAmt, 0, '.', ','),
                     ];
                 }
                 return ['discount' => $dStr, 'final_price' => '', 'discount_amount' => $dStr];

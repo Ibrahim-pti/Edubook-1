@@ -9,6 +9,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../core/utils/html_utils.dart';
+import '../../core/utils/tuition_utils.dart';
 import '../../data/models/institution_model.dart';
 import '../../data/models/post_model.dart';
 import '../../data/services/api_service.dart';
@@ -684,11 +685,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                   children: depts.map((deptMap) {
                     final deptName =
                         deptMap['translated'] ?? deptMap['original'] ?? '';
-                    final plan = tuitionMap[deptMap['original']];
-                    final fee = plan?['fee'] ?? '';
-                    final disc = plan?['discount'] ?? '';
-                    final finalPrice = plan?['final_price'] ?? '';
-                    final discAmount = plan?['discount_amount'] ?? '';
+                    final price =
+                        tuitionMap[deptMap['original']] ?? TuitionPrice.empty;
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 6),
@@ -720,90 +718,13 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
                               ),
                             ),
                           ),
-                          if (fee.isNotEmpty || disc.isNotEmpty)
+                          if (!price.isEmpty)
                             Padding(
                               padding: const EdgeInsets.only(right: 16),
-                              child: Wrap(
-                                spacing: 6,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: [
-                                  if (fee.isNotEmpty)
-                                    Text(
-                                      fee,
-                                      style: TextStyle(
-                                        fontSize: (disc.isNotEmpty) ? 12 : 13,
-                                        fontWeight: (disc.isNotEmpty)
-                                            ? FontWeight.w600
-                                            : FontWeight.w800,
-                                        fontFamily: 'Rabar',
-                                        color: (disc.isNotEmpty)
-                                            ? (isDark
-                                                ? Colors.white54
-                                                : Colors.grey)
-                                            : AppColors.primary,
-                                        decoration: (disc.isNotEmpty)
-                                            ? TextDecoration.lineThrough
-                                            : null,
-                                      ),
-                                    ),
-                                  if (finalPrice.isNotEmpty) ...[
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Colors.red.withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(
-                                        '$strDiscount $disc${finalPrice.isNotEmpty ? '%' : ''}',
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w800,
-                                          fontFamily: 'Rabar',
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Colors.green.withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(
-                                        finalPrice,
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w800,
-                                          fontFamily: 'Rabar',
-                                          color: Colors.green,
-                                        ),
-                                      ),
-                                    ),
-                                  ] else if (disc.isNotEmpty) ...[
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Colors.red.withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(
-                                        '$strDiscount $disc',
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w800,
-                                          fontFamily: 'Rabar',
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ],
+                              child: _PriceTags(
+                                price: price,
+                                isDark: isDark,
+                                discountLabel: strDiscount,
                               ),
                             ),
                         ],
@@ -942,8 +863,8 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
         .toList();
   }
 
-  /// Builds a map from dept name → {fee, discount} using the tuition_plans JSON.
-  Map<String, Map<String, String>> _buildTuitionMap(String? raw) {
+  /// Builds a map from dept name → price tags using the tuition_plans JSON.
+  Map<String, TuitionPrice> _buildTuitionMap(String? raw) {
     if (raw == null || raw.isEmpty) return {};
     final trimmed = raw.trim();
     if (!trimmed.startsWith('[')) return {};
@@ -952,12 +873,7 @@ class _InstitutionDetailScreenState extends State<InstitutionDetailScreen> {
       return {
         for (final p in plans)
           if (p is Map && p['dept'] != null)
-            p['dept'].toString(): {
-              'fee': (p['fee'] ?? '').toString().trim(),
-              'discount': (p['discount'] ?? '').toString().trim(),
-              'final_price': (p['final_price'] ?? '').toString().trim(),
-              'discount_amount': (p['discount_amount'] ?? '').toString().trim(),
-            }
+            p['dept'].toString(): TuitionPrice.parse(p)
       };
     } catch (_) {
       return {};
@@ -1561,6 +1477,68 @@ const _genericCollegeNames = {
   'bölümler',
 };
 
+/// The fee / discount / final-price tags shown at the end of a department row.
+/// Shared by the departments tab and the college cards so both stay in sync.
+class _PriceTags extends StatelessWidget {
+  final TuitionPrice price;
+  final bool isDark;
+  final String discountLabel;
+
+  const _PriceTags({
+    required this.price,
+    required this.isDark,
+    required this.discountLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final struck = price.discount.isNotEmpty;
+    return Wrap(
+      spacing: 6,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        if (price.fee.isNotEmpty)
+          Text(
+            price.fee,
+            style: TextStyle(
+              fontSize: struck ? 12 : 13,
+              fontWeight: struck ? FontWeight.w600 : FontWeight.w800,
+              fontFamily: 'Rabar',
+              color: struck
+                  ? (isDark ? Colors.white54 : Colors.grey)
+                  : AppColors.primary,
+              decoration: struck ? TextDecoration.lineThrough : null,
+            ),
+          ),
+        if (price.hasDiscount) ...[
+          _tag('$discountLabel ${price.discount}%', Colors.red),
+          _tag(price.finalPrice, Colors.green),
+        ] else if (price.discount.isNotEmpty)
+          // Discount that could not be resolved into a percentage — show the
+          // stored value as-is rather than hiding the offer.
+          _tag('$discountLabel ${price.discount}', Colors.red),
+      ],
+    );
+  }
+
+  Widget _tag(String text, Color color) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            fontFamily: 'Rabar',
+            color: color,
+          ),
+        ),
+      );
+}
+
 class _CollegesCard extends StatelessWidget {
   final List<Map<String, dynamic>> colleges;
   final bool isDark;
@@ -1634,14 +1612,7 @@ class _CollegesCard extends StatelessWidget {
           final name = dept is Map
               ? (dept['translated'] ?? dept['original'] ?? '').toString()
               : dept.toString();
-          final fee = dept is Map ? (dept['fee'] ?? '').toString().trim() : '';
-          final disc =
-              dept is Map ? (dept['discount'] ?? '').toString().trim() : '';
-          final finalPrice =
-              dept is Map ? (dept['final_price'] ?? '').toString().trim() : '';
-          final discAmount = dept is Map
-              ? (dept['discount_amount'] ?? '').toString().trim()
-              : '';
+          final price = TuitionPrice.parse(dept is Map ? dept : null);
 
           return Padding(
             padding: const EdgeInsets.only(top: 12),
@@ -1667,85 +1638,13 @@ class _CollegesCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (fee.isNotEmpty || disc.isNotEmpty)
+                if (!price.isEmpty)
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
-                    child: Wrap(
-                      spacing: 6,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        if (fee.isNotEmpty)
-                          Text(
-                            fee,
-                            style: TextStyle(
-                              fontSize: (disc.isNotEmpty) ? 12 : 13,
-                              fontWeight: (disc.isNotEmpty)
-                                  ? FontWeight.w600
-                                  : FontWeight.w800,
-                              fontFamily: 'Rabar',
-                              color: (disc.isNotEmpty)
-                                  ? (isDark ? Colors.white54 : Colors.grey)
-                                  : AppColors.primary,
-                              decoration: (disc.isNotEmpty)
-                                  ? TextDecoration.lineThrough
-                                  : null,
-                            ),
-                          ),
-                        if (finalPrice.isNotEmpty) ...[
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              '$strDiscount $disc${finalPrice.isNotEmpty ? '%' : ''}',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800,
-                                fontFamily: 'Rabar',
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              finalPrice,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800,
-                                fontFamily: 'Rabar',
-                                color: Colors.green,
-                              ),
-                            ),
-                          ),
-                        ] else if (disc.isNotEmpty) ...[
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              '$strDiscount $disc',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800,
-                                fontFamily: 'Rabar',
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
+                    child: _PriceTags(
+                      price: price,
+                      isDark: isDark,
+                      discountLabel: strDiscount,
                     ),
                   ),
               ],
