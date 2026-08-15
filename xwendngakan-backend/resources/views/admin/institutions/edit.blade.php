@@ -31,7 +31,7 @@
     </div>
 </div>
 
-<form action="{{ route('admin.institutions.update', $institution) }}" method="POST" enctype="multipart/form-data">
+<form id="inst-edit-form" action="{{ route('admin.institutions.update', $institution) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -65,22 +65,26 @@
 
             <div class="form-group">
                 <label class="form-label">دەربارە / پێناسە (کوردی سۆرانی)</label>
-                <textarea name="desc" class="form-control" rows="4">{{ old('desc', $institution->desc) }}</textarea>
+                <div id="editor-desc" class="quill-editor">{!! \App\Support\HtmlSanitizer::clean(old('desc', $institution->desc)) !!}</div>
+                <textarea name="desc" id="desc" style="display:none;">{{ \App\Support\HtmlSanitizer::clean(old('desc', $institution->desc)) }}</textarea>
             </div>
 
             <div class="form-group">
                 <label class="form-label">دەربارە (کوردی بادینی)</label>
-                <textarea name="desc_kbd" class="form-control" rows="4">{{ old('desc_kbd', $institution->desc_kbd) }}</textarea>
+                <div id="editor-desc_kbd" class="quill-editor">{!! \App\Support\HtmlSanitizer::clean(old('desc_kbd', $institution->desc_kbd)) !!}</div>
+                <textarea name="desc_kbd" id="desc_kbd" style="display:none;">{{ \App\Support\HtmlSanitizer::clean(old('desc_kbd', $institution->desc_kbd)) }}</textarea>
             </div>
 
             <div class="form-group">
                 <label class="form-label">دەربارە (عەرەبی)</label>
-                <textarea name="desc_ar" class="form-control" rows="4" dir="rtl">{{ old('desc_ar', $institution->desc_ar) }}</textarea>
+                <div id="editor-desc_ar" class="quill-editor">{!! \App\Support\HtmlSanitizer::clean(old('desc_ar', $institution->desc_ar)) !!}</div>
+                <textarea name="desc_ar" id="desc_ar" style="display:none;">{{ \App\Support\HtmlSanitizer::clean(old('desc_ar', $institution->desc_ar)) }}</textarea>
             </div>
 
             <div class="form-group">
                 <label class="form-label">دەربارە (ئینگلیزی)</label>
-                <textarea name="desc_en" class="form-control" rows="4" dir="ltr">{{ old('desc_en', $institution->desc_en) }}</textarea>
+                <div id="editor-desc_en" class="quill-editor" dir="ltr">{!! \App\Support\HtmlSanitizer::clean(old('desc_en', $institution->desc_en)) !!}</div>
+                <textarea name="desc_en" id="desc_en" style="display:none;">{{ \App\Support\HtmlSanitizer::clean(old('desc_en', $institution->desc_en)) }}</textarea>
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
@@ -310,6 +314,76 @@
 @endsection
 
 @push('scripts')
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<style>
+  .ql-toolbar.ql-snow {
+    border: 1px solid var(--border-light) !important;
+    border-top-left-radius: var(--radius-sm);
+    border-top-right-radius: var(--radius-sm);
+    background: var(--bg-hover);
+    direction: ltr; /* Quill's toolbar is LTR regardless of content direction */
+  }
+  .ql-container.ql-snow {
+    border: 1px solid var(--border-light) !important;
+    border-top: none !important;
+    border-bottom-left-radius: var(--radius-sm);
+    border-bottom-right-radius: var(--radius-sm);
+    background: var(--bg-input);
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--text-main);
+    min-height: 110px;
+  }
+  .ql-editor { direction: rtl; text-align: right; }
+  .ql-editor.ql-blank::before { color: var(--text-faint); font-style: normal; }
+  .quill-editor[dir="ltr"] .ql-editor { direction: ltr !important; text-align: left !important; }
+  .quill-editor:not([dir="ltr"]) .ql-editor ol,
+  .quill-editor:not([dir="ltr"]) .ql-editor ul { padding-left: 0; padding-right: 1.5em; }
+  .quill-editor:not([dir="ltr"]) .ql-editor li::before {
+      margin-left: 0 !important;
+      margin-right: -1.5em !important;
+      text-align: right !important;
+  }
+  .ql-snow .ql-stroke { stroke: var(--text-muted) !important; }
+  .ql-snow .ql-fill { fill: var(--text-muted) !important; }
+  .ql-snow .ql-picker-label { color: var(--text-muted) !important; }
+  .ql-snow .ql-active .ql-stroke { stroke: var(--primary-text) !important; }
+  .ql-snow .ql-active .ql-fill { fill: var(--primary-text) !important; }
+</style>
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+(function () {
+    const FIELDS = ['desc', 'desc_kbd', 'desc_ar', 'desc_en'];
+    const editors = {};
+
+    const toolbarOptions = [
+        ['bold', 'italic', 'underline'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['link'],
+        ['clean']
+    ];
+
+    FIELDS.forEach(function (field) {
+        const el = document.getElementById('editor-' + field);
+        if (el) {
+            editors[field] = new Quill(el, { theme: 'snow', modules: { toolbar: toolbarOptions } });
+        }
+    });
+
+    // Quill keeps its value in a contenteditable div, so mirror it into the
+    // hidden textarea the controller actually reads.
+    document.getElementById('inst-edit-form').addEventListener('submit', function () {
+        FIELDS.forEach(function (field) {
+            if (!editors[field]) return;
+            const target = document.getElementById(field);
+            // An "empty" Quill still reports <p><br></p>; store nothing instead.
+            target.value = editors[field].getText().trim() === ''
+                ? ''
+                : editors[field].root.innerHTML;
+        });
+    });
+})();
+</script>
 <script>
 (function () {
     const LAT_INPUT = document.getElementById('lat-input');
