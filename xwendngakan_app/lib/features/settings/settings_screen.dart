@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
@@ -59,10 +60,19 @@ class SettingsScreen extends StatelessWidget {
             // About
             _SectionLabel(label: 'ℹ️ ${l.about}'),
             const SizedBox(height: 10),
-            _SettingTile(
-              icon: Icons.info_outline_rounded,
-              label: l.about,
-              subtitle: 'v1.0.0',
+            // Read from the bundle so it never goes stale after a release.
+            FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                final info = snapshot.data;
+                return _SettingTile(
+                  icon: Icons.info_outline_rounded,
+                  label: l.about,
+                  subtitle: info == null
+                      ? null
+                      : 'v${info.version} (${info.buildNumber})',
+                );
+              },
             ),
             _SettingTile(
               icon: Icons.privacy_tip_outlined,
