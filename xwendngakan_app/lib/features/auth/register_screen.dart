@@ -15,6 +15,36 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
+/// Keeps the phone field's text as `+964 750 123 4567`: the country code is
+/// always there and can't be edited away, and everything the user types is
+/// reduced to the 10-digit national number, grouped 3-3-4.
+class _IraqPhoneInputFormatter extends TextInputFormatter {
+  const _IraqPhoneInputFormatter();
+
+  static const String _prefix = '${PhoneUtils.countryCode} ';
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    var digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.startsWith('964')) digits = digits.substring(3);
+    if (digits.startsWith('0')) digits = digits.substring(1);
+    if (digits.length > 10) digits = digits.substring(0, 10);
+
+    final buffer = StringBuffer(_prefix);
+    for (var i = 0; i < digits.length; i++) {
+      if (i == 3 || i == 6) buffer.write(' ');
+      buffer.write(digits[i]);
+    }
+
+    final text = buffer.toString();
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+  }
+}
+
 class _RegisterScreenState extends State<RegisterScreen>
     with SingleTickerProviderStateMixin {
   final _nameCtrl = TextEditingController();
@@ -32,6 +62,8 @@ class _RegisterScreenState extends State<RegisterScreen>
   @override
   void initState() {
     super.initState();
+    // The country code is shown from the start; the user only types their number.
+    _phoneCtrl.text = _IraqPhoneInputFormatter._prefix;
     _anim = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -321,36 +353,17 @@ class _RegisterScreenState extends State<RegisterScreen>
                             controller: _phoneCtrl,
                             keyboardType: TextInputType.phone,
                             textInputAction: TextInputAction.next,
-                            // The field stays RTL like every other one on the
-                            // form, so label and icon keep their side. Only the
-                            // digits themselves run LTR, aligned right so they
-                            // sit next to the +964 prefix instead of drifting
-                            // to the far edge.
+                            // The country code is part of the field's own text
+                            // (locked by the formatter), so "+964 750 123 4567"
+                            // is one left-to-right run. Aligned right, it sits
+                            // next to the icon like every other field's text.
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.right,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(11),
-                            ],
+                            inputFormatters: const [_IraqPhoneInputFormatter()],
                             style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-                            decoration: inputDeco(l.phone, Icons.phone_outlined, hint: '750 123 4567')
-                                .copyWith(
-                              // Wrapped LTR, otherwise the leading "+" is
-                              // pushed to the end and shows as "964+".
-                              prefix: Directionality(
-                                textDirection: TextDirection.ltr,
-                                child: Text(
-                                  '${PhoneUtils.countryCode} ',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
-                                    color: isDark ? Colors.white70 : Colors.black54,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            decoration: inputDeco(l.phone, Icons.phone_outlined),
                             validator: (v) {
-                              if (v == null || v.trim().isEmpty) return l.requiredPhone;
+                              if (PhoneUtils.national(v) == null) return l.requiredPhone;
                               // Korek (075x), Asiacell (077x) and Zain (078x) only.
                               if (!PhoneUtils.isValid(v)) return l.invalidIraqiPhone;
                               return null;
