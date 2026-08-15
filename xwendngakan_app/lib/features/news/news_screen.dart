@@ -317,51 +317,66 @@ class _PostCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
+            // Header — the logo/name area opens the institution profile,
+            // while the rest of the card opens the post itself.
             Row(
               children: [
-                _InstitutionAvatar(
-                  logoUrl: post.logoUrl,
-                  name: post.displayName,
-                  type: post.institutionType,
-                  size: 38,
-                ),
-                const SizedBox(width: 10),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        post.displayName,
-                        style: TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w800,
-                          fontFamily: 'Rabar',
-                          color: isDark ? Colors.white : AppColors.textDark,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: post.institutionId > 0
+                        ? () => context.push('/institutions/${post.institutionId}')
+                        : null,
+                    child: Row(
+                      children: [
+                        _InstitutionAvatar(
+                          logoUrl: post.logoUrl,
+                          name: post.displayName,
+                          type: post.institutionType,
+                          size: 38,
                         ),
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Icon(Icons.access_time_rounded,
-                              size: 10,
-                              color: isDark
-                                  ? AppColors.textGrey
-                                  : AppColors.textMuted),
-                          const SizedBox(width: 4),
-                          Text(
-                            timeAgo(post.createdAt),
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontFamily: 'Rabar',
-                              color: isDark
-                                  ? AppColors.textGrey
-                                  : AppColors.textMuted,
-                            ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                post.displayName,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.w800,
+                                  fontFamily: 'Rabar',
+                                  color: isDark ? Colors.white : AppColors.textDark,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Row(
+                                children: [
+                                  Icon(Icons.access_time_rounded,
+                                      size: 10,
+                                      color: isDark
+                                          ? AppColors.textGrey
+                                          : AppColors.textMuted),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    timeAgo(post.createdAt),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontFamily: 'Rabar',
+                                      color: isDark
+                                          ? AppColors.textGrey
+                                          : AppColors.textMuted,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Icon(

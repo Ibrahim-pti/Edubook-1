@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../data/models/news_model.dart';
@@ -72,6 +73,10 @@ class NewsDetailScreen extends StatelessWidget {
     final logoUrl = post?.logoUrl ?? '';
     final type = post?.institutionType;
     final typeColor = _getTypeColor(type);
+    // Posts belong to an institution — the header doubles as a link to its
+    // profile. Plain news items have no institution, so it stays static.
+    final institutionId = post?.institutionId ?? 0;
+    final canOpenInstitution = institutionId > 0;
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF8FAFC),
@@ -174,87 +179,131 @@ class NewsDetailScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Institution Header Row
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(2),
+                        // Institution Header Card — tapping anywhere on it
+                        // opens that institution's profile.
+                        Material(
+                          color: isDark ? const Color(0xFF1A1A1A) : Colors.white,
+                          borderRadius: BorderRadius.circular(22),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(22),
+                            onTap: canOpenInstitution
+                                ? () => context.push('/institutions/$institutionId')
+                                : null,
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
+                                borderRadius: BorderRadius.circular(22),
                                 border: Border.all(
-                                  color: typeColor.withValues(alpha: 0.3),
-                                  width: 1.5,
+                                  color: isDark
+                                      ? const Color(0xFF262626)
+                                      : const Color(0xFFF1F5F9),
                                 ),
                               ),
-                              child: _Avatar(
-                                logoUrl: logoUrl,
-                                name: displayName,
-                                type: type,
-                                size: 48,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        displayName,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w900,
-                                          fontFamily: 'Rabar',
-                                          color: isDark ? Colors.white : AppColors.textDark,
-                                        ),
+                                  Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: typeColor.withValues(alpha: 0.3),
+                                        width: 1.5,
                                       ),
-                                      const SizedBox(width: 6),
-                                      Icon(
-                                        Icons.verified_rounded,
-                                        size: 15,
-                                        color: typeColor,
-                                      ),
-                                    ],
+                                    ),
+                                    child: _Avatar(
+                                      logoUrl: logoUrl,
+                                      name: displayName,
+                                      type: type,
+                                      size: 48,
+                                    ),
                                   ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.access_time_rounded,
-                                          size: 11,
-                                          color: isDark ? Colors.white38 : Colors.black38),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        _timeAgo(createdAt, l),
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontFamily: 'Rabar',
-                                          color: isDark ? Colors.white38 : Colors.black38,
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                displayName,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w900,
+                                                  fontFamily: 'Rabar',
+                                                  color: isDark ? Colors.white : AppColors.textDark,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Icon(
+                                              Icons.verified_rounded,
+                                              size: 15,
+                                              color: typeColor,
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: typeColor.withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(20),
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.access_time_rounded,
+                                                size: 11,
+                                                color: isDark ? Colors.white38 : Colors.black38),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              _timeAgo(createdAt, l),
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                fontFamily: 'Rabar',
+                                                color: isDark ? Colors.white38 : Colors.black38,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: typeColor.withValues(alpha: 0.1),
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: Text(
+                                                _getTypeLabel(type, l),
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w800,
+                                                  color: typeColor,
+                                                  fontFamily: 'Rabar',
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        child: Text(
-                                          _getTypeLabel(type, l),
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w800,
-                                            color: typeColor,
-                                            fontFamily: 'Rabar',
+                                        if (canOpenInstitution) ...[
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            l.viewInstitutionProfile,
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w800,
+                                              fontFamily: 'Rabar',
+                                              color: typeColor,
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
+                                        ],
+                                      ],
+                                    ),
                                   ),
+                                  if (canOpenInstitution)
+                                    Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      size: 13,
+                                      color: isDark ? Colors.white30 : Colors.black26,
+                                    ),
                                 ],
                               ),
                             ),
-                          ],
+                          ),
                         ),
                         const SizedBox(height: 24),
 

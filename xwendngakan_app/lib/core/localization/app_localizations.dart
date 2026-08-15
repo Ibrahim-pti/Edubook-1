@@ -2398,6 +2398,13 @@ class AppLocalizations {
         'en': 'News',
         'tr': 'Haber'
       });
+  String get viewInstitutionProfile => _t({
+        'ku': 'بینینی پرۆفایلی دامەزراوە',
+        'kbd': 'دیتنا پرۆفایلا دامەزراوەیێ',
+        'ar': 'عرض ملف المؤسسة',
+        'en': 'View institution profile',
+        'tr': 'Kurum profilini gör'
+      });
 
   // =====================
   // TIME AGO
