@@ -173,7 +173,7 @@
                 <h4 class="fw-bold mb-3" style="font-size: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 8px;">کرێی خوێندن و بەشەکان (تەنیا بینین)</h4>
                 @php
                     $colleges = json_decode($institution->colleges ?? '[]', true) ?: [];
-                    $tuitionPlans = is_array($institution->tuition_plans) ? $institution->tuition_plans : json_decode($institution->tuition_plans ?? '[]', true) ?: [];
+                    $tuitionPlans = is_array($institution->tuition_plans) ? $institution->tuition_plans : (json_decode($institution->tuition_plans ?? '[]', true) ?: []);
                 @endphp
                 
                 @if(count($colleges) > 0)
