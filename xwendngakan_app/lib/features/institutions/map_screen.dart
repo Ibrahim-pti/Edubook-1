@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:xwendngakan_app/core/constants/app_constants.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../data/services/api_service.dart';
@@ -34,9 +35,12 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.singleInstitution != null && widget.singleInstitution!.lat != null && widget.singleInstitution!.lng != null) {
+    if (widget.singleInstitution != null &&
+        widget.singleInstitution!.lat != null &&
+        widget.singleInstitution!.lng != null) {
       _initialPosition = CameraPosition(
-        target: LatLng(widget.singleInstitution!.lat!, widget.singleInstitution!.lng!),
+        target: LatLng(
+            widget.singleInstitution!.lat!, widget.singleInstitution!.lng!),
         zoom: 15.0,
       );
     } else {
@@ -72,7 +76,10 @@ class _MapScreenState extends State<MapScreen> {
       }
     }
 
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     final result = await ApiService().getMapPins();
     if (!mounted) return;
 
@@ -81,7 +88,10 @@ class _MapScreenState extends State<MapScreen> {
       _buildMarkers();
       setState(() => _loading = false);
     } else {
-      setState(() { _loading = false; _error = result.error; });
+      setState(() {
+        _loading = false;
+        _error = result.error;
+      });
     }
   }
 
@@ -109,14 +119,21 @@ class _MapScreenState extends State<MapScreen> {
 
   double _typeToHue(String type) {
     switch (type) {
-      case 'gov':    return BitmapDescriptor.hueBlue;
-      case 'priv':   return BitmapDescriptor.hueRose;
+      case 'gov':
+        return BitmapDescriptor.hueBlue;
+      case 'priv':
+        return BitmapDescriptor.hueRose;
       case 'inst5':
-      case 'inst2':  return BitmapDescriptor.hueViolet;
-      case 'school': return BitmapDescriptor.hueGreen;
-      case 'kg':     return BitmapDescriptor.hueYellow;
-      case 'dc':     return BitmapDescriptor.hueCyan;
-      default:       return BitmapDescriptor.hueRed;
+      case 'inst2':
+        return BitmapDescriptor.hueViolet;
+      case 'school':
+        return BitmapDescriptor.hueGreen;
+      case 'kg':
+        return BitmapDescriptor.hueYellow;
+      case 'dc':
+        return BitmapDescriptor.hueCyan;
+      default:
+        return BitmapDescriptor.hueRed;
     }
   }
 
@@ -130,10 +147,11 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.singleInstitution != null 
+          widget.singleInstitution != null
               ? widget.singleInstitution!.name(locale)
               : l10n.institutionMap,
-          style: const TextStyle(fontFamily: 'Rabar', fontWeight: FontWeight.w800),
+          style:
+              const TextStyle(fontFamily: 'Rabar', fontWeight: FontWeight.w800),
         ),
         centerTitle: true,
         backgroundColor: isDark ? AppColors.darkBg : Colors.white,
@@ -178,11 +196,14 @@ class _MapScreenState extends State<MapScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                      const Icon(Icons.error_outline,
+                          size: 48, color: Colors.red),
                       const SizedBox(height: 12),
                       Text(_error!, textAlign: TextAlign.center),
                       const SizedBox(height: 12),
-                      ElevatedButton(onPressed: _loadPins, child: const Text('دووبارە هەوڵبدەرەوە')),
+                      ElevatedButton(
+                          onPressed: _loadPins,
+                          child: const Text('دووبارە هەوڵبدەرەوە')),
                     ],
                   ),
                 ),
@@ -195,16 +216,20 @@ class _MapScreenState extends State<MapScreen> {
               top: 12,
               left: 12,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: isDark ? AppColors.darkCard : Colors.white,
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 8)],
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black26, blurRadius: 8)
+                  ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.location_on, size: 16, color: AppColors.primary),
+                    const Icon(Icons.location_on,
+                        size: 16, color: AppColors.primary),
                     const SizedBox(width: 4),
                     Text(
                       '${_pins.length} دامەزراوە',
@@ -262,10 +287,11 @@ class _PinPreviewCard extends StatelessWidget {
     final name = pin['nku'] ?? pin['nen'] ?? '';
     final city = pin['city'] ?? '';
     final type = pin['type'] as String? ?? '';
-    final logo = pin['logo'] as String?;
     final typeColor = AppColors.typeColor(type);
+    final logo = pin['logo'] as String?;
+    final baseDomain = AppConstants.baseUrl.replaceAll(RegExp(r'/api/?$'), '');
     final logoUrl = logo != null && logo.isNotEmpty
-        ? (logo.startsWith('http') ? logo : 'https://khwenden.com/storage/$logo')
+        ? (logo.startsWith('http') ? logo : '$baseDomain/storage/$logo')
         : null;
 
     return Container(
@@ -273,7 +299,9 @@ class _PinPreviewCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, 4))],
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, 4))
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -282,8 +310,11 @@ class _PinPreviewCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Container(
-              width: 40, height: 4,
-              decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2)),
             ),
           ),
           Padding(
@@ -300,9 +331,10 @@ class _PinPreviewCard extends StatelessWidget {
                   child: logoUrl != null
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(14),
-                          child: Image.network(logoUrl, fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) =>
-                                  Icon(Icons.school, color: typeColor, size: 28)),
+                          child: Image.network(logoUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Icon(Icons.school,
+                                  color: typeColor, size: 28)),
                         )
                       : Icon(Icons.school, color: typeColor, size: 28),
                 ),
@@ -313,16 +345,22 @@ class _PinPreviewCard extends StatelessWidget {
                     children: [
                       Text(name,
                           style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Rabar'),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Rabar'),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis),
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          Icon(Icons.location_city_rounded, size: 14, color: Colors.grey[500]),
+                          Icon(Icons.location_city_rounded,
+                              size: 14, color: Colors.grey[500]),
                           const SizedBox(width: 4),
                           Text(city,
-                              style: TextStyle(color: Colors.grey[500], fontFamily: 'Rabar', fontSize: 13)),
+                              style: TextStyle(
+                                  color: Colors.grey[500],
+                                  fontFamily: 'Rabar',
+                                  fontSize: 13)),
                         ],
                       ),
                     ],
@@ -334,7 +372,8 @@ class _PinPreviewCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: GradientButton(text: l10n.viewDetails, onPressed: onViewDetails),
+            child: GradientButton(
+                text: l10n.viewDetails, onPressed: onViewDetails),
           ),
         ],
       ),

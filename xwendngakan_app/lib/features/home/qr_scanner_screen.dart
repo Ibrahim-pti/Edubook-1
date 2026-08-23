@@ -70,7 +70,9 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
               for (final barcode in barcodes) {
                 final String? code = barcode.rawValue;
                 if (code != null &&
-                    (code.startsWith('https://edubook.app/institutions/') ||
+                    (code.startsWith('https://edubook-iq.com/institutions/') ||
+                     code.startsWith('http://edubook-iq.com/institutions/') ||
+                     code.startsWith('https://edubook.app/institutions/') ||
                      code.startsWith('edubook://institutions/'))) {
                   _scanned = true;
                   final String id = code.split('/').last;

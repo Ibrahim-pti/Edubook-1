@@ -96,11 +96,11 @@
       <p>بۆ هەر پرسیارێک دەربارەی ئەم سیاسەتە:</p>
       <ul>
         <li>ئیمەیڵ: <a href="mailto:ibrahim.ahmed@pti.edu.krd">ibrahim.ahmed@pti.edu.krd</a></li>
-        <li>ماڵپەڕ: <a href="https://khwenden.com">khwenden.com</a></li>
+        <li>ماڵپەڕ: <a href="https://edubook-iq.com">edubook-iq.com</a></li>
       </ul>
     </div>
 
-    <div class="footer">© {{ date('Y') }} EduBook - IQ — khwenden.com</div>
+    <div class="footer">© {{ date('Y') }} EduBook - IQ — edubook-iq.com</div>
   </div>
 </body>
 </html>

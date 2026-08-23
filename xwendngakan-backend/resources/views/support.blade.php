@@ -44,7 +44,7 @@
       <p>ئەگەر هەر پرسیار، کێشە یان پێشنیارێکت هەیە دەربارەی ئەپەکە، خۆشحاڵ دەبین یارمەتیت بدەین. لە ڕێگەی ئەم ڕێگایانەوە پەیوەندیمان پێوە بکە:</p>
       <ul class="contact">
         <li>ئیمەیڵ: <a href="mailto:ibrahim.ahmed@pti.edu.krd">ibrahim.ahmed@pti.edu.krd</a></li>
-        <li>وێبسایت: <a href="https://khwenden.com">https://khwenden.com</a></li>
+        <li>وێبسایت: <a href="https://edubook-iq.com">https://edubook-iq.com</a></li>
       </ul>
       <p class="muted">بە ئاسایی لە ماوەی ٢٤–٤٨ کاتژمێردا وەڵامت دەدەینەوە.</p>
     </div>
@@ -64,7 +64,7 @@
       <p>For any questions, issues, or feedback about the EduBook - IQ app, contact us:</p>
       <ul class="contact">
         <li>Email: <a href="mailto:ibrahim.ahmed@pti.edu.krd">ibrahim.ahmed@pti.edu.krd</a></li>
-        <li>Website: <a href="https://khwenden.com">https://khwenden.com</a></li>
+        <li>Website: <a href="https://edubook-iq.com">https://edubook-iq.com</a></li>
       </ul>
       <p class="muted">We usually respond within 24–48 hours.</p>
     </div>

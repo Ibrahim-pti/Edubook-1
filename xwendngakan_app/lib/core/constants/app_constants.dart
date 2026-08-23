@@ -2,8 +2,9 @@ class AppConstants {
   AppConstants._();
 
   // === API ===
-  static const String baseUrl = 'https://khwenden.com/api';
-  // static const String baseUrl = 'http://khwenden.com/public/api'; // Try this if /api 404s
+  static const String baseUrl = 'https://edubook-iq.com/api';
+  // static const String baseUrl = 'http://edubook-iq.com/api'; // Use this if SSL (HTTPS) is not yet active
+  // static const String baseUrl = 'http://edubook-iq.com/public/api'; // Try this if /api 404s
   // For Local: 'http://192.168.7.163:8001/api'
   // For Android Emulator: 'http://10.0.2.2:8001/api'
 
