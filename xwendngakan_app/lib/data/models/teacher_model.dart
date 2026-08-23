@@ -1,4 +1,4 @@
-import 'package:xwendngakan_app/core/constants/app_constants.dart';
+import 'package:xwendngakan_app/core/utils/image_utils.dart';
 
 class TeacherModel {
   final int id;
@@ -37,31 +37,9 @@ class TeacherModel {
     this.facebookUrl,
   });
 
-  String get photoUrl {
-    if (photo == null || photo!.isEmpty) return '';
-    if (photo!.startsWith('http')) return photo!;
-    
-    final baseDomain = AppConstants.baseUrl.replaceAll(RegExp(r'/api/?$'), '');
-    final path = photo!.startsWith('/') ? photo! : '/$photo';
-    
-    if (!path.startsWith('/storage/')) {
-      return '$baseDomain/storage$path';
-    }
-    return '$baseDomain$path';
-  }
+  String get photoUrl => ImageUtils.resolveUrl(photo);
 
-  String get subjectPhotoUrl {
-    if (subjectPhoto == null || subjectPhoto!.isEmpty) return '';
-    if (subjectPhoto!.startsWith('http')) return subjectPhoto!;
-    
-    final baseDomain = AppConstants.baseUrl.replaceAll(RegExp(r'/api/?$'), '');
-    final path = subjectPhoto!.startsWith('/') ? subjectPhoto! : '/$subjectPhoto';
-    
-    if (!path.startsWith('/storage/')) {
-      return '$baseDomain/storage$path';
-    }
-    return '$baseDomain$path';
-  }
+  String get subjectPhotoUrl => ImageUtils.resolveUrl(subjectPhoto);
 
   factory TeacherModel.fromJson(Map<String, dynamic> json) {
     return TeacherModel(

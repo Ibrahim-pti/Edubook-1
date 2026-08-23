@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'post_model.dart';
-import 'package:xwendngakan_app/core/constants/app_constants.dart';
+import 'package:xwendngakan_app/core/utils/image_utils.dart';
 
 class InstitutionModel {
   final int id;
@@ -111,31 +111,9 @@ class InstitutionModel {
     }
   }
 
-  String get logoUrl {
-    if (logo == null || logo!.isEmpty) return '';
-    if (logo!.startsWith('http')) return logo!;
-    
-    final baseDomain = AppConstants.baseUrl.replaceAll(RegExp(r'/api/?$'), '');
-    final path = logo!.startsWith('/') ? logo! : '/$logo';
-    
-    if (!path.startsWith('/storage/')) {
-      return '$baseDomain/storage$path';
-    }
-    return '$baseDomain$path';
-  }
+  String get logoUrl => ImageUtils.resolveUrl(logo);
 
-  String get imgUrl {
-    if (img == null || img!.isEmpty) return '';
-    if (img!.startsWith('http')) return img!;
-    
-    final baseDomain = AppConstants.baseUrl.replaceAll(RegExp(r'/api/?$'), '');
-    final path = img!.startsWith('/') ? img! : '/$img';
-    
-    if (!path.startsWith('/storage/')) {
-      return '$baseDomain/storage$path';
-    }
-    return '$baseDomain$path';
-  }
+  String get imgUrl => ImageUtils.resolveUrl(img);
 
   factory InstitutionModel.fromJson(Map<String, dynamic> json) {
     return InstitutionModel(

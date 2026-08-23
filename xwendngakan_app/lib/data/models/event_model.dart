@@ -1,3 +1,5 @@
+import '../../core/utils/image_utils.dart';
+
 class EventModel {
   final int id;
   final String title;
@@ -26,7 +28,7 @@ class EventModel {
       id: json['id'] as int? ?? 0,
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
-      imageUrl: json['image_url'] as String?,
+      imageUrl: ImageUtils.resolveUrl(json['image_url'] as String?),
       startDate: json['start_date'] as String? ?? '',
       endDate: json['end_date'] as String?,
       location: json['location'] as String?,

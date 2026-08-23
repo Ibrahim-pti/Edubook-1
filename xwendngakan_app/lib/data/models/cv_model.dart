@@ -1,4 +1,4 @@
-import 'package:xwendngakan_app/core/constants/app_constants.dart';
+import 'package:xwendngakan_app/core/utils/image_utils.dart';
 
 class CvModel {
   final int id;
@@ -41,23 +41,7 @@ class CvModel {
     this.createdAt,
   });
 
-  String get photoUrl {
-    if (photo == null || photo!.isEmpty) return '';
-    if (photo!.startsWith('http')) return photo!;
-    
-    // Extract base domain from AppConstants.baseUrl (remove '/api' suffix)
-    final baseDomain = AppConstants.baseUrl.replaceAll(RegExp(r'/api/?$'), '');
-    
-    // Ensure the path has a leading slash
-    final path = photo!.startsWith('/') ? photo! : '/$photo';
-    
-    // Add /storage prefix if the backend didn't add it
-    if (!path.startsWith('/storage/')) {
-      return '$baseDomain/storage$path';
-    }
-    
-    return '$baseDomain$path';
-  }
+  String get photoUrl => ImageUtils.resolveUrl(photo);
 
   factory CvModel.fromJson(Map<String, dynamic> json) {
     return CvModel(

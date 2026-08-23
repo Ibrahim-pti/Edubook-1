@@ -46,6 +46,7 @@ jobs:
               --exclude='.env' \
               --exclude='.user.ini' \
               --exclude='public/.user.ini' \
+              --exclude='public/storage' \
               --exclude='__MACOSX' \
               --exclude='.DS_Store' \
               --exclude='storage/' \
@@ -62,21 +63,31 @@ jobs:
             php artisan migrate --force
 
             echo "--- دروستکردنی فۆڵدەرەکانی storage ---"
+            mkdir -p storage/app/public/logos
+            mkdir -p storage/app/public/covers
+            mkdir -p storage/app/public/posts
+            mkdir -p storage/app/public/news
+            mkdir -p storage/app/public/events
+            mkdir -p storage/app/public/teachers
+            mkdir -p storage/app/public/banners
+            mkdir -p storage/app/public/cvs
             mkdir -p storage/app/public/institutions/logos
             mkdir -p storage/framework/sessions
             mkdir -p storage/framework/views
             mkdir -p storage/framework/cache/data
             mkdir -p storage/logs
-            chmod -R 775 storage
-            chown -R www:www storage
 
-            echo "--- storage:link ---"
-            php artisan storage:link --force 2>/dev/null || true
+            echo "--- دروستکردن و بەستنەوەی storage:link ---"
+            rm -f public/storage
+            php artisan storage:link || ln -sfn "$DEPLOY_DIR/storage/app/public" "$DEPLOY_DIR/public/storage" || true
+
+            chmod -R 775 storage
+            chown -R www:www storage public/storage 2>/dev/null || true
 
             # updateOrCreate — دووبارە ناکاتەوە، تەنها نوێ دەکاتەوە
             echo "--- سیدکردنی دامەزراوە بنەڕەتییەکان ---"
             php artisan db:seed --class=PaytakhtInstituteSeeder --force
-            chown -R www:www storage/app/public
+            chown -R www:www storage/app/public 2>/dev/null || true
 
             echo "--- پاككردنەوە و دروستكردنەوەی کاش ---"
             php artisan optimize:clear

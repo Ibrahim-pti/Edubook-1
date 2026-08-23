@@ -1,3 +1,5 @@
+import '../../core/utils/image_utils.dart';
+
 class BannerModel {
   final int id;
   final String title;
@@ -23,7 +25,7 @@ class BannerModel {
       title: json['title'] as String? ?? '',
       subtitle: json['subtitle'] as String?,
       tag: json['tag'] as String?,
-      imageUrl: json['image_url'] as String?,
+      imageUrl: ImageUtils.resolveUrl(json['image_url'] as String?),
       colorStart: json['color_start'] as String? ?? '#C49A3C',
       colorEnd: json['color_end'] as String? ?? '#E0B856',
     );

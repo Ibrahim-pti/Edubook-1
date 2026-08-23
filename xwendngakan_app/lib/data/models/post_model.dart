@@ -1,5 +1,5 @@
-import '../../core/constants/app_constants.dart';
 import '../../core/utils/html_utils.dart';
+import '../../core/utils/image_utils.dart';
 
 class PostModel {
   final int id;
@@ -28,21 +28,9 @@ class PostModel {
     this.institutionType,
   });
 
-  String get imageUrl {
-    if (image == null || image!.isEmpty) return '';
-    if (image!.startsWith('http')) return image!;
-    final base = AppConstants.baseUrl.replaceAll('/api', '');
-    final path = image!.startsWith('/') ? image! : '/$image';
-    return '$base$path';
-  }
+  String get imageUrl => ImageUtils.resolveUrl(image);
 
-  String get logoUrl {
-    if (institutionLogo == null || institutionLogo!.isEmpty) return '';
-    if (institutionLogo!.startsWith('http')) return institutionLogo!;
-    final base = AppConstants.baseUrl.replaceAll('/api', '');
-    final path = institutionLogo!.startsWith('/') ? institutionLogo! : '/$institutionLogo';
-    return '$base$path';
-  }
+  String get logoUrl => ImageUtils.resolveUrl(institutionLogo);
 
   String get displayName =>
       institutionName ?? authorName ?? 'دامەزراوە';
