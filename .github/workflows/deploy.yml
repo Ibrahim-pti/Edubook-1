@@ -44,6 +44,10 @@ jobs:
             echo "--- sync کردنی بەشی backend بۆ web root ---"
             rsync -av --delete \
               --exclude='.env' \
+              --exclude='.user.ini' \
+              --exclude='public/.user.ini' \
+              --exclude='__MACOSX' \
+              --exclude='.DS_Store' \
               --exclude='storage/' \
               --exclude='vendor/' \
               "$REPO_CACHE/xwendngakan-backend/" "$DEPLOY_DIR/"
